@@ -87,3 +87,31 @@ def add_to_census(request):
     return HttpResponseRedirect('/census/add')
 
 
+def census_remove(request):
+    template = loader.get_template("census_remove.html")
+    votings = Voting.objects.all()
+    users = User.objects.all()
+    context = {
+        'votings': votings,
+        'users': users
+    }
+    return HttpResponse(template.render(context, request))
+
+def remove_from_census(request):
+    voting_id = request.POST['voting-select']
+    user_id = request.POST['user-select']
+    try:
+        census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user_id)
+    except Census.DoesNotExist:
+        census_by_voting = None
+
+    if census_by_voting != None:
+        census_by_voting.delete()
+        messages.success(request, "User removed from the voting correctly")
+
+    else:
+        messages.info(request, "The user was not part of this voting")
+    
+    return HttpResponseRedirect('/census/remove')
+
+
