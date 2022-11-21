@@ -9,6 +9,13 @@ from rest_framework.status import (
         HTTP_401_UNAUTHORIZED as ST_401,
         HTTP_409_CONFLICT as ST_409
 )
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.template import loader
+from voting.models import Voting
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 from base.perms import UserIsStaff
 from .models import Census
@@ -49,3 +56,34 @@ class CensusDetail(generics.RetrieveDestroyAPIView):
         except ObjectDoesNotExist:
             return Response('Invalid voter', status=ST_401)
         return Response('Valid voter')
+
+
+def census_add(request):
+    template = loader.get_template("census_add.html")
+    votings = Voting.objects.all()
+    users = User.objects.all()
+    context = {
+        'votings': votings,
+        'users': users
+    }
+    return HttpResponse(template.render(context, request))
+
+def add_to_census(request):
+    voting_id = request.POST['voting-select']
+    user_id = request.POST['user-select']
+    try:
+        census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user_id)
+    except Census.DoesNotExist:
+        census_by_voting = None
+
+    if census_by_voting == None:
+        census = Census(voting_id=voting_id, voter_id=user_id)
+        census.save()
+        messages.success(request, "User added to the voting correctly")
+
+    else:
+        messages.info(request, "The user was already assigned to the voting")
+    
+    return HttpResponseRedirect('/census/add')
+
+
