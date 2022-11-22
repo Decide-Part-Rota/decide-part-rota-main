@@ -1,0 +1,26 @@
+name: discord-bot
+
+on:
+  schedule:
+    - cron: '*30/ * * * *' #Runs every 30 minutes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: checkout repo content
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: execute py script
+        env:
+          DISCORD_TOKEN: ${{secrets.DISCORD_TOKEN}}
+          DISCORD_GUILD: ${{secrets.DISCORD_GUILD}}
+
+        run: python bot.py
+    
