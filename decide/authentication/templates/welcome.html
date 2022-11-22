@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+{% endblock %}
+
+{% block content %}
+<!-- Navbar -->
+<div>
+
+    <h2>¡Bienvenido!</h2>
+
+<button>
+    <a href="/authentication/loginForm/">Iniciar sesión</a>
+</button>  
+
+<button>
+    <a href="/authentication/registerForm/">Registrar</a>
+</button>  
+
+{% if message %}
+<p>Error: {{message}}</p>
+{% endif %}
+</div>
+{% endblock %}
