@@ -1,4 +1,4 @@
-<html>
+<!-- <html>
 
 <head>
 
@@ -11,10 +11,11 @@
 <body>
 
     <h1 class="d-flex justify-content-center" style="margin: 20;">Login</h1>
+    <h4 class="d-flex justify-content-center" style="color: red;">{{msgErrorLogin}}</h4>
 
     <div class="d-flex justify-content-center">
 
-        <form style="margin: 10;"> {%csrf_token%}
+        <form style="margin: 10;", method="POST" action="/"> {%csrf_token%}
 
             <table>
                 {{loginForm.as_table}}
@@ -25,4 +26,6 @@
 
 </body>
 
-</html>
+</html> -->
+
+

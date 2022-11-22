@@ -9,18 +9,12 @@
 
 {% block content %}
 <!-- Navbar -->
-<div>
+<div >
 
-    <h2>¡Bienvenido!</h2>
+    <h2>¡Bienvenido! {{user}}</h2>
 
-<button>
-    <a href="/authentication/loginForm/">Iniciar sesión</a>
-</button>  
 
-<button>
-    <a href="/authentication/registerForm/">Registrar</a>
-
-</button>  
+<a href="{% url 'salir'%}">Cerrar sesion</a>
 
 {% if message %}
 <p>Error: {{message}}</p>

@@ -20,5 +20,5 @@ class RegisterForm(forms.Form):
        return self.cleaned_data
 
 class LoginForm(forms.Form):
-     username = forms.CharField(label='Usuario',widget=forms.TextInput,required=True)
+     usernameOrEmail = forms.CharField(label='Usuario',widget=forms.TextInput,required=True)
      password = forms.CharField(label='Contraseña',widget=forms.PasswordInput,required=True)
