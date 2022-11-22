@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        
+    </head>
+
+    <body>
+        
+        <h1 style="text-align:center">Votaciones Públicas</h1>
+        <br>
+        <div class="votaciones">
+            {% for votacion in votaciones %}
+            <div class="votacion">
+                
+                    <div>
+                        <h5>Nombre: {{votacion.name}}</h5>
+                        <h5>Descripcion: {{votacion.desc}}</h5>
+                        <h5>Visibilidad: {{votacion.visibility}}</h5>
+                        <h5>---------------</h5>
+                    </div>
+               
+            </div>
+            {% endfor %}
+        </div>
+
+                    
+    </body>
+
+</html>

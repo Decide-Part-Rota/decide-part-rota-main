@@ -1,15 +1,30 @@
 import django_filters.rest_framework
 from django.conf import settings
 from django.utils import timezone
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from rest_framework import generics, status
 from rest_framework.response import Response
+from django.views.generic import TemplateView
+
 
 from .models import Question, QuestionOption, Voting
 from .serializers import SimpleVotingSerializer, VotingSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
 
+def mostrarVotacionesPublicas(request):
+        votaciones = Voting.objects.all()
+
+        data={
+            'votaciones': votaciones
+        }
+
+        return render(request, 'voting/listVoting.html', data)
+
+class VotacionPub(TemplateView):
+    template_name = 'voting/listVoting.html'
+
+   
 
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
