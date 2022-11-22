@@ -1,7 +1,10 @@
 from django.contrib.auth.backends import ModelBackend
 
 from base import mods
-
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+from django.contrib.auth.models import User
 
 class AuthBackend(ModelBackend):
     '''
@@ -14,6 +17,8 @@ class AuthBackend(ModelBackend):
     '''
 
     def authenticate(self, request, username=None, password=None, **kwargs):
+        if '@' in username:
+            username=User.objects.get(email=username).username
         u = super().authenticate(request, username=username,
                                  password=password, **kwargs)
 
@@ -27,3 +32,4 @@ class AuthBackend(ModelBackend):
             request.session['auth-token'] = token['token']
 
         return u
+

@@ -11,17 +11,19 @@
 <body>
 
     <h1 class="d-flex justify-content-center" style="margin: 20;">Login</h1>
-
+    <h4 style="color: red" class="d-flex justify-content-center">{{msgErrorLogin}}</h4>
     <div class="d-flex justify-content-center">
 
-        <form style="margin: 10;"> {%csrf_token%}
-
-            <table>
-                {{loginForm.as_table}}
-            </table>
-            <button type="submit" class="btn btn-outline-dark">Login</button>
+        <form method="POST">
+            {%csrf_token%}
+            Usuario<input type="text" name="username">
+        
+            password<input type="password" name="password">
+        
+            <button type="submit">Iniciar sesion</button>
         </form>
     </div>
+
 
 </body>
 

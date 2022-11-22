@@ -7,13 +7,16 @@ from rest_framework.status import (
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
-
+from django.contrib.auth.hashers import check_password
 from .serializers import UserSerializer
 from .forms import RegisterForm, LoginForm
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 
 
 class GetUserView(APIView):
@@ -57,15 +60,34 @@ class RegisterView(APIView):
         return Response({'user_pk': user.pk, 'token': token.key}, HTTP_201_CREATED)
 
 
-def loginForm(request):
-    form = LoginForm()
-    return render(request, 'login.html', {'loginForm':form})
+# def loginForm(request):
+#     if request.method=="POST":
+#         form = LoginForm(request.POST)
+#         if(form.is_valid()):
+#             infForm = form.cleaned_data
+#             userOrEmail = infForm['usernameOrEmail']
+#             passwd= infForm['password']
+#             for user in User.objects.all():
+#                                                                                 #el check password comprueba la pass de la base de datos y que hemos metido
+#                 if (user.username == userOrEmail or user.email == userOrEmail) and check_password(passwd, user.password):
+#                     usernameDb=userOrEmail
+#                     if '@' in userOrEmail:
+#                         usernameDb=User.objects.get(email=userOrEmail).username
+#                     request.user=user
+#                     return render(request,'welcome.html')
+#             msgErrorLogin="Usuario o contraseña incorrectos"
+#             return render(request, 'login.html', {'msgErrorLogin':msgErrorLogin, 'loginForm':form})
+#     else:
+#         form = LoginForm()
+#     return render(request, 'login.html', {'loginForm':form})
 
 def registerForm(request):
     form = RegisterForm()
 
     return render(request, 'register.html', {'registerForm':form})
 
+@login_required(login_url='authentication/accounts/login/')
 def welcome(request):
+    print(request.user)
     return render(request, 'welcome.html')
 
