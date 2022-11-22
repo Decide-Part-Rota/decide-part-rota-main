@@ -58,60 +58,91 @@ class CensusDetail(generics.RetrieveDestroyAPIView):
         return Response('Valid voter')
 
 
+
 def census_add(request):
-    template = loader.get_template("census_add.html")
-    votings = Voting.objects.all()
-    users = User.objects.all()
-    context = {
-        'votings': votings,
-        'users': users
-    }
-    return HttpResponse(template.render(context, request))
+    if request.user.is_staff:
+        template = loader.get_template("census_add.html")
+        votings = Voting.objects.all()
+        users = User.objects.all()
+        context = {
+            'votings': votings,
+            'users': users
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({}, request), status=ST_401)
+
 
 def add_to_census(request):
-    voting_id = request.POST['voting-select']
-    user_id = request.POST['user-select']
-    try:
-        census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user_id)
-    except Census.DoesNotExist:
-        census_by_voting = None
+    template = loader.get_template("result_page.html")
+    if request.user.is_staff:
+        voting_id = request.POST['voting-select']
+        user_id = request.POST['user-select']
+        try:
+            census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user_id)
+        except Census.DoesNotExist:
+            census_by_voting = None
 
-    if census_by_voting == None:
-        census = Census(voting_id=voting_id, voter_id=user_id)
-        census.save()
-        messages.success(request, "User added to the voting correctly")
+        status_code=404
+        if census_by_voting == None:
+            census = Census(voting_id=voting_id, voter_id=user_id)
+            census.save()
+            messages.success(request, "User added to the voting correctly")
+            status_code=ST_201
+
+        else:
+            messages.info(request, "The user was already assigned to the voting")
+            status_code = 200
+        
+        
+        return HttpResponse(template.render({}, request), status=status_code)
 
     else:
-        messages.info(request, "The user was already assigned to the voting")
-    
-    return HttpResponseRedirect('/census/add')
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({}, request), status=ST_401)
 
 
 def census_remove(request):
-    template = loader.get_template("census_remove.html")
-    votings = Voting.objects.all()
-    users = User.objects.all()
-    context = {
-        'votings': votings,
-        'users': users
-    }
-    return HttpResponse(template.render(context, request))
+    if request.user.is_staff:
+        template = loader.get_template("census_remove.html")
+        votings = Voting.objects.all()
+        users = User.objects.all()
+        context = {
+            'votings': votings,
+            'users': users
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({'remove': True}, request), status=ST_401)
 
 def remove_from_census(request):
-    voting_id = request.POST['voting-select']
-    user_id = request.POST['user-select']
-    try:
-        census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user_id)
-    except Census.DoesNotExist:
-        census_by_voting = None
+    template = loader.get_template("result_page.html") 
+    if request.user.is_staff:   
+        voting_id = request.POST['voting-select']
+        user_id = request.POST['user-select']
+        try:
+            census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user_id)
+        except Census.DoesNotExist:
+            census_by_voting = None
 
-    if census_by_voting != None:
-        census_by_voting.delete()
-        messages.success(request, "User removed from the voting correctly")
+        status_code=404
+        if census_by_voting != None:
+            census_by_voting.delete()
+            messages.success(request, "User removed from the voting correctly")
+            status_code = 200
+
+        else:
+            messages.info(request, "The user was not part of this voting")
+            status_code = 200
+        
+        return HttpResponse(template.render({'remove': True}, request), status=status_code)
 
     else:
-        messages.info(request, "The user was not part of this voting")
-    
-    return HttpResponseRedirect('/census/remove')
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({'remove': True}, request), status=ST_401)
 
 

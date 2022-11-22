@@ -48,21 +48,31 @@
         </div>
     </div>
     <div class="row justify-content-center submit">
-        <div class="col col-lg-2">
+        <div class="col col-lg-1">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </div>
 </form>
 
+<div class="row justify-content-center submit">
+    <div class="col col-lg-2">
+        <a href="by_group"><button type="button" class="btn btn-primary group-button">Or Add By Group</button></a>
+    </div>
+</div>
+
 {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li class="{{ message.tags }} alert alert-{{message.tags}}" role="alert">{{ message }}</li>
-        {% endfor %}
-    </ul>
+<ul class="messages" style="margin-top:2%">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <li class="{{ message.tags }} alert alert-danger" role="alert">{{ message }}</li>
+        {% else %}
+        <li class="{{ message.tags }} alert alert-{{message.tags}}" role="alert">{{ message }}</li>
+        {% endif %}
+        
+    {% endfor %}
+</ul>
+
 {% endif %}
-
-
 
 
 {% endblock %}
