@@ -1,0 +1,16 @@
+<form method="POST">
+    {%csrf_token%}
+    <table>
+        <tr>
+            <td>Usuario o email <input type="text" name="username"></td>
+
+
+            <td>Contrasenya<input type="password" name="password"></td>
+        </tr>
+    </table>
+
+    <button type="submit">Iniciar sesion</button>
+    <a href="/authentication/registerForm/">Registrarse</a>
+</form>
+
+
