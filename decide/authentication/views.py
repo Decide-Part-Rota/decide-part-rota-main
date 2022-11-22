@@ -14,6 +14,7 @@ from django.shortcuts import render
 
 from .serializers import UserSerializer
 from .forms import RegisterForm, LoginForm
+from .models import Persona
 
 
 class GetUserView(APIView):
@@ -69,6 +70,18 @@ def registerForm(request):
 def welcome(request):
     return render(request, 'welcome.html')
 
+def nuevoUsuario(request):
+    print(request.GET)
+    username = request.GET["username"]
+    mail = request.GET["email"]
+    contrasenya = request.GET["password"]
+    sexo = request.GET["sexo"]
+    edad = request.GET["edad"]
 
- 
+    nuevoUsuario = User(username=username, email=mail,password=contrasenya)
+    nuevoUsuario.save()
 
+    nuevaPersona = Persona(usuario=User.objects.get(username=username), sexo=sexo, edad=edad)
+    nuevaPersona.save()
+
+    return render(request, 'welcome.html')
