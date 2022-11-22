@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.template.loader import get_template
+from django.http import HttpResponse
 
 from .serializers import UserSerializer
 
@@ -53,3 +55,21 @@ class RegisterView(APIView):
         except IntegrityError:
             return Response({}, status=HTTP_400_BAD_REQUEST)
         return Response({'user_pk': user.pk, 'token': token.key}, HTTP_201_CREATED)
+
+def welcome(request):
+    plantilla = get_template('welcome.html')
+    contexto = {}
+    documento = plantilla.render(contexto)
+    return HttpResponse(documento)
+
+def login(request):
+    plantilla = get_template('login.html')
+    contexto = {}
+    documento = plantilla.render(contexto)
+    return HttpResponse(documento)
+
+def register(request):
+    plantilla = get_template('register.html')
+    contexto = {}
+    documento = plantilla.render(contexto)
+    return HttpResponse(documento)
