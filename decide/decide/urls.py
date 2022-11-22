@@ -19,9 +19,11 @@ from django.urls import path, include
 from rest_framework_swagger.views import get_swagger_view
 from authentication.views import welcome
 
+
 schema_view = get_swagger_view(title='Decide API')
 
 urlpatterns = [
+    path('', welcome),
     path('admin/', admin.site.urls),
     path('doc/', schema_view),
     path('gateway/', include('gateway.urls')),
