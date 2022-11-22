@@ -18,3 +18,7 @@ class RegisterForm(forms.Form):
        if User.objects.filter(email=email).exists():
             raise ValidationError("Email exists")
        return self.cleaned_data
+
+class LoginForm(forms.Form):
+     username = forms.CharField(label='Usuario',widget=forms.TextInput,required=True)
+     password = forms.CharField(label='Contraseña',widget=forms.PasswordInput,required=True)

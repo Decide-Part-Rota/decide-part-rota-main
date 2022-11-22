@@ -12,6 +12,8 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import get_template
 from django.http import HttpResponse
+from .forms import RegisterForm, LoginForm
+from django.shortcuts import render
 
 from .serializers import UserSerializer
 
@@ -63,13 +65,11 @@ def welcome(request):
     return HttpResponse(documento)
 
 def login(request):
-    plantilla = get_template('login.html')
-    contexto = {}
-    documento = plantilla.render(contexto)
-    return HttpResponse(documento)
+    form = LoginForm()
+
+    return render(request, 'login.html', {'loginForm':form})
 
 def register(request):
-    plantilla = get_template('register.html')
-    contexto = {}
-    documento = plantilla.render(contexto)
-    return HttpResponse(documento)
+    form = RegisterForm()
+
+    return render(request, 'register.html', {'registerForm':form})
