@@ -11,12 +11,12 @@
 
 {% block content %}
 <div class="title">
-    <h2>Export Census</h2>
+    <h2>Import Census</h2>
 </div>
 
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
-        <h4>In this view you can manage the census by exporting the users participating in a voting</h4>
+        <h4>In this view you can manage the census by importing users participating in a voting</h4>
     </div>
 </div>
 
@@ -24,7 +24,7 @@
     
 </div>
 
-<form class="row gx-3 gy-2 align-items-center" action="exporting_census/" method="POST">
+<form class="row gx-3 gy-2 align-items-center" action="importing_census/" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
@@ -37,9 +37,16 @@
                 
         </div>
     </div>
+    <div class="row justify-content-md-center">
+        <div class="col-sm-8">
+            <label for="file" class="form-label">Upload a csv file</label>
+            <input class="form-control" type="file" id="formFile" name="csv-file" required>
+          
+        </div>
+    </div>
     <div class="row justify-content-center submit">
         <div class="col col-lg-1">
-            <button type="submit" class="btn btn-primary">Export</button>
+            <button type="submit" class="btn btn-primary">Import</button>
         </div>
     </div>
 </form>
