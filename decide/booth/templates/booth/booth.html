@@ -49,6 +49,8 @@
                 <b-button type="submit" variant="primary">{% trans "Login" %}</b-button>
             </b-form>
 
+            <div id="like-button-root"></div>
+
             <!-- Voting -->
             <div v-if="!signup">
                 <h2>[[ voting.question.desc ]]</h2>
@@ -81,7 +83,7 @@
     <script src="{% static "crypto/elgamal.js" %}"></script>
 
     <!-- Vuejs -->
-    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue@2.7.3"></script>
     <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
 
@@ -209,5 +211,10 @@
             },
         })
     </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="{% static "crypto/like-button.js" %}"></script>
+
 </body>
 {% endblock %}
