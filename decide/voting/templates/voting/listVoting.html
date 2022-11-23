@@ -7,20 +7,27 @@
 
     <body>
         
-        <h1 style="text-align:center">Votaciones Públicas</h1>
+        <h1 style="text-align:center">Listado de Votaciones</h1>
         <br>
         <div class="votaciones">
-            {% for votacion in votaciones %}
-            <div class="votacion">
-                
+
+           <!-- Cojo la colección votaciones que le paso en views.py --> 
+            {% for votacion in votaciones %} 
+
+                <div class="votacion">
+                    
                     <div>
+
+                        <!-- Por cada votación, saldrá el nombre, descripción y visibilidad -->
                         <h5>Nombre: {{votacion.name}}</h5>
                         <h5>Descripcion: {{votacion.desc}}</h5>
                         <h5>Visibilidad: {{votacion.visibility}}</h5>
                         <h5>---------------</h5>
+                        
                     </div>
-               
-            </div>
+                    
+                </div>
+
             {% endfor %}
         </div>
 

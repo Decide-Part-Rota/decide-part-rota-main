@@ -12,7 +12,12 @@ from .serializers import SimpleVotingSerializer, VotingSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
 
-def mostrarVotacionesPublicas(request):
+#Clase para listar todas las votaciones.
+class VotacionList(TemplateView):
+    template_name = 'voting/listVoting.html'
+
+    #Método para mostrar un listado de todas las votaciones.
+    def mostrarVotacionesPublicas(request):
         votaciones = Voting.objects.all()
 
         data={
@@ -20,10 +25,6 @@ def mostrarVotacionesPublicas(request):
         }
 
         return render(request, 'voting/listVoting.html', data)
-
-class VotacionPub(TemplateView):
-    template_name = 'voting/listVoting.html'
-
    
 
 class VotingView(generics.ListCreateAPIView):
