@@ -19,7 +19,7 @@ from django.contrib import messages
 
 from base.perms import UserIsStaff
 from .models import Census
-
+import csv
 
 class CensusCreate(generics.ListCreateAPIView):
     permission_classes = (UserIsStaff,)
@@ -73,7 +73,7 @@ def census_add(request):
         template = loader.get_template("result_page.html")
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
-
+    
 
 def add_to_census(request):
     template = loader.get_template("result_page.html")
@@ -102,6 +102,53 @@ def add_to_census(request):
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
+    
+
+def export_census(request):
+    if request.user.is_staff:
+        template = loader.get_template("census_export.html")
+        votings = Voting.objects.all()
+        context = {
+            'votings': votings,
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({'export': True}, request), status=ST_401)
+    
+
+
+def exporting_census(request):
+    if request.user.is_staff:
+        voting_id = request.POST['voting-select']
+        censuss_to_export = Census.objects.all().filter(voting_id=voting_id)
+        voting = Voting.objects.get(id=voting_id)
+
+        
+        # if not os.path.exists('./export/export_' + voting.name + '.csv'):
+        #     os.mknod('./export/export_' + voting.name + '.csv')
+        
+        with open('./census/export/export_' + voting.name + '.csv', 'w', encoding='UTF8', newline='') as csvfile:
+            exportwriter = csv.writer(csvfile, delimiter=',')
+            header = ['username', 'first_name', 'last_name', 'email']
+            exportwriter.writerow(header)
+
+            for census in censuss_to_export:
+                voter = User.objects.get(id=census.voter_id)
+                row = [voter.username, voter.first_name, voter.last_name, voter.email]
+                exportwriter.writerow(row)
+
+        
+        
+        messages.success(request, "Census was exported correctly")
+        return HttpResponseRedirect('/census/export/')
+
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({'export': True}, request), status=ST_401)
+
 
 
 def census_remove(request):
