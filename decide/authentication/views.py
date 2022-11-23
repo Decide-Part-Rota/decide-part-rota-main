@@ -10,7 +10,8 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.contrib.auth import authenticate, login
 
 from .serializers import UserSerializer
 from .forms import RegisterForm, LoginForm
@@ -61,15 +62,45 @@ class RegisterView(APIView):
 def loginForm(request):
     form = LoginForm()
     return render(request, 'login.html', {'loginForm':form})
-
+'''
 def registerForm(request):
     form = RegisterForm()
 
     return render(request, 'register.html', {'registerForm':form})
+'''
 
 def welcome(request):
     return render(request, 'welcome.html')
 
+
+def register(response):
+    
+    form = RegisterForm()
+    if response.method == 'POST':
+        form = RegisterForm(response.POST)
+        if form.is_valid():
+            User = form.save()
+            User.refresh_from_db()
+            User.persona.sexo = form.cleaned_data.get('sexo')
+            User.persona.edad = form.cleaned_data.get('edad')
+            User.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            User = authenticate(username=username, password=password)
+            login(response, User)
+
+            return redirect('/')
+
+        else:
+         form = RegisterForm()
+
+    context = {'form':form}
+    return render(response, 'register.html', context)
+
+
+
+
+'''
 def nuevoUsuario(request):
     print(request.GET)
     username = request.GET["username"]
@@ -85,3 +116,25 @@ def nuevoUsuario(request):
     nuevaPersona.save()
 
     return render(request, 'welcome.html')
+
+
+
+
+def registerForm(request):
+    form = RegisterForm()
+
+    if request.method=='POST':
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            username = form.clean_data['username']
+            return redirect('/')
+    else:
+        form = UserCreationForm()
+
+    context = {'form':form}
+
+    return render(request, 'register.html', context)
+'''
+
