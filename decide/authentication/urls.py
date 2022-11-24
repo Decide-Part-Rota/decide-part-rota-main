@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.authtoken.views import obtain_auth_token
 
-from .views import GetUserView, LogoutView, RegisterView, loginForm, registerForm
+from .views import GetUserView, LogoutView, RegisterView, registerForm, salir
 
 from django.contrib import admin
 from django.views.generic import TemplateView
@@ -13,6 +13,8 @@ urlpatterns = [
     path('register/', RegisterView.as_view()),
     path('loginForm/', loginForm),
     path('registerForm/', registerForm),
-
     path('providers/', include('allauth.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('salir/', salir, name='salir'),
+    
 ]
