@@ -1,11 +1,23 @@
 import random
-from django.contrib.auth.models import User
-from django.test import TestCase
+#Added AnonymousUser
+from django.contrib.auth.models import User, AnonymousUser
+
+#Added RequestFactory to handle the request.user.is_staff check in the views
+from django.test import TestCase, RequestFactory
+#Added these Mddleware to simulate the messaging, since RequestFactory doesn't do it
+from django.contrib.messages.middleware import MessageMiddleware
+from django.contrib.sessions.middleware import SessionMiddleware
+
 from rest_framework.test import APIClient
 
 from .models import Census
+#Added the necessary models
+from voting.models import Voting, Question, QuestionOption
 from base import mods
 from base.tests import BaseTestCase
+import os
+
+from .views import exporting_census
 
 
 class CensusTestCase(BaseTestCase):
@@ -73,3 +85,59 @@ class CensusTestCase(BaseTestCase):
         response = self.client.delete('/census/{}/'.format(1), data, format='json')
         self.assertEqual(response.status_code, 204)
         self.assertEqual(0, Census.objects.count())
+
+
+class CensusExportImport(BaseTestCase):
+        def setUp(self):
+            super().setUp()
+
+            self.q = Question(desc='test question')
+            self.q.save()
+            for i in range(5):
+                self.opt = QuestionOption(question=self.q, option='option {}'.format(i+1))
+                self.opt.save()
+            self.v = Voting(name='test voting', question=self.q)
+            self.v.save()
+
+            self.census = Census(voting_id=self.v.id, voter_id=1)
+            self.census.save()
+
+            self.factory = RequestFactory()
+            self.sm = SessionMiddleware()
+            self.mm = MessageMiddleware()
+
+        def tearDown(self):
+            super().tearDown()
+            self.census = None
+
+            self.q = None
+            self.opt = None
+
+            if os.path.exists('./census/export/export_' + self.v.name + '.csv'):
+                os.remove('./census/export/export_' + self.v.name + '.csv')
+
+            self.v = None
+
+        def test_export_census(self):
+            self.user = AnonymousUser()
+            data = {'voting-select': self.v.id}
+            request = self.factory.post('/census/export/exporting_census/', data, format='json')
+            self.sm.process_request(request)
+            self.mm.process_request(request)
+            request.user = self.user
+            response = exporting_census(request)
+            self.assertEqual(response.status_code, 401)
+            self.assertFalse(os.path.exists('./census/export/export_' + self.v.name + '.csv'))
+
+            user_admin = User.objects.get(username="admin")
+            self.user = user_admin
+            data = {'voting-select': self.v.id}
+            request = self.factory.post('/census/export/exporting_census/', data, format='json')
+            self.sm.process_request(request)
+            self.mm.process_request(request)
+            request.user = self.user
+            response = exporting_census(request)
+            self.assertEqual(response.status_code, 302)
+            self.assertTrue(os.path.exists('./census/export/export_' + self.v.name + '.csv'))
+            with open('./census/export/export_' + self.v.name + '.csv', 'r') as csvfile:
+                self.assertEqual(2, len(csvfile.readlines()))
