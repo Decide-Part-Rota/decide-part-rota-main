@@ -142,6 +142,19 @@ def remove_from_census(request):
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({'remove': True}, request), status=ST_401)
     
+def export_census(request):
+    if request.user.is_staff:
+        template = loader.get_template("census_export.html")
+        votings = Voting.objects.all()
+        context = {
+            'votings': votings,
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({'export': True}, request), status=ST_401)
+
 
 def exporting_census(request):
     if request.user.is_staff:
