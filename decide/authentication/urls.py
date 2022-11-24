@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.authtoken.views import obtain_auth_token
 
-from .views import GetUserView, LogoutView, RegisterView, registerForm, salir
+from .views import GetUserView, LogoutView, RegisterView, registerForm, salir, loginForm
 
 from django.contrib import admin
 from django.views.generic import TemplateView
