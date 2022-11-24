@@ -27,6 +27,10 @@
     <div class="col col-lg-2">
         {% if remove %}
         <a href="/census/remove"><button type="submit" class="btn btn-primary">Return</button></a>
+        {% elif export %}
+        <a href="/census/export"><button type="submit" class="btn btn-primary">Return</button></a>
+        {% elif import %}
+        <a href="/census/import"><button type="submit" class="btn btn-primary">Return</button></a>
         {% else %}
         <a href="/census/add"><button type="submit" class="btn btn-primary">Return</button></a>
         {% endif %}
