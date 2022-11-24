@@ -11,7 +11,6 @@ from rest_framework.status import (
 )
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.template import loader
 from voting.models import Voting
 from django.contrib.auth.models import User
@@ -121,8 +120,8 @@ def census_remove(request):
         return HttpResponse(template.render({'remove': True}, request), status=ST_401)
 
 def remove_from_census(request):
-    template = loader.get_template("result_page.html") 
-    if request.user.is_staff:   
+    template = loader.get_template("result_page.html")
+    if request.user.is_staff:
         voting_id = request.POST['voting-select']
         user_id = request.POST['user-select']
         try:

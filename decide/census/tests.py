@@ -122,7 +122,7 @@ class CensusExportImport(BaseTestCase):
 
         if os.path.exists('./census/export/import_test.csv'):
             os.remove('./census/export/import_test.csv')
-    
+
         self.v = None
         self.voter = None
         self.factory = None
