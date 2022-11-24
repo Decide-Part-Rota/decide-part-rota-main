@@ -80,7 +80,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+    'django.middleware.locale.LocaleMiddleware',
+    ]
 
 ROOT_URLCONF = 'decide.urls'
 
@@ -98,7 +99,7 @@ TEMPLATES = [
             ],
         },
     },
-]
+    ]
 
 WSGI_APPLICATION = 'decide.wsgi.application'
 
@@ -149,6 +150,14 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+LANGUAGES = [
+    ('ru', 'Русский'),
+    ('es', 'Español'),
+    ('en', 'English')
+]
+
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
