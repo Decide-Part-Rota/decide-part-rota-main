@@ -86,7 +86,7 @@ def add_to_census(request):
             census_by_voting = None
 
         status_code=404
-        if census_by_voting == None:
+        if census_by_voting is None:
             census = Census(voting_id=voting_id, voter_id=user_id)
             census.save()
             messages.success(request, "User added to the voting correctly")
@@ -131,7 +131,7 @@ def remove_from_census(request):
             census_by_voting = None
 
         status_code=404
-        if census_by_voting != None:
+        if census_by_voting is not None:
             census_by_voting.delete()
             messages.success(request, "User removed from the voting correctly")
             status_code = 200
