@@ -12,4 +12,7 @@ urlpatterns = [
     path('add/by_group/', views.census_group, name='census_by_group'),
     path('add/by_group/maritialStatus', views.census_maritialStatus),
     path('add/by_group/nationality', views.census_nationality),
+    path('add/by_group/maritialStatus/add_by_maritialStatus_to_census', views.add_by_maritialStatus_to_census),
+    path('add/by_group/nationality/add_by_nationality_to_census', views.add_by_nationality_to_census),
+
 ]

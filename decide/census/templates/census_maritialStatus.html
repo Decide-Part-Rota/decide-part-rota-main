@@ -26,7 +26,7 @@
     
 </div>
 
-<form class="row gx-3 gy-2 align-items-center" action="add_by_maritialStatus_to_census" method="POST">
+<form class="row gx-3 gy-2 align-items-center" action="maritialStatus/add_by_maritialStatus_to_census" method="POST">
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
@@ -42,10 +42,10 @@
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
             <label for="specificSizeSelect">Maritial Status</label>
-            <select class="form-select" id="specificSizeSelect" name="maritialStatus-select">
-                <!--{% for maritialStatus in users.maritialStatus %}-->
-            <option value="{{maritialStatus}}"><!--{{maritialStatus}}--></option>
-                {%endfor%}
+            <select multiple class="form-select" id="specificSizeSelect" name="maritialStatus-select">
+                <!--{% for maritialstatus in maritialStatus %}
+            <option value="{{maritialstatus}}">{{maritialstatus}}</option>
+                {%endfor%}-->
             </select>    
         </div>
     </div>

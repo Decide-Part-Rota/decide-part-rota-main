@@ -164,10 +164,13 @@ def census_maritialStatus(request):
     if request.user.is_staff:
         template = loader.get_template("census_maritialStatus.html")
         votings = Voting.objects.all()
-        users = User.objects.all()
+        try:
+            maritialStatus = set(u.maritialStatus for u in User.objects.all())
+        except BaseException:
+            maritialStatus = set()
         context = {
             'votings': votings,
-            'users': users,
+            'maritialStatus': maritialStatus,
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -180,7 +183,7 @@ def add_by_maritialStatus_to_census(request):
     if request.user.is_staff:
         voting_id = request.POST['voting-select']
         maritialStatus = request.POST['maritialStatus-select']
-        users = User.objects.filter(maritial_status = maritialStatus)
+        users = User.objects.filter(maritial_status in maritialStatus)
         for user in users:
             try:
                 census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user.id)
@@ -200,19 +203,22 @@ def add_by_maritialStatus_to_census(request):
         
             return HttpResponse(template.render({}, request), status=status_code)
 
-        else:
-            messages.error(request, "You must be a staff member to access this page")
-            return HttpResponse(template.render({}, request), status=ST_401)   
+    else:
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({}, request), status=ST_401)
 
 
 def census_nationality(request):
     if request.user.is_staff:
         template = loader.get_template("census_nationality.html")
         votings = Voting.objects.all()
-        users = User.objects.all()
+        try:
+            nationality = set(u.nationality for u in User.objects.all())
+        except BaseException:
+            nationality = set()
         context = {
             'votings': votings,
-            'users': users,
+            'nationality': nationality,
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -225,7 +231,7 @@ def add_by_nationality_to_census(request):
     if request.user.is_staff:
         voting_id = request.POST['voting-select']
         nation = request.POST['nationality-select']
-        users = User.objects.filter(nationality = nation)
+        users = User.objects.filter(nationality in nation)
         for user in users:
             try:
                 census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user.id)
@@ -244,7 +250,7 @@ def add_by_nationality_to_census(request):
         
         
             return HttpResponse(template.render({}, request), status=status_code)
-
-        else:
-            messages.error(request, "You must be a staff member to access this page")
-            return HttpResponse(template.render({}, request), status=ST_401)
+            
+    else:
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({}, request), status=ST_401)
