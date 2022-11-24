@@ -10,8 +10,6 @@ from rest_framework.status import (
         HTTP_409_CONFLICT as ST_409
 )
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.template import loader
 from voting.models import Voting
 from django.contrib.auth.models import User
@@ -86,19 +84,16 @@ def add_to_census(request):
             census_by_voting = None
 
         status_code=404
-        if census_by_voting == None:
+        if census_by_voting is None:
             census = Census(voting_id=voting_id, voter_id=user_id)
             census.save()
             messages.success(request, "User added to the voting correctly")
             status_code=ST_201
-
         else:
             messages.info(request, "The user was already assigned to the voting")
             status_code = 200
-        
-        
-        return HttpResponse(template.render({}, request), status=status_code)
 
+        return HttpResponse(template.render({}, request), status=status_code)
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
@@ -120,8 +115,8 @@ def census_remove(request):
         return HttpResponse(template.render({'remove': True}, request), status=ST_401)
 
 def remove_from_census(request):
-    template = loader.get_template("result_page.html") 
-    if request.user.is_staff:   
+    template = loader.get_template("result_page.html")
+    if request.user.is_staff:
         voting_id = request.POST['voting-select']
         user_id = request.POST['user-select']
         try:
@@ -130,7 +125,7 @@ def remove_from_census(request):
             census_by_voting = None
 
         status_code=404
-        if census_by_voting != None:
+        if census_by_voting is not None:
             census_by_voting.delete()
             messages.success(request, "User removed from the voting correctly")
             status_code = 200
