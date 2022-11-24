@@ -149,9 +149,9 @@ def census_gender(request):
     if request.user.is_staff:
         template = loader.get_template("census_gender.html")
         votings = Voting.objects.all()
-        try: 
+        try:
             genders = set(u.gender for u in User.objects.all())
-        except:
+        except BaseException:
             genders = set()
         context = {
             'votings': votings,
