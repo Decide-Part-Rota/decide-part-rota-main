@@ -142,8 +142,6 @@ def remove_from_census(request):
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({'remove': True}, request), status=ST_401)
     
-
-
 def export_census(request):
     if request.user.is_staff:
         template = loader.get_template("census_export.html")
@@ -156,7 +154,74 @@ def export_census(request):
         template = loader.get_template("result_page.html")
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({'export': True}, request), status=ST_401)
+
+
+def exporting_census(request):
+    if request.user.is_staff:
+        voting_id = request.POST['voting-select']
+        censuss_to_export = Census.objects.all().filter(voting_id=voting_id)
+        voting = Voting.objects.get(id=voting_id)
+        
+        with open('./census/export/export_' + voting.name + '.csv', 'w', encoding='UTF8', newline='') as csvfile:
+            exportwriter = csv.writer(csvfile, delimiter=',')
+            header = ['username', 'first_name', 'last_name', 'email']
+            exportwriter.writerow(header)
+
+            for census in censuss_to_export:
+                voter = User.objects.get(id=census.voter_id)
+                row = [voter.username, voter.first_name, voter.last_name, voter.email]
+                exportwriter.writerow(row)
+
+        
+        
+        messages.success(request, "Census was exported correctly")
+        return HttpResponseRedirect('/census/export/')
+
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({'export': True}, request), status=ST_401)
     
+
+def import_census(request):
+    if request.user.is_staff:
+        template = loader.get_template("census_import.html")
+        votings = Voting.objects.all()
+        context = {
+            'votings': votings,
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({'export': True}, request), status=ST_401)
+    
+
+
+def importing_census(request):
+    if request.user.is_staff:
+        voting_id = request.POST['voting-select']
+        csvfile = request.FILES['csv-file']
+        
+        csvfile.readline()
+        lines = csvfile.readlines()
+
+        for line in lines:
+            fields = line.decode("utf-8").split(',')
+            voter_exists = User.objects.all().filter(username=fields[0],first_name=fields[1],last_name=fields[2],email=fields[3].strip()).exists()
+            if voter_exists:
+                voter = User.objects.get(username=fields[0].strip(),first_name=fields[1].strip(),last_name=fields[2].strip(),email=fields[3].strip())
+                already_exists = Census.objects.all().filter(voting_id=voting_id, voter_id=voter.id).exists()
+                if not already_exists:
+                    census = Census(voting_id=voting_id,voter_id=voter.id)
+                    census.save()
+        messages.success(request, "Census was imported correctly")
+        return HttpResponseRedirect('/census/import/')
+
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({'import': True}, request), status=ST_401)
 
 def census_group(request):
     if request.user.is_staff:
@@ -239,44 +304,6 @@ def census_nationality(request):
         template = loader.get_template("result_page.html")
         messages.error(request, "You must be a staff member to access this page")
 
-def exporting_census(request):
-    if request.user.is_staff:
-        voting_id = request.POST['voting-select']
-        censuss_to_export = Census.objects.all().filter(voting_id=voting_id)
-        voting = Voting.objects.get(id=voting_id)
-        
-        with open('./census/export/export_' + voting.name + '.csv', 'w', encoding='UTF8', newline='') as csvfile:
-            exportwriter = csv.writer(csvfile, delimiter=',')
-            header = ['username', 'first_name', 'last_name', 'email']
-            exportwriter.writerow(header)
-
-            for census in censuss_to_export:
-                voter = User.objects.get(id=census.voter_id)
-                row = [voter.username, voter.first_name, voter.last_name, voter.email]
-                exportwriter.writerow(row)
-
-        
-        
-        messages.success(request, "Census was exported correctly")
-        return HttpResponseRedirect('/census/export/')
-
-    else:
-        template = loader.get_template("result_page.html")
-        messages.error(request, "You must be a staff member to access this page")
-        return HttpResponse(template.render({'export': True}, request), status=ST_401)
-    
-
-def import_census(request):
-    if request.user.is_staff:
-        template = loader.get_template("census_import.html")
-        votings = Voting.objects.all()
-        context = {
-            'votings': votings,
-        }
-        return HttpResponse(template.render(context, request))
-    else:
-        template = loader.get_template("result_page.html")
-        messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({'export': True}, request), status=ST_401)
 
 def add_by_nationality_to_census(request):
@@ -398,31 +425,4 @@ def add_by_age_to_census(request):
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
 
-def importing_census(request):
-    if request.user.is_staff:
-        voting_id = request.POST['voting-select']
-        csvfile = request.FILES['csv-file']
-        
-        csvfile.readline()
-        lines = csvfile.readlines()
-
-        for line in lines:
-            fields = line.decode("utf-8").split(',')
-            voter_exists = User.objects.all().filter(username=fields[0].strip()).exists()
-            if voter_exists:
-                voter = User.objects.get(username=fields[0].strip())
-                already_exists = Census.objects.all().filter(voting_id=voting_id, voter_id=voter.id).exists()
-                if not already_exists:
-                    census = Census(voting_id=voting_id,voter_id=voter.id)
-                    census.save()
-
-        
-        
-        messages.success(request, "Census was imported correctly")
-        return HttpResponseRedirect('/census/import/')
-
-    else:
-        template = loader.get_template("result_page.html")
-        messages.error(request, "You must be a staff member to access this page")
-        return HttpResponse(template.render({'import': True}, request), status=ST_401)
 
