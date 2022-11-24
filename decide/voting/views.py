@@ -25,7 +25,6 @@ class VotacionList(TemplateView):
         }
 
         return render(request, 'voting/listVoting.html', data)
-   
 
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
