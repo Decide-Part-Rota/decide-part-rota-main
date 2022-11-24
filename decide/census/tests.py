@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, AnonymousUser
 
 #Added RequestFactory to handle the request.user.is_staff check in the views
 from django.test import TestCase, RequestFactory
-#Added these Mddleware to simulate the messaging, since RequestFactory doesn't do it
+#Added these Middleware to simulate the messages, since RequestFactory doesn't do it
 from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 
@@ -99,7 +99,10 @@ class CensusExportImport(BaseTestCase):
             self.v = Voting(name='test voting', question=self.q)
             self.v.save()
 
-            self.census = Census(voting_id=self.v.id, voter_id=1)
+            self.voter = User(username='test_user')
+            self.voter.save()
+
+            self.census = Census(voting_id=self.v.id, voter_id=self.voter.id)
             self.census.save()
 
             self.factory = RequestFactory()
@@ -117,6 +120,10 @@ class CensusExportImport(BaseTestCase):
                 os.remove('./census/export/export_' + self.v.name + '.csv')
 
             self.v = None
+            self.voter = None
+            self.factory = None
+            self.sm = None
+            self.mm = None
 
         def test_export_census(self):
             self.user = AnonymousUser()
