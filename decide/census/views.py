@@ -158,6 +158,86 @@ def export_census(request):
         return HttpResponse(template.render({'export': True}, request), status=ST_401)
     
 
+def census_group(request):
+    if request.user.is_staff:
+        template = loader.get_template("census_by_group.html")
+        users = User.objects.all()
+        votings = Voting.objects.all()
+        context = {
+            'votings': votings,
+            'users': users
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({}, request), status=ST_401)
+
+def census_maritialStatus(request):
+    if request.user.is_staff:
+        template = loader.get_template("census_maritialStatus.html")
+        votings = Voting.objects.all()
+        try:
+            maritialStatus = set(u.maritialStatus for u in User.objects.all())
+        except BaseException:
+            maritialStatus = set()
+        context = {
+            'votings': votings,
+            'maritialStatus': maritialStatus,
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({}, request), status=ST_401)
+
+
+def add_by_maritialStatus_to_census(request):
+    template = loader.get_template("result_page.html")
+    if request.user.is_staff:
+        voting_id = request.POST['voting-select']
+        maritialStatus = request.POST['maritialStatus-select']
+        users = User.objects.filter(maritial_status in maritialStatus)
+        for user in users:
+            try:
+                census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user.id)
+            except Census.DoesNotExist:
+                census_by_voting = None
+            status_code=404
+            if census_by_voting == None:
+                census = Census(voting_id=voting_id, voter_id=user.id)
+                census.save()
+                messages.success(request, "User added to the voting correctly")
+                status_code=ST_201
+
+            else:
+                messages.info(request, "The user was already assigned to the voting")
+                status_code = 200
+        
+        
+            return HttpResponse(template.render({}, request), status=status_code)
+
+    else:
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({}, request), status=ST_401)
+
+
+def census_nationality(request):
+    if request.user.is_staff:
+        template = loader.get_template("census_nationality.html")
+        votings = Voting.objects.all()
+        try:
+            nationality = set(u.nationality for u in User.objects.all())
+        except BaseException:
+            nationality = set()
+        context = {
+            'votings': votings,
+            'nationality': nationality,
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
 
 def exporting_census(request):
     if request.user.is_staff:
@@ -198,8 +278,35 @@ def import_census(request):
         template = loader.get_template("result_page.html")
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({'export': True}, request), status=ST_401)
-    
 
+def add_by_nationality_to_census(request):
+    template = loader.get_template("result_page.html")
+    if request.user.is_staff:
+        voting_id = request.POST['voting-select']
+        nation = request.POST['nationality-select']
+        users = User.objects.filter(nationality in nation)
+        for user in users:
+            try:
+                census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user.id)
+            except Census.DoesNotExist:
+                census_by_voting = None
+            status_code=404
+            if census_by_voting == None:
+                census = Census(voting_id=voting_id, voter_id=user.id)
+                census.save()
+                messages.success(request, "User added to the voting correctly")
+                status_code=ST_201
+
+            else:
+                messages.info(request, "The user was already assigned to the voting")
+                status_code = 200
+        
+        
+            return HttpResponse(template.render({}, request), status=status_code)
+            
+    else:
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({}, request), status=ST_401)
 
 def importing_census(request):
     if request.user.is_staff:
@@ -228,4 +335,3 @@ def importing_census(request):
         template = loader.get_template("result_page.html")
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({'import': True}, request), status=ST_401)
-
