@@ -79,6 +79,24 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
     ]
     await ctx.send(', '.join(dice))
 
+@bot.command(name='commands', help='List all commands')
+async def commands(ctx):
+    embed = discord.Embed(title='List of all commands', color=discord.Color.random())
+
+    # !list-votings
+    value = 'Lists all votings following the format [VOTING_ID]: [VOTING_NAME].\nOnly shows public votings {NOT IMPLEMENTED YET}.'
+    embed.add_field(name='!list-votings', value=value, inline=False)
+
+    # !get-voting voting_id
+    value = 'Gets a voting by its ID. Shows the voting name, options and the number for each option.'
+    value += '\n\nThe ID can be found by using the !list-votings command.'
+    value += '\nTo vote, select one of the provided reactions, corresponding to the desired option.'
+    value += '\n WARNING: Only the first vote with be taken and you only have 60 seconds to vote.'
+    value += '\n\nExample: !get-voting 1'
+    embed.add_field(name='!get-voting [VOTING_ID]', value=value, inline=False)
+
+    await ctx.channel.send(embed=embed)
+
 @bot.command(name='list-votings', help='Lists all votings')
 async def list_votings(ctx):
     response = requests.get(base_url + "voting/")
@@ -101,8 +119,12 @@ async def get_voting(ctx, voting_id: int):
     votings = response.json()
 
     def check(r: discord.Reaction, u: Union[discord.Member, discord.User]):  # r = discord.Reaction, u = discord.Member or discord.User.
-        return u.id == ctx.author.id and r.message.channel.id == ctx.channel.id and \
-               str(r.emoji) in emotes
+        # Check the user who sent the reaction is the same as the user who sent the message.
+        # Check the channel the reaction was sent in is the same as the channel the message was sent in.
+        # Check the reaction was sent to the correct message.
+        # Check the emoji used for the reaction is in the list of emojis.
+        return u.id == ctx.author.id and r.message.channel.id == ctx.channel.id and r.message.id == msg.id and \
+               emotes.index(str(r.emoji)) in option_numbers
 
     # Extract the voting, send the message and add reactions
     for voting in votings:
@@ -110,19 +132,24 @@ async def get_voting(ctx, voting_id: int):
         if voting["id"] == voting_id:
             # Creating question message
             embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
-
+            option_numbers = []
             # Adding options
             for option in voting["question"]["options"]:
-                embed.add_field(name=emotes[int(option["number"])], 
-                        value=f'{option["option"]}', 
-                        inline=True)
+                if int(option["number"]) < 11 and int(option["number"]) > 0:
+                    option_numbers.append(int(option["number"]))
+                    embed.add_field(name=emotes[int(option["number"])], 
+                                    value=f'{option["option"]}', 
+                                    inline=True)
+                else:
+                    await ctx.send("Invalid option number")
+                    return
             
             # Sending message
             msg = await ctx.send(embed=embed)
 
             # Adding reactions
-            for i in range(len(voting["question"]["options"])):
-                await msg.add_reaction(emotes[i+1])
+            for num in option_numbers:
+                await msg.add_reaction(emotes[num])
 
             # Waiting for reaction
             try:
@@ -134,6 +161,7 @@ async def get_voting(ctx, voting_id: int):
             else:
                 # at this point, the check has become True and the wait_for has done its work, now we can do ours.
                 # here we are sending some text based on the reaction we detected.
-                return await ctx.send(f"{ctx.author} reacted with a {str(reaction.emoji)}")
+                # TODO POST response
+                return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
 
 bot.run(TOKEN)
