@@ -12,7 +12,7 @@ urlpatterns = [
     path('export/', views.export_census),
     path('export/exporting_census/', views.exporting_census),
     path('import/', views.import_census),
-    path('import/importing_census/', views.importing_census)
+    path('import/importing_census/', views.importing_census),
     path('add/by_group/age', views.census_age),
     path('add/by_group/age/create', views.add_by_age_to_census),
     path('add/by_group/gender', views.census_gender),
