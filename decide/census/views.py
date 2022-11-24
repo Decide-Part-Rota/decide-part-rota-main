@@ -90,14 +90,11 @@ def add_to_census(request):
             census.save()
             messages.success(request, "User added to the voting correctly")
             status_code=ST_201
-
         else:
             messages.info(request, "The user was already assigned to the voting")
             status_code = 200
-        
-        
-        return HttpResponse(template.render({}, request), status=status_code)
 
+        return HttpResponse(template.render({}, request), status=status_code)
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
