@@ -3,18 +3,21 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError 
-from .models import Persona
+from .models import Person
 from django.contrib.auth.forms import UserCreationForm
 
 sexos=[("mujer","Mujer"),("hombre","Hombre"),("otro","Otro")]
+     
+     
 
-class RegisterForm(UserCreationForm):
-    sexo = forms.ChoiceField(choices=sexos, required=True, label="Seleccione su sexo")
-    edad = forms.IntegerField(required=True)
+
+class PersonForm(UserCreationForm):
+    sex = forms.ChoiceField(choices=sexos, required=True, label="Seleccione su sexo")
+    age = forms.IntegerField(required=False)
     
     class Meta:
-     model=User
-     fields=["username","password1","password2","email","sexo","edad"]
+          model=User
+          fields=["username","password1","password2","email","sex","age"]
 
 
 

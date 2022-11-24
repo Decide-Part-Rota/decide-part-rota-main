@@ -14,8 +14,8 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login
 
 from .serializers import UserSerializer
-from .forms import RegisterForm, LoginForm
-from .models import Persona
+from .forms import PersonForm, LoginForm
+from .models import Person
 
 
 class GetUserView(APIView):
@@ -71,36 +71,53 @@ def registerForm(request):
 
 def welcome(request):
     return render(request, 'welcome.html')
-
-
-def register(response):
     
-    form = RegisterForm()
-    if response.method == 'POST':
-        form = RegisterForm(response.POST)
+def register(request):
+    form= PersonForm()
+    if request.method=="POST":
+        form=PersonForm(request.POST)
         if form.is_valid():
-            User = form.save()
-            User.refresh_from_db()
-            User.persona.sexo = form.cleaned_data.get('sexo')
-            User.persona.edad = form.cleaned_data.get('edad')
-            User.save()
+            
+            username = form.cleaned_data.get('username')
+            password1 = form.cleaned_data.get('password1')
+            password2 = form.cleaned_data.get('password2')
+            email= form.cleaned_data.get('email')
+            sex = form.cleaned_data.get('sex')
+            age = form.cleaned_data.get('age')
+            user1=User(username=username,password=password1,email=email)
+            user1.save()
+            person1=Person(user=user1,sex=sex,age=age)
+            person1.save()
+
+            return redirect('/')
+    return render(request,'register.html',{'form':form})   
+
+'''
+def register(request):
+    
+    form = PersonForm(request.POST)
+    if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()
+            user.person.sex = form.cleaned_data.get('sex')
+            user.person.age = form.cleaned_data.get('age')
+            user.save()
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             User = authenticate(username=username, password=password)
-            login(response, User)
+            login(request, User)
 
             return redirect('/')
 
-        else:
-         form = RegisterForm()
+    else:
+         form = PersonForm()
 
     context = {'form':form}
-    return render(response, 'register.html', context)
+    return render(request, 'register.html', context)
 
 
 
 
-'''
 def nuevoUsuario(request):
     print(request.GET)
     username = request.GET["username"]
