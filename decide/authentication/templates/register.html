@@ -10,17 +10,23 @@
 
 <body>
 
-    <h1 class="d-flex justify-content-center" style="margin: 20;">Register form</h1> 
 
-    <div class="d-flex justify-content-center">
 
-        <form action="/" method="POST" style="margin: 10;">{%csrf_token%}
-            <table>
-                {{form.as_table}}
-            </table>
-            <button type="submit" class="btn btn-outline-dark">Submit</button>
-        </form>
-    </div>
+  <h1 class="d-flex justify-content-center" style="margin: 20;">Register form</h1> 
+
+  <div class="d-flex justify-content-center">
+
+      <form method="POST" style="margin: 10;">
+          {%csrf_token%}
+          <table>
+              {{form.as_table}}
+          </table>
+          <button type="submit" class="btn btn-outline-dark">Submit</button>
+      </form>
+  </div>
+
+
+
 
     
 
