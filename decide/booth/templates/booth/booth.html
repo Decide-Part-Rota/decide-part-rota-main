@@ -32,13 +32,12 @@
             <b-form @submit="onSubmitLogin" v-if="signup">
                 <b-form-group label="{% trans "Username" %}" label-for="username">
                     <b-form-input
-                        id="jhytyjt"
+                        id="username"
                         type="text"
                         v-model="form.username"
                         autocomplete="username"
                         required />
                 </b-form-group>
-
                 <b-form-group label="{% trans "Password" %}" label-for="password">
                     <b-form-input
                         id="password"
@@ -48,10 +47,6 @@
                         required />
                 </b-form-group>
                 <b-button type="submit" variant="primary">{% trans "Login" %}</b-button>
-                <div id="questionContainer"></div>
-                <div id="optionContainer"></div>
-
-
             </b-form>
 
             <div id="like-button-root"></div>
@@ -216,5 +211,10 @@
             },
         })
     </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="{% static "crypto/like-button.js" %}"></script>
+
 </body>
 {% endblock %}
