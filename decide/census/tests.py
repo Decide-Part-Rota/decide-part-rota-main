@@ -7,7 +7,7 @@ from .models import Census
 from voting.models import Voting, Question, QuestionOption
 from base import mods
 from base.tests import BaseTestCase
-from .views import add_to_census
+from .views import add_to_census, remove_from_census
 
 from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
@@ -95,6 +95,10 @@ class CensusExportImport(BaseTestCase):
             self.voter = User(username='test_user')
             self.voter.save()
 
+            user_admin = User.objects.get(username="admin")
+            self.census = Census(voting_id=self.v.id, voter_id=user_admin.id)
+            self.census.save()
+
             self.factory = RequestFactory()
             self.sm = SessionMiddleware()
             self.mm = MessageMiddleware()
@@ -133,7 +137,7 @@ class CensusExportImport(BaseTestCase):
             response = add_to_census(request)
             self.assertEqual(response.status_code, 201)
             self.assertEqual(existing_censuss+1, Census.objects.count())
-            Census.objects.get(voting_id=self.v.id, voter_id=self.voter.id)
+            self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.voter.id).exists())
 
             user_admin = User.objects.get(username="admin")
             self.user = user_admin
@@ -144,5 +148,44 @@ class CensusExportImport(BaseTestCase):
             self.mm.process_request(request)
             request.user = self.user
             response = add_to_census(request)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(existing_censuss, Census.objects.count()) 
+
+
+        def test_delete_census_from_gui(self):
+            user_admin = User.objects.get(username="admin")
+
+
+            self.user = AnonymousUser()
+            data = {'voting-select': self.v.id, 'user-select': user_admin.id}
+            request = self.factory.post('/census/remove/remove_from_census/', data, format='json')
+            self.sm.process_request(request)
+            self.mm.process_request(request)
+            request.user = self.user
+            response = remove_from_census(request)
+            self.assertEqual(response.status_code, 401)
+
+            
+            self.user = user_admin
+            existing_censuss = Census.objects.count()
+            data = {'voting-select': self.v.id, 'user-select': user_admin.id}
+            request = self.factory.post('/census/remove/remove_from_census/', data, format='json')
+            self.sm.process_request(request)
+            self.mm.process_request(request)
+            request.user = self.user
+            response = remove_from_census(request)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(existing_censuss-1, Census.objects.count())
+            self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=user_admin.id).exists())
+
+            user_admin = User.objects.get(username="admin")
+            self.user = user_admin
+            existing_censuss = Census.objects.count()
+            data = {'voting-select': self.v.id, 'user-select': user_admin.id}
+            request = self.factory.post('/census/add/add_to_census/', data, format='json')
+            self.sm.process_request(request)
+            self.mm.process_request(request)
+            request.user = self.user
+            response = remove_from_census(request)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(existing_censuss, Census.objects.count()) 
