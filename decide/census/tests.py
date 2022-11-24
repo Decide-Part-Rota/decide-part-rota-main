@@ -17,7 +17,8 @@ from base import mods
 from base.tests import BaseTestCase
 import os
 
-from .views import exporting_census
+from .views import exporting_census, importing_census
+import csv
 
 
 class CensusTestCase(BaseTestCase):
@@ -119,11 +120,16 @@ class CensusExportImport(BaseTestCase):
             if os.path.exists('./census/export/export_' + self.v.name + '.csv'):
                 os.remove('./census/export/export_' + self.v.name + '.csv')
 
+            if os.path.exists('./census/export/import_test.csv'):
+                os.remove('./census/export/import_test.csv')
+                
             self.v = None
             self.voter = None
             self.factory = None
             self.sm = None
             self.mm = None
+
+            self.file = None
 
         def test_export_census(self):
             self.user = AnonymousUser()
@@ -148,3 +154,52 @@ class CensusExportImport(BaseTestCase):
             self.assertTrue(os.path.exists('./census/export/export_' + self.v.name + '.csv'))
             with open('./census/export/export_' + self.v.name + '.csv', 'r') as csvfile:
                 self.assertEqual(2, len(csvfile.readlines()))
+
+             
+        def generate_import_csv(self):
+            #Creates a csv file with a row containing the user admin
+            try:
+                user_admin = User.objects.get(username="admin")
+                self.file = open('./census/export/import_test.csv', 'w', encoding='UTF8')
+                wr = csv.writer(self.file)
+                header = ['username', 'first_name', 'last_name', 'email']
+                wr.writerow(header)
+                row = [user_admin.username,'','','']
+                wr.writerow(row)
+            finally:
+                self.file.close()
+
+            return self.file
+        
+        def test_import_census(self):
+            #Gets the csv file with the user admin to import it into the census created in the set up method
+            import_csv = self.generate_import_csv()
+            file_path = import_csv.name
+
+            f = open(file_path, "r")
+
+            self.user = AnonymousUser()
+            data = {'voting-select': self.v.id, 'csv-file': f}
+            request = self.factory.post('/census/import/importing_census/', data, format='json')
+            self.sm.process_request(request)
+            self.mm.process_request(request)
+            request.user = self.user
+            response = importing_census(request)
+            self.assertEqual(response.status_code, 401)
+
+            f.close()  
+            f = open(file_path, "r")
+
+            user_admin = User.objects.get(username="admin")
+            self.user = user_admin
+            data = {'voting-select': self.v.id, 'csv-file': f}
+            request = self.factory.post('/census/import/importing_census/', data, format='json')
+            self.sm.process_request(request)
+            self.mm.process_request(request)
+            request.user = self.user
+            response = importing_census(request)
+            self.assertEqual(response.status_code, 302)
+            self.assertTrue(Census.objects.all().filter(voting_id=self.v.id,voter_id=user_admin.id).exists())
+            
+
+            f.close()  

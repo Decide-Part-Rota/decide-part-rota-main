@@ -215,9 +215,9 @@ def importing_census(request):
 
         for line in lines:
             fields = line.decode("utf-8").split(',')
-            voter_exists = User.objects.all().filter(username=fields[0],first_name=fields[1],last_name=fields[2],email=fields[3].strip()).exists()
+            voter_exists = User.objects.all().filter(username=fields[0].strip()).exists()
             if voter_exists:
-                voter = User.objects.get(username=fields[0].strip(),first_name=fields[1].strip(),last_name=fields[2].strip(),email=fields[3].strip())
+                voter = User.objects.get(username=fields[0].strip())
                 already_exists = Census.objects.all().filter(voting_id=voting_id, voter_id=voter.id).exists()
                 if not already_exists:
                     census = Census(voting_id=voting_id,voter_id=voter.id)
