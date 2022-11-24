@@ -11,12 +11,22 @@ from django.contrib.auth.hashers import check_password
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, redirect
+
+from django.shortcuts import render,redirect
+from django.contrib.auth import authenticate, login, logout
+
+from .serializers import UserSerializer
+from .forms import PersonForm, LoginForm
+from .models import Person
+
+
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from .serializers import UserSerializer
-from .forms import RegisterForm, LoginForm
+
+
 from django.contrib.auth.decorators import login_required
+
 
 class GetUserView(APIView):
     def post(self, request):
@@ -86,22 +96,31 @@ def loginForm(request):
 
 
 
-def registerForm(request):
-    form = RegisterForm()
 
-    if request.method=='POST':
-        form = UserCreationForm(request.POST)
 
+
+
+
+    
+def register(request):
+    form= PersonForm()
+    if request.method=="POST":
+        form=PersonForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.clean_data['username']
+            
+            username = form.cleaned_data.get('username')
+            password1 = form.cleaned_data.get('password1')
+            password2 = form.cleaned_data.get('password2')
+            email= form.cleaned_data.get('email')
+            sex = form.cleaned_data.get('sex')
+            age = form.cleaned_data.get('age')
+            user1=User(username=username,password=password1,email=email)
+            user1.save()
+            person1=Person(user=user1,sex=sex,age=age)
+            person1.save()
+
             return redirect('/')
-    else:
-        form = UserCreationForm()
-
-    context = {'form':form}
-
-    return render(request, 'register.html', context)
+    return render(request,'register.html',{'form':form})   
 
 
 @login_required(login_url='authentication/accounts/login/')
@@ -109,6 +128,7 @@ def welcome(request):
     usuario = request.user
     print(request.user)
     return render(request, 'welcome.html', {'user':usuario})
+
 
 
 
