@@ -14,5 +14,8 @@ urlpatterns = [
     path('add/by_group/nationality', views.census_nationality),
     path('add/by_group/maritialStatus/add_by_maritialStatus_to_census', views.add_by_maritialStatus_to_census),
     path('add/by_group/nationality/add_by_nationality_to_census', views.add_by_nationality_to_census),
-
+    path('export/', views.export_census),
+    path('export/exporting_census/', views.exporting_census),
+    path('import/', views.import_census),
+    path('import/importing_census/', views.importing_census),
 ]
