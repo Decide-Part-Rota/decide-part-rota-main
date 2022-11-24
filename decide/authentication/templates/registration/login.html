@@ -1,0 +1,38 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Login</title>
+</head>
+
+<body>
+
+    <h1>Iniciar sesión</h1>
+
+
+    <div>
+        <form method="POST">
+            {%csrf_token%}
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th scope="row">Usuario o email </th>
+                        <td><input type="text" name="username"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Contraseña</th>
+                        <td><input type="password" name="password"></td>
+                    </tr>
+                </tbody>
+            </table>
+        
+            <button type="submit" class="btn btn-outline-dark">Iniciar sesión</button>
+            <a href="/authentication/registerForm/">Registrarse</a>
+        </form>
+    </div>
+</body>
+</html>
+
+
+

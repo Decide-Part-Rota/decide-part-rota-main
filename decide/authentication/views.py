@@ -7,15 +7,25 @@ from rest_framework.status import (
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+
 from django.shortcuts import render,redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from .serializers import UserSerializer
 from .forms import PersonForm, LoginForm
 from .models import Person
+
+
+
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+
+
+from django.contrib.auth.decorators import login_required
 
 
 class GetUserView(APIView):
@@ -60,17 +70,37 @@ class RegisterView(APIView):
 
 
 def loginForm(request):
-    form = LoginForm()
+    if request.method=="POST":
+        form = LoginForm(request.POST)
+        if(form.is_valid()):
+            infForm = form.cleaned_data
+            userOrEmail = infForm['usernameOrEmail']
+            passwd= infForm['password']
+            for user in User.objects.all():
+                                                                                #el check password comprueba la pass de la base de datos y que hemos metido
+                if (user.username == userOrEmail or user.email == userOrEmail) and check_password(passwd, user.password):
+                    usernameDb=userOrEmail
+                    if '@' in userOrEmail:
+                        usernameDb=User.objects.get(email=userOrEmail).username
+
+
+
+
+                    return render(request,'welcome.html')
+            msgErrorLogin="Usuario o contraseña incorrectos"
+            return render(request, 'login.html', {'msgErrorLogin':msgErrorLogin, 'loginForm':form})
+    else:
+        form = LoginForm()
     return render(request, 'login.html', {'loginForm':form})
-'''
-def registerForm(request):
-    form = RegisterForm()
 
-    return render(request, 'register.html', {'registerForm':form})
-'''
 
-def welcome(request):
-    return render(request, 'welcome.html')
+
+
+
+
+
+
+
     
 def register(request):
     form= PersonForm()
@@ -92,66 +122,16 @@ def register(request):
             return redirect('/')
     return render(request,'register.html',{'form':form})   
 
-'''
-def register(request):
-    
-    form = PersonForm(request.POST)
-    if form.is_valid():
-            user = form.save()
-            user.refresh_from_db()
-            user.person.sex = form.cleaned_data.get('sex')
-            user.person.age = form.cleaned_data.get('age')
-            user.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            User = authenticate(username=username, password=password)
-            login(request, User)
 
-            return redirect('/')
-
-    else:
-         form = PersonForm()
-
-    context = {'form':form}
-    return render(request, 'register.html', context)
+@login_required(login_url='authentication/accounts/login/')
+def welcome(request):
+    usuario = request.user
+    print(request.user)
+    return render(request, 'welcome.html', {'user':usuario})
 
 
 
 
-def nuevoUsuario(request):
-    print(request.GET)
-    username = request.GET["username"]
-    mail = request.GET["email"]
-    contrasenya = request.GET["password"]
-    sexo = request.GET["sexo"]
-    edad = request.GET["edad"]
-
-    nuevoUsuario = User(username=username, email=mail,password=contrasenya)
-    nuevoUsuario.save()
-
-    nuevaPersona = Persona(usuario=User.objects.get(username=username), sexo=sexo, edad=edad)
-    nuevaPersona.save()
-
-    return render(request, 'welcome.html')
-
-
-
-
-def registerForm(request):
-    form = RegisterForm()
-
-    if request.method=='POST':
-        form = UserCreationForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            username = form.clean_data['username']
-            return redirect('/')
-    else:
-        form = UserCreationForm()
-
-    context = {'form':form}
-
-    return render(request, 'register.html', context)
-'''
-
+def salir(request):
+    logout(request)
+    return redirect('/')

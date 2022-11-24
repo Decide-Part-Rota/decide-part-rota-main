@@ -21,6 +21,9 @@ class PersonForm(UserCreationForm):
 
 
 
+
+
+# No se usa
 class LoginForm(forms.Form):
      username = forms.CharField(label='Usuario',widget=forms.TextInput,required=True)
      password = forms.CharField(label='Contraseña',widget=forms.PasswordInput,required=True)
