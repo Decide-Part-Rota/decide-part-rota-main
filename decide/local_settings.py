@@ -49,6 +49,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'corsheaders',
+    'django_filters',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_swagger',
+    'gateway',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -56,6 +62,7 @@ INSTALLED_APPS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    'base.backends.AuthBackend',
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 ]
