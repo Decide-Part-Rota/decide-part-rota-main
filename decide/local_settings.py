@@ -67,14 +67,19 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend'
 ]
 
-SITE_ID = 2
+SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
+        'APP': {
+            'client_id': '992476478153-6p58v7uvoa569ola5jogpm8nr64fpiop.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        },
         'SCOPE': [
             'profile',
             'email',
