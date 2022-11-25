@@ -115,6 +115,7 @@ def register(request):
             sex = form.cleaned_data.get('sex')
             age = form.cleaned_data.get('age')
             user1=User(username=username,password=password1,email=email)
+            user1.set_password(password1)
             user1.save()
             person1=Person(user=user1,sex=sex,age=age)
             person1.save()
