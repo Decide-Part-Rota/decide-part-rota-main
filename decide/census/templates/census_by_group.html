@@ -12,12 +12,12 @@
 {% block content %}
 <div class="row justify-content-md-center align-items-center">
     <div class="col-sm-8 justify-content-center align-items-center">
-        <h2>Census Groups</h2>
+        <h2>{% trans "Census Groups" %}</h2>
     </div>
 </div>
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
-        <h4>Select which type of grouping you want to apply</h4>
+        <h4>{% trans "Select which type of grouping you want to apply" %}</h4>
     </div>
 </div>
 
@@ -27,16 +27,16 @@
 
 <div class="row justify-content-center submit">
     <div class="col col-lg-2">
-        <a href="maritialStatus"><button type="button" class="btn btn-primary group-button">Maritial Status</button></a>
+        <a href="maritialStatus"><button type="button" class="btn btn-primary group-button">{% trans "Maritial Status" %}</button></a>
     </div>
     <div class="col col-lg-2">
-        <a href="nationality"><button type="button" class="btn btn-primary group-button">Nationality</button></a>
+        <a href="nationality"><button type="button" class="btn btn-primary group-button">{% trans "Nationality" %}</button></a>
     </div>
     <div class="col col-lg-2">
-        <a href="age"><button type="button" class="btn btn-primary group-button">Age</button></a>
+        <a href="age"><button type="button" class="btn btn-primary group-button">{% trans "Age" %}</button></a>
     </div>
     <div class="col col-lg-2">
-        <a href="gender"><button type="button" class="btn btn-primary group-button">Gender</button></a>
+        <a href="gender"><button type="button" class="btn btn-primary group-button">{% trans "Gender" %}</button></a>
     </div>
 </div>
 
@@ -53,6 +53,6 @@
 </ul>
 
 {% endif %}
-
+{% include 'footer.html' %}
 
 {% endblock %}

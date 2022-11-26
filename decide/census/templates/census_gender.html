@@ -12,13 +12,13 @@
 {% block content %}
 <div class="row justify-content-md-center align-items-center">
     <div class="col-sm-8 justify-content-center align-items-center">
-        <h2 class ="justify-content-center align-items-center">Census Groups</h2>
+        <h2 class ="justify-content-center align-items-center">{% trans "Census Groups" %}</h2>
     </div>
 </div>
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
-        <h3>Now you can add groups of voters to an specific voting</h3>
-        <h6>for example, if you select "Male", every user who satisfies that requirement will be added to the chosen voting</h6>
+        <h3>{% trans "Now you can add groups of voters to an specific voting" %}</h3>
+        <h6>{% trans "for example, if you select "Male", every user who satisfies that requirement will be added to the chosen voting" %}</h6>
     </div>
 </div>
 
@@ -30,7 +30,7 @@
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="specificSizeSelect">Choose a voting</label>
+            <label for="specificSizeSelect">{% trans "Choose a voting" %}</label>
             <select class="form-select" id="specificSizeSelect" name="voting-select">
                 {% for voting in votings %}
                 <option value="{{voting.id}}">{{voting}}</option>
@@ -41,7 +41,7 @@
     </div>
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="specificSizeSelect">Choose gender</label>
+            <label for="specificSizeSelect">{% trans "Choose gender" %}</label>
             <select multiple class="form-select" id="specificSizeSelect" name="gender-select">
                 <!--{% for gender in gender %}
                 <option value="{{gender}}">{{gender}}</option>
@@ -70,5 +70,5 @@
 
 {% endif %}
 
-
+{% include 'footer.html' %}
 {% endblock %}
