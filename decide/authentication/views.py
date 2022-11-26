@@ -16,7 +16,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 
 from .serializers import UserSerializer
-from .forms import PersonForm, LoginForm
+from .forms import PersonForm, LoginForm, CompleteForm
 from .models import Person
 
 
@@ -136,3 +136,26 @@ def welcome(request):
 def salir(request):
     logout(request)
     return redirect('/')
+
+
+def complete(request):
+    if request.user.is_authenticated and not Person.objects.filter(user = request.user.id).exists():
+        user = request.user
+        form=CompleteForm
+        
+        if request.method=="POST":
+            form=CompleteForm(request.POST)
+
+            if form.is_valid():
+                sex = form.cleaned_data.get('sex')
+                age = form.cleaned_data.get('age')
+
+                person = Person(user = user, sex = sex, age = age)
+                person.save()
+
+                return redirect('/')
+
+        return render(request,'complete.html',{'form':form})
+    else:
+        return redirect('/')
+
