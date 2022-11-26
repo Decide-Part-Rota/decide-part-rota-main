@@ -11,12 +11,12 @@
 
 {% block content %}
 <div class="title">
-    <h2>Import Census</h2>
+    <h2>{% trans "Import Census" %}</h2>
 </div>
 
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
-        <h4>In this view you can manage the census by importing users participating in a voting</h4>
+        <h4>{% trans "In this view you can manage the census by importing users participating in a voting" %}</h4>
     </div>
 </div>
 
@@ -28,7 +28,7 @@
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="specificSizeSelect">Choose a voting</label>
+            <label for="specificSizeSelect">{% trans "Choose a voting" %}</label>
             <select class="form-select" id="specificSizeSelect" name="voting-select">
                 {% for voting in votings %}
                 <option value="{{voting.id}}">{{voting}}</option>
@@ -39,14 +39,14 @@
     </div>
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="file" class="form-label">Upload a csv file</label>
+            <label for="file" class="form-label">{% trans "Upload a csv file" %}</label>
             <input class="form-control" type="file" id="formFile" name="csv-file" required>
           
         </div>
     </div>
     <div class="row justify-content-center submit">
         <div class="col col-lg-1">
-            <button type="submit" class="btn btn-primary">Import</button>
+            <button type="submit" class="btn btn-primary">{% trans "Import" %}</button>
         </div>
     </div>
 </form>
@@ -65,5 +65,5 @@
 
 {% endif %}
 
-
+{% include 'footer.html' %}
 {% endblock %}
