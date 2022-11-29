@@ -19,6 +19,10 @@ class PersonForm(UserCreationForm):
           model=User
           fields=["username","password1","password2","email","sex","age"]
 
+class CompleteForm(forms.Form):
+    sex = forms.ChoiceField(choices=sexos, required=True)
+    age = forms.IntegerField(required=True)
+
 
 
 
