@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet" href="{% static "reactComponents/styles.css" %}" />
+    
+{% endblock %}
+
+
+{% block content %}
+    
+
+{% endblock %}
+
+
+{% block extrabody %}
+    <div id="navbar"></div>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="{% static "reactComponents/navbar.js" %}"></script>
+{% endblock %}
