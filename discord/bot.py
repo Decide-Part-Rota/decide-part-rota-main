@@ -20,6 +20,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 DEV_MODE = True
 
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
+bot_id = 2
 
 ### --- Functions --- ###
 
@@ -106,7 +107,8 @@ async def list_votings(ctx):
 
     for voting in votings:
         # ! TODO add public check
-        embed.add_field(name=f'{voting["id"]}: {voting["name"]}', value=voting["question"]["desc"], inline=False)
+        if voting["start_date"] != None and voting["end_date"] == None:
+            embed.add_field(name=f'{voting["id"]}: {voting["name"]}', value=voting["question"]["desc"], inline=False)
 
     await ctx.send(embed=embed)
 
@@ -129,7 +131,8 @@ async def get_voting(ctx, voting_id: int):
     # Extract the voting, send the message and add reactions
     for voting in votings:
         # ! TODO add public check
-        if voting["id"] == voting_id:
+        print(voting["start_date"])
+        if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None:
             # Creating question message
             embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
             option_numbers = []
@@ -163,5 +166,15 @@ async def get_voting(ctx, voting_id: int):
                 # here we are sending some text based on the reaction we detected.
                 # TODO POST response
                 return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
+
+        else:
+            await ctx.send("Invalid voting ID or voting is not active")
+
+def post_voting(voting_id, option_id):
+    # TODO
+
+
+
+    return
 
 bot.run(TOKEN)
