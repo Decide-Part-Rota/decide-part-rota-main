@@ -26,4 +26,6 @@ urlpatterns = [
     path('export/exporting_census/', views.exporting_census),
     path('import/', views.import_census),
     path('import/importing_census/', views.importing_census),
+    path('remove/by_group_remove/', views.census_group_remove, name='census_by_group_remove'),
+    path('remove/by_group_remove/maritialStatus_remove', views.census_maritialStatus_remove),
 ]
