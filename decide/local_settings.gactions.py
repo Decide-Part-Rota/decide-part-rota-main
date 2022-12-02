@@ -1,3 +1,8 @@
+GOOGLE_CLIENT_ID = '${{ secrets.GOOGLE_CLIENT_ID }}'
+GOOGLE_SECRET = '${{ secrets.GOOGLE_SECRET }}'
+EMAIL_USER = '${{ secrets.EMAIL_USER }}'
+EMAIL_PASSWORD = '${{ secrets.EMAIL_PASSWORD }}'
+
 ALLOWED_HOSTS = ["*"]
 # Modules in use, commented modules that you won't use
 MODULES = [
