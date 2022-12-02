@@ -19,5 +19,6 @@ urlpatterns = [
     path('salir/', salir, name='salir'),
     path('completeForm/', complete),
 
+
     
 ]
