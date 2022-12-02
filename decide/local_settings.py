@@ -1,3 +1,8 @@
+from decouple import config
+
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_SECRET = config('GOOGLE_SECRET')
+
 ALLOWED_HOSTS = ["*"]
 # Modules in use, commented modules that you won't use
 MODULES = [
@@ -76,8 +81,8 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '992476478153-6p58v7uvoa569ola5jogpm8nr64fpiop.apps.googleusercontent.com',
-            'secret': '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',
+            'client_id': GOOGLE_CLIENT_ID,
+            'secret': GOOGLE_SECRET,
             'key': ''
         },
         'SCOPE': [

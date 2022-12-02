@@ -11,3 +11,4 @@ django-nose==1.4.6
 jsonnet==0.12.1
 django-allauth==0.51.0
 django-verify-email==2.0.3
+python-decouple==3.6
