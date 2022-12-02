@@ -28,7 +28,7 @@ class VisualizerView(TemplateView):
             raise Http404
 
         return context
-      
+
 def graphics(request, voting_id):
     template = loader.get_template("graphics.html")
     votacion = Voting.objects.get(id=voting_id)
