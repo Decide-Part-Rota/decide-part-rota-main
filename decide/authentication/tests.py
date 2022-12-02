@@ -13,9 +13,12 @@ class AuthTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
         mods.mock_query(self.client)
-        u = User(username='voter1')
+        u = User(username='voter1', email="voter1@gmail.com")
         u.set_password('123')
+
         u.save()
+
+        
 
         u2 = User(username='admin')
         u2.set_password('admin')
@@ -128,3 +131,34 @@ class AuthTestCase(APITestCase):
             sorted(list(response.json().keys())),
             ['token', 'user_pk']
         )
+
+
+    # Tests anhadidos
+
+    def test_login_with_email(self):
+        data = {'username': 'voter1@gmail.com', 'password': '123'}
+        response = self.client.post('/authentication/login/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        token = response.json()
+        self.assertTrue(token.get('token'))
+
+    def test_login_with_email_fail(self):
+        data = {'username': 'voter1@gmail.com', 'password': '321'}
+        response = self.client.post('/authentication/login/', data, format='json')
+        self.assertEqual(response.status_code, 400)
+
+        
+
+
+    # No funcionan las llamadas y creo que es por el csrf token que hay que pasarlo cogiendolo de las cookies
+
+    def test_register_with_person_data(self):
+        data = {"username": "voter1", "password1":"123", "password2":"123", "email": "voter1@gmail.com", "sex": "Mujer", "Age": "20"}
+        resp = self.client.post('/authentication/registerForm/', data, format='json')
+        self.assertEquals(resp.status_code, 200)
+
+    def test_register_with_person_data_fail(self):
+        data = {'username': 'voter10', 'password1':'123', 'password2':'321', 'email': 'voter10@gmail.com', 'sex': 'Mujer', 'Age': ''}
+        resp = self.client.post('/authentication/registerForm/', data, format='json')
+        self.assertEquals(resp.status_code, 400)
