@@ -2,6 +2,8 @@ from decouple import config
 
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_SECRET = config('GOOGLE_SECRET')
+EMAIL_USER = config('EMAIL_USER')
+EMAIL_PASSWORD = config('EMAIL_PASSWORD')
 
 ALLOWED_HOSTS = ["*"]
 # Modules in use, commented modules that you won't use
@@ -94,10 +96,11 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'decideprueba@gmail.com'
-EMAIL_HOST_PASSWORD = 'bruyqwejoojbliyn'
+EMAIL_HOST_USER = EMAIL_USER
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 LOGIN_URL='login'

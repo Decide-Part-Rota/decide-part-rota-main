@@ -1,3 +1,8 @@
+GOOGLE_CLIENT_ID = '${{ secrets.GOOGLE_CLIENT_ID }}'
+GOOGLE_SECRET = '${{ secrets.GOOGLE_SECRET }}'
+EMAIL_USER = '${{ secrets.EMAIL_USER }}'
+EMAIL_PASSWORD = '${{ secrets.EMAIL_PASSWORD }}'
+
 ALLOWED_HOSTS = ["*"]
 # Modules in use, commented modules that you won't use
 MODULES = [
@@ -76,8 +81,8 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '992476478153-6p58v7uvoa569ola5jogpm8nr64fpiop.apps.googleusercontent.com',
-            'secret': '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',
+            'client_id': GOOGLE_CLIENT_ID,
+            'secret': GOOGLE_SECRET,
             'key': ''
         },
         'SCOPE': [
@@ -89,10 +94,11 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'decideprueba@gmail.com'
-EMAIL_HOST_PASSWORD = 'bruyqwejoojbliyn'
+EMAIL_HOST_USER = EMAIL_USER
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 LOGIN_URL='login'
