@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_swagger.views import get_swagger_view
 from authentication.views import welcome
-
+from rest_framework.authtoken.views import obtain_auth_token
+from django.contrib.auth import views as auth_views
 
 schema_view = get_swagger_view(title='Decide API')
 
@@ -26,7 +27,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('doc/', schema_view),
     path('gateway/', include('gateway.urls')),
-    path('', welcome)
+    path('verification/', include('verify_email.urls')),
+    path('', welcome),
+
 ]
 
 for module in settings.MODULES:

@@ -18,7 +18,7 @@ from django.contrib.auth import authenticate, login, logout
 from .serializers import UserSerializer
 from .forms import PersonForm, LoginForm, CompleteForm
 from .models import Person
-
+from verify_email.email_handler import send_verification_email
 
 
 from django.contrib.auth import authenticate, login, logout
@@ -114,10 +114,8 @@ def register(request):
             email= form.cleaned_data.get('email')
             sex = form.cleaned_data.get('sex')
             age = form.cleaned_data.get('age')
-            user1=User(username=username,password=password1,email=email)
-            user1.set_password(password1)
-            user1.save()
-            person1=Person(user=user1,sex=sex,age=age)
+            inactive_user = send_verification_email(request, form)
+            person1=Person(user=inactive_user,sex=sex,age=age)
             person1.save()
 
             return redirect('/')

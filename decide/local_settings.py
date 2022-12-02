@@ -1,5 +1,4 @@
 ALLOWED_HOSTS = ["*"]
-
 # Modules in use, commented modules that you won't use
 MODULES = [
     'authentication',
@@ -59,6 +58,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    "verify_email.apps.VerifyEmailConfig",
+
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -88,4 +89,10 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'decideprueba@gmail.com'
+EMAIL_HOST_PASSWORD = 'bruyqwejoojbliyn'
+LOGIN_URL='login'
