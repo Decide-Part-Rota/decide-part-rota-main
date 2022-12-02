@@ -484,3 +484,46 @@ def remove_by_maritialStatus_to_census(request):
         return HttpResponse(template.render({}, request), status=ST_401)
 
 
+def census_nationality_remove(request):
+    if request.user.is_staff:
+        template = loader.get_template("census_nationality_remove.html")
+        votings = Voting.objects.all()
+        try:
+            nationality = set(u.nationality for u in User.objects.all())
+        except BaseException:
+            nationality = set()
+        context = {
+            'votings': votings,
+            'nationality': nationality,
+        }
+        return HttpResponse(template.render(context, request))
+    else:
+        template = loader.get_template("result_page.html")
+        messages.error(request, "You must be a staff member to access this page")
+
+        return HttpResponse(template.render({'export': True}, request), status=ST_401)
+
+def remove_by_nationality_to_census(request):
+    template = loader.get_template("result_page.html")
+    if request.user.is_staff:
+        voting_id = request.POST['voting-select']
+        nation = request.POST['nationality-select']
+        #quizas en este paso haya que hacer otro for. Cuando el atributo este implementado por parte de
+        #los compañeros de Rota 2, mirar como hicimos sugerencias en PGPI
+        users = User.objects.filter(nationality in nation)
+        for user in users:
+            try:
+                census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user.id)
+                census_by_voting.delete()
+            except Census.DoesNotExist:
+                pass
+        
+        census_by_voting.save()
+        messages.success(request, "Users removed to the voting correctly")
+        return HttpResponse(template.render({}, request))
+
+    else:
+        messages.error(request, "You must be a staff member to access this page")
+        return HttpResponse(template.render({}, request), status=ST_401)
+
+
