@@ -114,9 +114,11 @@ def register(request):
             email= form.cleaned_data.get('email')
             sex = form.cleaned_data.get('sex')
             age = form.cleaned_data.get('age')
+            status = form.cleaned_data.get('status')
+            country = form.cleaned_data.get('country')
             user1=User(username=username,password=password1,email=email)
             user1.save()
-            person1=Person(user=user1,sex=sex,age=age)
+            person1=Person(user=user1,sex=sex,age=age,status=status,country=country)
             person1.save()
 
             return redirect('/')
