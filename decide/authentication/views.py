@@ -151,8 +151,10 @@ def complete(request):
             if form.is_valid():
                 sex = form.cleaned_data.get('sex')
                 age = form.cleaned_data.get('age')
+                status = form.cleaned_data.get('status')
+                country = form.cleaned_data.get('country')
 
-                person = Person(user = user, sex = sex, age = age)
+                person = Person(user = user, sex = sex, age = age,status=status,country=country)
                 person.save()
 
                 return redirect('/')

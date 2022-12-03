@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django_countries.fields import CountryField
 
 sexos=[("mujer","Mujer"),("hombre","Hombre"),("otro","Otro")]
-status=[("soltero","Soltero"),("casado","Casado"),("divorciado","Divorciado")]
+status=[("soltero","Soltero"),("conviviente","Conviviente"),("casado","Casado"),("divorciado","Divorciado"),("viudo","Viudo")]
      
 
 
@@ -24,6 +24,8 @@ class PersonForm(UserCreationForm):
 class CompleteForm(forms.Form):
     sex = forms.ChoiceField(choices=sexos, required=True)
     age = forms.IntegerField(required=True)
+    status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
+    country = CountryField().formfield()
 
 
 
