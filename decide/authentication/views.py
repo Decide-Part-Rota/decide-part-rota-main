@@ -114,8 +114,12 @@ def register(request):
             email= form.cleaned_data.get('email')
             sex = form.cleaned_data.get('sex')
             age = form.cleaned_data.get('age')
+            status = form.cleaned_data.get('status')
+            country = form.cleaned_data.get('country')
+
             inactive_user = send_verification_email(request, form)
-            person1=Person(user=inactive_user,sex=sex,age=age)
+            person1=Person(user=inactive_user,sex=sex,age=age,status=status,country=country)
+
             person1.save()
 
             return redirect('/')

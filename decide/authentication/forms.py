@@ -5,19 +5,21 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError 
 from .models import Person
 from django.contrib.auth.forms import UserCreationForm
+from django_countries.fields import CountryField
 
 sexos=[("mujer","Mujer"),("hombre","Hombre"),("otro","Otro")]
-     
+status=[("soltero","Soltero"),("casado","Casado"),("divorciado","Divorciado")]
      
 
 
 class PersonForm(UserCreationForm):
     sex = forms.ChoiceField(choices=sexos, required=True, label="Seleccione su sexo")
     age = forms.IntegerField(required=False)
-    
+    status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
+    country = CountryField().formfield()
     class Meta:
           model=User
-          fields=["username","password1","password2","email","sex","age"]
+          fields=["username","password1","password2","email","sex","age","status","country"]
 
 class CompleteForm(forms.Form):
     sex = forms.ChoiceField(choices=sexos, required=True)
