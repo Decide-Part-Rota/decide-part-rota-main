@@ -6,11 +6,13 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
     env:
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
       EMAIL_USER: ${{ secrets.EMAIL_USER }}
       EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+
 
     services:
       postgres:
