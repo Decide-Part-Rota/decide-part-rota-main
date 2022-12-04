@@ -11,12 +11,12 @@
 
 {% block content %}
 <div class="title">
-    <h2>Manage Census</h2>
+    <h2>{% trans "Manage Census" %}</h2>
 </div>
 
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
-        <h4>In this view you can manage the census by deleting a user from a specific voting</h4>
+        <h4>{% trans "In this view you can manage the census by deleting a user from a specific voting" %}</h4>
     </div>
 </div>
 
@@ -28,7 +28,7 @@
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="specificSizeSelect">Choose a voting</label>
+            <label for="specificSizeSelect">{% trans "Choose a voting" %}</label>
             <select class="form-select" id="specificSizeSelect" name="voting-select">
                 {% for voting in votings %}
                 <option value="{{voting.id}}">{{voting}}</option>
@@ -39,7 +39,7 @@
     </div>
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="specificSizeSelect">Choose a user</label>
+            <label for="specificSizeSelect">{% trans "Choose a user" %}</label>
             <select class="form-select" id="specificSizeSelect" name="user-select">
                 {% for user in users %}
                 <option value="{{user.id}}">{{user}}</option>
@@ -54,6 +54,12 @@
     </div>
 </form>
 
+<div class="row justify-content-center submit">
+    <div class="col col-lg-2">
+        <a href="by_group_remove"><button type="button" class="btn btn-primary group-button">Or Remove By Group</button></a>
+    </div>
+</div>
+
 {% if messages %}
     <ul class="messages">
         {% for message in messages %}
@@ -64,5 +70,5 @@
 
 
 
-
+{% include 'footer.html' %}
 {% endblock %}

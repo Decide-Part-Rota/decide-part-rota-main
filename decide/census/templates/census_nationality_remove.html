@@ -10,13 +10,15 @@
 
 
 {% block content %}
-<div class="title">
-    <h2>{% trans "Import Census" %}</h2>
+<div class="row justify-content-md-center align-items-center">
+    <div class="col-sm-8 justify-content-center align-items-center">
+        <h2 class ="justify-content-center align-items-center">Census Groups Remove</h2>
+    </div>
 </div>
-
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
-        <h4>{% trans "In this view you can manage the census by importing users participating in a voting" %}</h4>
+        <h3>{% trans "Now you can add groups of voters to an specific voting" %}</h3>
+        <h6>for example, if you select Spain, every spanish user will be removed from the chosen voting</h6>
     </div>
 </div>
 
@@ -24,7 +26,7 @@
     
 </div>
 
-<form class="row gx-3 gy-2 align-items-center" action="importing_census/" method="POST" enctype="multipart/form-data">
+<form class="row gx-3 gy-2 align-items-center" action="nationality/add_by_nationality_to_census" method="POST">
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
@@ -34,19 +36,22 @@
                 <option value="{{voting.id}}">{{voting}}</option>
                 {%endfor%}
             </select>
-                
         </div>
     </div>
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="file" class="form-label">{% trans "Upload a csv file" %}</label>
-            <input class="form-control" type="file" id="formFile" name="csv-file" required>
-          
+            <label for="specificSizeSelect">{% trans "Nationality" %}</label>
+            <select multiple class="form-select" id="specificSizeSelect" name="nationality-select">
+                <select multiple class="form-select" id="specificSizeSelect" name="maritialStatus-select">
+                    <!--{% for nation in nationality %}
+                <option value="{{nation}}">{{nation}}</option>
+                    {%endfor%}-->
+                </select>  
         </div>
     </div>
     <div class="row justify-content-center submit">
         <div class="col col-lg-1">
-            <button type="submit" class="btn btn-primary">{% trans "Import" %}</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </div>
 </form>
