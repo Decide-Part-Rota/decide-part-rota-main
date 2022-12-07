@@ -335,7 +335,7 @@ def census_gender(request):
         template = loader.get_template("census_gender.html")
         votings = Voting.objects.all()
         try:
-            genders = set(u.gender for u in User.objects.all())
+            genders = set(u.sex for u in Person.objects.all())
         except BaseException:
             genders = set()
         context = {
@@ -352,25 +352,20 @@ def add_by_gender_to_census(request):
     template = loader.get_template("result_page.html")
     if request.user.is_staff:
         voting_id = request.POST['voting-select']
-        genders = request.POST['gender-select']
-        users = User.objects.filter(gender in genders)
-        for user in users:
-            try:
-                census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user.id)
-            except Census.DoesNotExist:
-                census_by_voting = None
-            status_code=404
-            if census_by_voting == None:
-                census = Census(voting_id=voting_id, voter_id=user.id)
-                census.save()
-                messages.success(request, "User added to the voting correctly")
-                status_code=ST_201
+        genders = request.POST.getlist('gender-select')
+        for g in genders:
+            persons = Person.objects.filter(sex = g)
+            for p in persons:
+                user = User.objects.get(id=p.user.id)
+                try:
+                    census= Census.objects.get(voting_id=voting_id,voter_id=user.id)
+                except Census.DoesNotExist:
+                    census = Census(voting_id=voting_id, voter_id=user.id)
+                    census.save()
+        messages.success(request, "Users added to the voting correctly")
+        status_code = 200
 
-            else:
-                messages.info(request, "The user was already assigned to the voting")
-                status_code = 200
-
-            return HttpResponse(template.render({}, request), status=status_code)
+        return HttpResponse(template.render({}, request), status=status_code)
 
     else:
         messages.error(request, "You must be a staff member to access this page")
@@ -396,25 +391,16 @@ def add_by_age_to_census(request):
         voting_id = request.POST['voting-select']
         minAge = request.POST['minimum-age']
         maxAge = request.POST['maximum-age']
-        users = User.objects.filter(age >= minAge and age<=maxAge)
-        for user in users:
+        persons = Person.objects.filter(age__gte= minAge, age__lte=maxAge)
+        for p in persons:
+            user = User.objects.get(id=p.user.id)
             try:
                 census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user.id)
             except Census.DoesNotExist:
-                census_by_voting = None
-            status_code=404
-            if census_by_voting == None:
                 census = Census(voting_id=voting_id, voter_id=user.id)
                 census.save()
-                messages.success(request, "User added to the voting correctly")
-                status_code=ST_201
-
-            else:
-                messages.info(request, "The user was already assigned to the voting")
-                status_code = 200
-
-
-            return HttpResponse(template.render({}, request), status=status_code)
+        messages.success(request, "Users added to the voting correctly")
+        return HttpResponse(template.render({}, request), status=200)
 
     else:
         messages.error(request, "You must be a staff member to access this page")
