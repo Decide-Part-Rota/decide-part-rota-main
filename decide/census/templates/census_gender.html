@@ -18,7 +18,7 @@
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
         <h3>{% trans "Now you can add groups of voters to an specific voting" %}</h3>
-        <h6>{% trans "for example, if you select "Male", every user who satisfies that requirement will be added to the chosen voting" %}</h6>
+        <h6>{% trans "for example, if you select 'Male', every user who satisfies that requirement will be added to the chosen voting" %}</h6>
     </div>
 </div>
 
@@ -43,10 +43,10 @@
         <div class="col-sm-8">
             <label for="specificSizeSelect">{% trans "Choose gender" %}</label>
             <select multiple class="form-select" id="specificSizeSelect" name="gender-select">
-                <!--{% for gender in gender %}
+                {% for gender in genders %}
                 <option value="{{gender}}">{{gender}}</option>
-                {%endfor%}-->
-            </select>    
+                {%endfor%}
+            </select>     
         </div>
     </div>
     <div class="row justify-content-center submit">
