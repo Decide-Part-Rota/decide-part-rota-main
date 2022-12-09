@@ -26,7 +26,7 @@
     
 </div>
 
-<form class="row gx-3 gy-2 align-items-center" action="nationality/add_by_nationality_to_census" method="POST">
+<form class="row gx-3 gy-2 align-items-center" action="nationality/remove_by_nationality_to_census" method="POST">
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
@@ -41,11 +41,10 @@
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
             <label for="specificSizeSelect">{% trans "Nationality" %}</label>
-            <select multiple class="form-select" id="specificSizeSelect" name="nationality-select">
-                <select multiple class="form-select" id="specificSizeSelect" name="maritialStatus-select">
-                    <!--{% for nation in nationality %}
+            <select class="form-select" id="specificSizeSelect" name="nationality-select">
+                    {% for nation in nationality %}
                 <option value="{{nation}}">{{nation}}</option>
-                    {%endfor%}-->
+                    {%endfor%}
                 </select>  
         </div>
     </div>
