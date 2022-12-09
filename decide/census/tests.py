@@ -126,7 +126,7 @@ class CensusAddRemove(BaseTestCase):
         self.sm = None
         self.mm = None
 
-    def test_create_census_from_gui(self):
+    def test_create_census(self):
         self.user = AnonymousUser()
         data = {'voting-select': self.v.id, 'user-select': self.voter.id}
         request = self.factory.post('/census/add/add_to_census/', data, format='json')
@@ -162,7 +162,7 @@ class CensusAddRemove(BaseTestCase):
         self.assertEqual(existing_censuss, Census.objects.count())
 
 
-    def test_delete_census_from_gui(self):
+    def test_delete_census(self):
         user_admin = User.objects.get(username="admin")
 
         self.user = AnonymousUser()
@@ -313,3 +313,97 @@ class CensusExportImport(BaseTestCase):
         self.assertTrue(Census.objects.all().filter(voting_id=self.v.id,voter_id=user_admin.id).exists())
             
         f.close()
+
+
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+
+
+class ViewTestCase(StaticLiveServerTestCase):
+
+
+    def setUp(self):
+        #Load base test functionality for decide
+        self.base = BaseTestCase()
+        self.base.setUp()
+
+        self.q = Question(desc='test question')
+        self.q.save()
+        for i in range(5):
+            self.opt = QuestionOption(question=self.q, option='option {}'.format(i+1))
+            self.opt.save()
+        self.v = Voting(name='test voting', question=self.q)
+        self.v.save()
+
+        self.voter = User(username='test_user')
+        self.voter.save()
+
+        self.census = Census(voting_id=self.v.id, voter_id=self.voter.id)
+        self.census.save()
+
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+
+        super().setUp()            
+            
+    def tearDown(self):           
+        super().tearDown()
+        self.driver.quit()
+
+        if os.path.exists('./census/export/export_' + self.v.name + '.csv'):
+            os.remove('./census/export/export_' + self.v.name + '.csv')
+
+        if os.path.exists('./census/export/import_test.csv'):
+            os.remove('./census/export/import_test.csv')
+
+        self.q = None
+        self.opt = None
+        self.v = None
+        self.census = None
+        self.voter = None
+
+        self.base.tearDown()
+
+    def test_create_census_from_gui(self):
+        response = self.driver.get(f'{self.live_server_url}/census/add/')
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "You must be a staff member to access this page")
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID,'id_username').send_keys("admin")
+        self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
+
+        response = self.driver.get(f'{self.live_server_url}/census/add/')
+        dropdown = self.driver.find_element(By.ID, "voting-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'test voting']").click()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        dropdown = self.driver.find_element(By.ID, "user-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'admin']").click()
+        element = self.driver.find_element(By.ID, "user-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "user-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "user-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        self.driver.find_element(By.CSS_SELECTOR, ".col > .btn").click()
+
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "User added to the voting correctly")
