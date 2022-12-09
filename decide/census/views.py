@@ -13,6 +13,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template import loader
 from voting.models import Voting
+from voting.views import VotacionList
 from django.contrib.auth.models import User
 from django.contrib import messages
 
@@ -72,7 +73,15 @@ def census_add(request):
         template = loader.get_template("result_page.html")
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
+
+def add_user(request, voting_id):
+
+    censo = Census(voting_id = voting_id, voter_id=request.user.id)
+    censo.save()
     
+    messages.error(request, "You must be a staff member to access this page")
+    return VotacionList.mostrarVotacionesPublicas(request)
+
 
 def add_to_census(request):
     template = loader.get_template("result_page.html")

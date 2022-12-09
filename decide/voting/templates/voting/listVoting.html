@@ -13,9 +13,10 @@
 
 {% block content %}
         
-    <h1 style="text-align:center">Listado de Votaciones</h1>
+    
 
     <body>
+        <h2 style="text-align:center">Listado de Votaciones Públicas</h2>
         
         <table class="table table-bordered">
 
@@ -35,10 +36,11 @@
 
             <tbody>
 
-                {% if votaciones %}
+                {% if votaciones_no_participa %}
+                    <h4 style="text-align:center">Listado de Votaciones en la que no participa</h4>
     
                     <!-- Cojo la colección votaciones que le paso en views.py --> 
-                    {% for votacion in votaciones %} 
+                    {% for votacion in votaciones_no_participa %} 
     
                         <tr>
     
@@ -49,7 +51,63 @@
 
                             <td>
 
-                                <a class="boton-personalizado" href="http://127.0.0.1:8000/booth/{{votacion.id}}">
+                                <a class="boton-personalizado" href="/census/addUser/{{votacion.id}}">
+
+                                    Join census
+
+                                </a>
+
+                            </td>
+    
+                        </tr>
+                    
+                    {% endfor %}
+
+                    
+                {% else %}
+                    
+                <h4 style="text-align:center">Listado de Votaciones que no participa</h4>
+                        
+                {% endif %}
+                        
+            </tbody>
+
+        </table>
+
+        <table class="table table-bordered">
+
+            <thead>
+
+                <tr>
+
+                    <td>ID</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Visibility</td>
+                    <td></td>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% if votaciones_participa %}
+                    <h4 style="text-align:center">Listado de Votaciones en la que participa</h4>
+    
+                    <!-- Cojo la colección votaciones que le paso en views.py --> 
+                    {% for votacion in votaciones_participa %} 
+    
+                        <tr>
+    
+                            <td>{{votacion.id}}</td>
+                            <td>{{votacion.name}}</td>
+                            <td>{{votacion.desc}}</td>
+                            <td>{{votacion.public}}</td>
+
+                            <td>
+
+                                <a class="boton-personalizado" href="/booth/{{votacion.id}}">
 
                                     Go Vote
 
@@ -60,16 +118,17 @@
                         </tr>
                     
                     {% endfor %}
-    
+
+                    
                 {% else %}
                     
-                <h3 style="text-align:center">Listado de Votaciones</h3>
+                <h4 style="text-align:center">Listado de Votaciones que participa</h4>
                         
                 {% endif %}
                         
             </tbody>
 
-        </table>
+        </table> 
                     
     </body>
 

@@ -6,6 +6,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from django.views.generic import TemplateView
 
+from census.models import Census
+
 
 from .models import Question, QuestionOption, Voting
 from .serializers import SimpleVotingSerializer, VotingSerializer
@@ -18,10 +20,21 @@ class VotacionList(TemplateView):
 
     #Método para mostrar un listado de todas las votaciones.
     def mostrarVotacionesPublicas(request):
-        votaciones = Voting.objects.all()
+        censo = Census.objects.filter(voter_id=request.user.id)
+        votaciones_participa = [c.voting_id for c in censo]
+        votaciones_no_participa = []
+        votaciones_participa_aux = []
+        votaciones = Voting.objects.filter(public=True)
+
+        for v in votaciones:
+            if v.id not in votaciones_participa:
+                votaciones_no_participa.append(v)
+            else:
+                votaciones_participa_aux.append(v)  
 
         data={
-            'votaciones': votaciones
+            'votaciones_no_participa': votaciones_no_participa, 
+            'votaciones_participa': votaciones_participa_aux
         }
 
         return render(request, 'voting/listVoting.html', data)
