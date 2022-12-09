@@ -399,5 +399,28 @@ class CensusByGroupStatusAndNationalityTest(BaseTestCase):
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
 
+    def test_add_by_nationality(self):
+        self.user = AnonymousUser()
+        data = {'voting-select': self.v.id, 'nationality-select': 'AD'}
+        request = self.factory.post('add/by_group/nationality/add_by_nationality_to_census', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = add_by_nationality_to_census(request)
+        self.assertEqual(response.status_code, 401)
+
+        user_admin = User.objects.get(username="admin")
+        self.user = user_admin
+        data = {'voting-select': self.v.id, 'nationality-select': 'AD' }
+        request = self.factory.post('add/by_group/nationality/add_by_nationality_to_census', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = add_by_nationality_to_census(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
 
 
