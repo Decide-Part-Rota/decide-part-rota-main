@@ -316,16 +316,12 @@ class CensusExportImport(BaseTestCase):
 
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
-
 class ViewTestCase(StaticLiveServerTestCase):
-
-
     def setUp(self):
         #Load base test functionality for decide
         self.base = BaseTestCase()
@@ -349,7 +345,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         options.headless = True
         self.driver = webdriver.Chrome(options=options)
 
-        super().setUp() 
+        super().setUp()
             
     def tearDown(self):
         super().tearDown()
@@ -442,7 +438,6 @@ class ViewTestCase(StaticLiveServerTestCase):
 
         message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
         self.assertEqual(message, "User removed from the voting correctly")
-
 
 
     def generate_import_csv(self):
