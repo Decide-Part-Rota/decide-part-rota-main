@@ -24,19 +24,19 @@ jobs:
 
       - name: Build the stack
         run: |
-          cd ../docker/
+          cd ../../docker/
           docker compose build
       
       - name: Tags Docker images
         run: |
-          cd ../docker/
+          cd ../../docker/
           docker tag decide_web:latest vicsotber/decide-part-rota-1:decide_web
           docker tag decide_nginx:latest vicsotber/decide-part-rota-1:decide_nginx
           docker tag postgres:10.15-alpine vicsotber/decide-part-rota-1:postgres
 
       - name: Push Docker images
         run: |
-          cd ../docker/
+          cd ../../docker/
           docker push vicsotber/decide-part-rota-1:decide_web
           docker push vicsotber/decide-part-rota-1:decide_nginx
           docker push vicsotber/decide-part-rota-1:postgres
