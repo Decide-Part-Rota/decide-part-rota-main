@@ -666,7 +666,7 @@ class CensusByGroupSelenium(StaticLiveServerTestCase):
         options.headless = True
         self.driver = webdriver.Chrome(options=options)
 
-        super().setUp()  
+        super().setUp()
             
     def tearDown(self):
         super().tearDown()
