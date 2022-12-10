@@ -10,13 +10,15 @@
 
 
 {% block content %}
-<div class="title">
-    <h2>{% trans "Import Census" %}</h2>
+<div class="row justify-content-md-center align-items-center">
+    <div class="col-sm-8 justify-content-center align-items-center">
+        <h2 class ="justify-content-center align-items-center">Census Groups Remove</h2>
+    </div>
 </div>
-
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
-        <h4>{% trans "In this view you can manage the census by importing users participating in a voting" %}</h4>
+        <h3>Now you can remove groups of voters to an specific voting</h3>
+        <h6>for example, if you select Single, every user who satisfies that requirement will be removed from the chosen voting</h6>
     </div>
 </div>
 
@@ -24,12 +26,12 @@
     
 </div>
 
-<form class="row gx-3 gy-2 align-items-center" action="importing_census/" method="POST" enctype="multipart/form-data">
+<form class="row gx-3 gy-2 align-items-center" action="maritialStatus/remove_by_maritialStatus_to_census" method="POST">
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="voting-select">{% trans "Choose a voting" %}</label>
-            <select class="form-select" id="voting-select" name="voting-select">
+            <label for="specificSizeSelect">{% trans "Choose a voting" %}</label>
+            <select class="form-select" id="specificSizeSelect" name="voting-select">
                 {% for voting in votings %}
                 <option value="{{voting.id}}">{{voting}}</option>
                 {%endfor%}
@@ -39,14 +41,17 @@
     </div>
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="file" class="form-label">{% trans "Upload a csv file" %}</label>
-            <input class="form-control" type="file" id="formFile" name="csv-file" required>
-          
+            <label for="specificSizeSelect">{% trans "Maritial Status" %}</label>
+            <select multiple class="form-select" id="specificSizeSelect" name="maritialStatus-select">
+                <!--{% for maritialstatus in maritialStatus %}
+            <option value="{{maritialstatus}}">{{maritialstatus}}</option>
+                {%endfor%}-->
+            </select>    
         </div>
     </div>
     <div class="row justify-content-center submit">
         <div class="col col-lg-1">
-            <button type="submit" class="btn btn-primary">{% trans "Import" %}</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </div>
 </form>

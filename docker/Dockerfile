@@ -10,7 +10,9 @@ RUN pip install ipython
 
 WORKDIR /app
 
-RUN git clone https://github.com/Decide-Part-Rota/decide-part-rota-1.git .
+
+RUN git clone https://github.com/Decide-Part-Rota/decide-part-rota-main.git .
+
 RUN pip install -r requirements.txt
 
 WORKDIR /app/decide
