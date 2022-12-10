@@ -1,7 +1,9 @@
-GOOGLE_CLIENT_ID = '${{ secrets.GOOGLE_CLIENT_ID }}'
-GOOGLE_SECRET = '${{ secrets.GOOGLE_SECRET }}'
-EMAIL_USER = '${{ secrets.EMAIL_USER }}'
-EMAIL_PASSWORD = '${{ secrets.EMAIL_PASSWORD }}'
+from decouple import config
+
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_SECRET = config('GOOGLE_SECRET')
+EMAIL_USER = config('EMAIL_USER')
+EMAIL_PASSWORD = config('EMAIL_PASSWORD')
 
 ALLOWED_HOSTS = ["*"]
 # Modules in use, commented modules that you won't use
@@ -34,16 +36,15 @@ APIS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'decide',
+        'NAME': 'postgres',
         'USER': 'decide',
-        'PASSWORD':'decide',
-        'HOST': 'localhost',
+        'PASSWORD': 'decide',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
 
 # number of bits for the key, all auths should use the same number of bits
-
 KEYBITS = 256
 
 INSTALLED_APPS = [
@@ -103,4 +104,3 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = EMAIL_USER
 EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 LOGIN_URL='login'
-
