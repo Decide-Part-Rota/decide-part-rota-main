@@ -25,7 +25,7 @@ jobs:
       - name: Build the stack
         run: |
           cd docker
-          docker compose up
+          docker compose build
       
       - name: Tags Docker images
         run: |
