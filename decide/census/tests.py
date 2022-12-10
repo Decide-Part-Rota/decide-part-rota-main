@@ -349,9 +349,9 @@ class ViewTestCase(StaticLiveServerTestCase):
         options.headless = True
         self.driver = webdriver.Chrome(options=options)
 
-        super().setUp()       
+        super().setUp() 
             
-    def tearDown(self): 
+    def tearDown(self):
         super().tearDown()
         self.driver.quit()
 
@@ -456,7 +456,7 @@ class ViewTestCase(StaticLiveServerTestCase):
             row = [user_admin.username,'','','']
             wr.writerow(row)
         finally:
-            self.file.close()    
+            self.file.close()
 
 
     def test_import_census_from_gui(self):
