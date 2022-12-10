@@ -2,6 +2,7 @@ import random
 
 #Added AnonymousUser
 from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 #Added RequestFactory to handle the request.user.is_staff check in the views
 from django.test import RequestFactory
@@ -22,7 +23,13 @@ import os
 from .views import exporting_census, importing_census, add_to_census, remove_from_census, add_by_age_to_census, add_by_gender_to_census
 import csv
 
-
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 class CensusTestCase(BaseTestCase):
 
@@ -421,5 +428,119 @@ class CensusByGroup(BaseTestCase):
         self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
+
+class CensusByGroupSelenium(StaticLiveServerTestCase):
+    def setUp(self):
+        #Load base test functionality for decide
+        self.base = BaseTestCase()
+        self.base.setUp()
+        
+        self.q = Question(desc='Descripcion')
+        self.q.save()
+        
+        self.opt1 = QuestionOption(question=self.q, option='opcion 1')
+        self.opt1.save()
+        self.opt2 = QuestionOption(question=self.q, option='opcion 2')
+        self.opt2.save()
+
+        self.v = Voting(name='VotacionTestCensusByGroup', question=self.q)
+        self.v.save()
+
+        self.u1 = User(username="hombre1")
+        self.u2 = User(username="hombre2")
+        self.u3 = User(username="mujer")
+        self.u4 = User(username="indefinido")
+
+        self.u1.save()
+        self.u2.save()
+        self.u3.save()
+        self.u4.save()
+
+        self.p1 = Person(user=self.u1, sex="Hombre", age="20")
+        self.p2 = Person(user=self.u2, sex="Hombre", age="30")
+        self.p3 = Person(user=self.u3, sex="Mujer", age="40")
+        self.p4 = Person(user=self.u4, sex="Indefinido", age="50")
+
+        self.p1.save()
+        self.p2.save()
+        self.p3.save()
+        self.p4.save()
+
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+
+        super().setUp()            
+            
+    def tearDown(self):           
+        super().tearDown()
+        self.driver.quit()
+
+        self.q = None
+        self.opt = None
+        self.v = None
+
+        self.u1 = None
+        self.u2 = None
+        self.u3 = None
+        self.u4 = None
+
+        self.p1 = None
+        self.p2 = None
+        self.p3 = None
+        self.p4 = None
+
+        self.base.tearDown()
+
+    def test_addByAgeSelenium(self):
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/census/add')
+        self.driver.find_element(By.CSS_SELECTOR, "html").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(3) .btn").click()
+        dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
+        dropdown.find_element(By.XPATH, "//option[. = 'VotacionTestCensusByGroup']").click()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        self.driver.find_element(By.NAME, "minimum-age").click()
+        self.driver.find_element(By.NAME, "minimum-age").send_keys("30")
+        self.driver.find_element(By.NAME, "maximum-age").click()
+        self.driver.find_element(By.NAME, "maximum-age").send_keys("40")
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
+    
+    def test_addBySexSelenium(self):
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/census/add')
+        self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(4) .btn").click()
+        dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
+        dropdown.find_element(By.XPATH, "//option[. = 'VotacionTestCensusByGroup']").click()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        dropdown = self.driver.find_element(By.NAME, "gender-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'Hombre']").click()
+        dropdown = self.driver.find_element(By.NAME, "gender-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'Mujer']").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
 
 
