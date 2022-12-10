@@ -12,13 +12,14 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from rest_framework.test import APIClient
 
 from .models import Census
+from authentication.models import Person
 #Added the necessary models
 from voting.models import Voting, Question, QuestionOption
 from base import mods
 from base.tests import BaseTestCase
 import os
 
-from .views import exporting_census, importing_census, add_to_census, remove_from_census
+from .views import exporting_census, importing_census, add_to_census, remove_from_census, add_by_age_to_census, add_by_gender_to_census
 import csv
 
 
@@ -520,6 +521,112 @@ class ViewTestCase(StaticLiveServerTestCase):
         message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
         self.assertEqual(message, "Census was exported correctly")
         self.assertTrue(os.path.exists('./census/export/export_' + self.v.name + '.csv'))
+
+class CensusByGroup(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.q = Question(desc='Descripcion')
+        self.q.save()
+
+        self.opt1 = QuestionOption(question=self.q, option='opcion 1')
+        self.opt1.save()
+        self.opt2 = QuestionOption(question=self.q, option='opcion 2')
+        self.opt2.save()
+
+        self.v = Voting(name='VotacionTestCensusByGroup', question=self.q)
+        self.v.save()
+
+        self.u1 = User(username="hombre1")
+        self.u2 = User(username="hombre2")
+        self.u3 = User(username="mujer")
+        self.u4 = User(username="indefinido")
+
+        self.u1.save()
+        self.u2.save()
+        self.u3.save()
+        self.u4.save()
+
+        self.p1 = Person(user=self.u1, sex="Hombre", age="20")
+        self.p2 = Person(user=self.u2, sex="Hombre", age="30")
+        self.p3 = Person(user=self.u3, sex="Mujer", age="40")
+        self.p4 = Person(user=self.u4, sex="Indefinido", age="50")
+
+        self.p1.save()
+        self.p2.save()
+        self.p3.save()
+        self.p4.save()
+
+        self.factory = RequestFactory()
+        self.sm = SessionMiddleware()
+        self.mm = MessageMiddleware()
+
+    def tearDown(self):
+        super().tearDown()
+        self.q = None
+        self.opt = None
+        self.v = None
+
+        self.u1 = None
+        self.u2 = None
+        self.u3 = None
+        self.u4 = None
+
+        self.p1 = None
+        self.p2 = None
+        self.p3 = None
+        self.p4 = None
+
+        self.factory = None
+        self.sm = None
+        self.mm = None
+
+    def test_add_by_age(self):
+        self.user = AnonymousUser()
+        data = {'voting-select': self.v.id, 'minimum-age': 30, 'maximum-age':40}
+        request = self.factory.post('add/by_group/age/create', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = add_by_age_to_census(request)
+        self.assertEqual(response.status_code, 401)
+
+        user_admin = User.objects.get(username="admin")
+        self.user = user_admin
+        data = {'voting-select': self.v.id, 'minimum-age': 30, 'maximum-age':40}
+        request = self.factory.post('add/by_group/age/create', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = add_by_age_to_census(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
+
+    def test_add_by_gender(self):
+        self.user = AnonymousUser()
+        data = {'voting-select': self.v.id, 'gender-select': ["Mujer", "Indefinido"]}
+        request = self.factory.post('add/by_group/gender/create', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = add_by_gender_to_census(request)
+        self.assertEqual(response.status_code, 401)
+
+        user_admin = User.objects.get(username="admin")
+        self.user = user_admin
+        data = {'voting-select': self.v.id, 'gender-select': ["Mujer", "Indefinido"]}
+        request = self.factory.post('add/by_group/age/create', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = add_by_gender_to_census(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
 
 class CensusByGroupSelenium(StaticLiveServerTestCase):
     def setUp(self):
