@@ -321,9 +321,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 class ViewTestCase(StaticLiveServerTestCase):
     def setUp(self):
@@ -669,9 +666,9 @@ class CensusByGroupSelenium(StaticLiveServerTestCase):
         options.headless = True
         self.driver = webdriver.Chrome(options=options)
 
-        super().setUp()            
+        super().setUp()         
             
-    def tearDown(self):           
+    def tearDown(self):       
         super().tearDown()
         self.driver.quit()
 
