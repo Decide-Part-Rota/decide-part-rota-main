@@ -2,7 +2,6 @@ import random
 
 #Added AnonymousUser
 from django.contrib.auth.models import User, AnonymousUser
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 #Added RequestFactory to handle the request.user.is_staff check in the views
 from django.test import RequestFactory
@@ -15,21 +14,14 @@ from rest_framework.test import APIClient
 from .models import Census
 #Added the necessary models
 from voting.models import Voting, Question, QuestionOption
-from authentication.models import Person
 from base import mods
 from base.tests import BaseTestCase
 import os
 
-from .views import exporting_census, importing_census, add_to_census, remove_from_census, add_by_age_to_census, add_by_gender_to_census
+from .views import exporting_census, importing_census, add_to_census, remove_from_census
 import csv
 
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 
 class CensusTestCase(BaseTestCase):
 
@@ -134,7 +126,7 @@ class CensusAddRemove(BaseTestCase):
         self.sm = None
         self.mm = None
 
-    def test_create_census_from_gui(self):
+    def test_create_census(self):
         self.user = AnonymousUser()
         data = {'voting-select': self.v.id, 'user-select': self.voter.id}
         request = self.factory.post('/census/add/add_to_census/', data, format='json')
@@ -170,7 +162,7 @@ class CensusAddRemove(BaseTestCase):
         self.assertEqual(existing_censuss, Census.objects.count())
 
 
-    def test_delete_census_from_gui(self):
+    def test_delete_census(self):
         user_admin = User.objects.get(username="admin")
 
         self.user = AnonymousUser()
@@ -323,111 +315,211 @@ class CensusExportImport(BaseTestCase):
         f.close()
 
 
-class CensusByGroup(BaseTestCase):
-    def setUp(self):
-        super().setUp()
-        self.q = Question(desc='Descripcion')
-        self.q.save()
-        
-        self.opt1 = QuestionOption(question=self.q, option='opcion 1')
-        self.opt1.save()
-        self.opt2 = QuestionOption(question=self.q, option='opcion 2')
-        self.opt2.save()
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
-        self.v = Voting(name='VotacionTestCensusByGroup', question=self.q)
+class ViewTestCase(StaticLiveServerTestCase):
+    def setUp(self):
+        #Load base test functionality for decide
+        self.base = BaseTestCase()
+        self.base.setUp()
+
+        self.q = Question(desc='test question')
+        self.q.save()
+        for i in range(5):
+            self.opt = QuestionOption(question=self.q, option='option {}'.format(i+1))
+            self.opt.save()
+        self.v = Voting(name='test voting', question=self.q)
         self.v.save()
 
-        self.u1 = User(username="hombre1")
-        self.u2 = User(username="hombre2")
-        self.u3 = User(username="mujer")
-        self.u4 = User(username="indefinido")
+        self.voter = User(username='test_user')
+        self.voter.save()
 
-        self.u1.save()
-        self.u2.save()
-        self.u3.save()
-        self.u4.save()
+        self.census = Census(voting_id=self.v.id, voter_id=self.voter.id)
+        self.census.save()
 
-        self.p1 = Person(user=self.u1, sex="Hombre", age="20")
-        self.p2 = Person(user=self.u2, sex="Hombre", age="30")
-        self.p3 = Person(user=self.u3, sex="Mujer", age="40")
-        self.p4 = Person(user=self.u4, sex="Indefinido", age="50")
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
 
-        self.p1.save()
-        self.p2.save()
-        self.p3.save()
-        self.p4.save()
-        
-        self.factory = RequestFactory()
-        self.sm = SessionMiddleware()
-        self.mm = MessageMiddleware()
-
+        super().setUp()
+            
     def tearDown(self):
         super().tearDown()
+        self.driver.quit()
+
+        if os.path.exists('./census/export/export_' + self.v.name + '.csv'):
+            os.remove('./census/export/export_' + self.v.name + '.csv')
+
+        if os.path.exists('./census/export/import_test.csv'):
+            os.remove('./census/export/import_test.csv')
+
         self.q = None
         self.opt = None
         self.v = None
+        self.census = None
+        self.voter = None
 
-        self.u1 = None
-        self.u2 = None
-        self.u3 = None
-        self.u4 = None
+        self.base.tearDown()
 
-        self.p1 = None
-        self.p2 = None
-        self.p3 = None
-        self.p4 = None
+    def test_create_census_from_gui(self):
+        self.driver.get(f'{self.live_server_url}/census/add/')
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "You must be a staff member to access this page")
 
-        self.factory = None
-        self.sm = None
-        self.mm = None
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID,'id_username').send_keys("admin")
+        self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
 
-    def test_add_by_age(self):
-        self.user = AnonymousUser()
-        data = {'voting-select': self.v.id, 'minimum-age': 30, 'maximum-age':40}
-        request = self.factory.post('add/by_group/age/create', data, format='json')
-        self.sm.process_request(request)
-        self.mm.process_request(request)
-        request.user = self.user
-        response = add_by_age_to_census(request)
-        self.assertEqual(response.status_code, 401)
+        self.driver.get(f'{self.live_server_url}/census/add/')
+        dropdown = self.driver.find_element(By.ID, "voting-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'test voting']").click()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        dropdown = self.driver.find_element(By.ID, "user-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'admin']").click()
+        element = self.driver.find_element(By.ID, "user-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "user-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "user-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        self.driver.find_element(By.CSS_SELECTOR, ".col > .btn").click()
 
-        user_admin = User.objects.get(username="admin")
-        self.user = user_admin
-        data = {'voting-select': self.v.id, 'minimum-age': 30, 'maximum-age':40}
-        request = self.factory.post('add/by_group/age/create', data, format='json')
-        self.sm.process_request(request)
-        self.mm.process_request(request)
-        request.user = self.user
-        response = add_by_age_to_census(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
-        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
-        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
-        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "User added to the voting correctly")
 
-    def test_add_by_gender(self):
-        self.user = AnonymousUser()
-        data = {'voting-select': self.v.id, 'gender-select': ["Mujer", "Indefinido"]}
-        request = self.factory.post('add/by_group/gender/create', data, format='json')
-        self.sm.process_request(request)
-        self.mm.process_request(request)
-        request.user = self.user
-        response = add_by_gender_to_census(request)
-        self.assertEqual(response.status_code, 401)
+    def test_delete_census_from_gui(self):
+        self.driver.get(f'{self.live_server_url}/census/remove/')
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "You must be a staff member to access this page")
 
-        user_admin = User.objects.get(username="admin")
-        self.user = user_admin
-        data = {'voting-select': self.v.id, 'gender-select': ["Mujer", "Indefinido"]}
-        request = self.factory.post('add/by_group/age/create', data, format='json')
-        self.sm.process_request(request)
-        self.mm.process_request(request)
-        request.user = self.user
-        response = add_by_gender_to_census(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
-        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
-        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
-        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID,'id_username').send_keys("admin")
+        self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
+
+        self.driver.get(f'{self.live_server_url}/census/remove/')
+        dropdown = self.driver.find_element(By.ID, "voting-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'test voting']").click()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        dropdown = self.driver.find_element(By.ID, "user-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'test_user']").click()
+        element = self.driver.find_element(By.ID, "user-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "user-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "user-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        self.driver.find_element(By.CSS_SELECTOR, ".col > .btn").click()
+
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "User removed from the voting correctly")
+
+
+    def generate_import_csv(self):
+        #Creates a csv file with a row containing the user admin
+        try:
+            user_admin = User.objects.get(username="admin")
+            self.file = open('./census/export/import_test.csv', 'w', encoding='UTF8')
+            wr = csv.writer(self.file)
+            header = ['username', 'first_name', 'last_name', 'email']
+            wr.writerow(header)
+            row = [user_admin.username,'','','']
+            wr.writerow(row)
+        finally:
+            self.file.close()
+
+
+    def test_import_census_from_gui(self):
+        self.generate_import_csv()
+
+        self.driver.get(f'{self.live_server_url}/census/import/')
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "You must be a staff member to access this page")
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID,'id_username').send_keys("admin")
+        self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
+
+        self.driver.get(f'{self.live_server_url}/census/import/')
+        dropdown = self.driver.find_element(By.ID, "voting-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'test voting']").click()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+
+        actions = ActionChains(self.driver)
+        actions.move_to_element(self.driver.find_element(By.NAME, "csv-file")).click().perform()
+        self.driver.find_element(By.NAME, "csv-file").send_keys(os.getcwd() + "/census/export/import_test.csv")
+
+        self.driver.find_element(By.CSS_SELECTOR, ".col > .btn").click()
+
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "Census was imported correctly")
+
+
+    def test_export_census_from_gui(self):
+        self.generate_import_csv()
+
+        self.driver.get(f'{self.live_server_url}/census/export/')
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "You must be a staff member to access this page")
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID,'id_username').send_keys("admin")
+        self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
+
+        self.driver.get(f'{self.live_server_url}/census/export/')
+        dropdown = self.driver.find_element(By.ID, "voting-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'test voting']").click()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+
+        self.driver.find_element(By.CSS_SELECTOR, ".col > .btn").click()
+
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "Census was exported correctly")
+        self.assertTrue(os.path.exists('./census/export/export_' + self.v.name + '.csv'))
 
 class CensusByGroupSelenium(StaticLiveServerTestCase):
     def setUp(self):
@@ -542,5 +634,3 @@ class CensusByGroupSelenium(StaticLiveServerTestCase):
         dropdown.find_element(By.XPATH, "//option[. = 'Mujer']").click()
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
-
-
