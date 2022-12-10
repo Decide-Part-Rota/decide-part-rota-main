@@ -1,4 +1,4 @@
-*{margin: 0; padding: 0;}
+* { margin: 0; padding: 0; }
 
 body{
     background: #fffffa;
@@ -17,19 +17,19 @@ header{
     margin: auto;
     overflow: hidden;
 }
-header .logo{
+header .logo {
     color: #f2f2f2;
     font-size: 50px;
     line-height: 200px;
-    float:left;
+    float: left;
 }
 
-header nav{
-    float:right;
+header nav {
+    float: right;
     line-height: 200px;
 }
 
-header nav a{
+header nav a {
     display: inline-block;
     color:#fff;
     text-decoration: none;
@@ -43,7 +43,7 @@ header nav a{
     border-radius: 50px;
 }
 
-header nav a:hover{
+header nav a:hover {
     background: blue;
     border-radius: 50px;
 }
