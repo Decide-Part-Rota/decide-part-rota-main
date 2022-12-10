@@ -316,18 +316,12 @@ class CensusExportImport(BaseTestCase):
 
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
-
 class ViewTestCase(StaticLiveServerTestCase):
-
-
     def setUp(self):
         #Load base test functionality for decide
         self.base = BaseTestCase()
@@ -351,9 +345,9 @@ class ViewTestCase(StaticLiveServerTestCase):
         options.headless = True
         self.driver = webdriver.Chrome(options=options)
 
-        super().setUp()            
+        super().setUp()
             
-    def tearDown(self):           
+    def tearDown(self):
         super().tearDown()
         self.driver.quit()
 
@@ -372,7 +366,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.base.tearDown()
 
     def test_create_census_from_gui(self):
-        response = self.driver.get(f'{self.live_server_url}/census/add/')
+        self.driver.get(f'{self.live_server_url}/census/add/')
         message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
         self.assertEqual(message, "You must be a staff member to access this page")
 
@@ -380,7 +374,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID,'id_username').send_keys("admin")
         self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
 
-        response = self.driver.get(f'{self.live_server_url}/census/add/')
+        self.driver.get(f'{self.live_server_url}/census/add/')
         dropdown = self.driver.find_element(By.ID, "voting-select")
         dropdown.find_element(By.XPATH, "//option[. = 'test voting']").click()
         element = self.driver.find_element(By.ID, "voting-select")
@@ -409,7 +403,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.assertEqual(message, "User added to the voting correctly")
 
     def test_delete_census_from_gui(self):
-        response = self.driver.get(f'{self.live_server_url}/census/remove/')
+        self.driver.get(f'{self.live_server_url}/census/remove/')
         message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
         self.assertEqual(message, "You must be a staff member to access this page")
 
@@ -417,7 +411,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID,'id_username').send_keys("admin")
         self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
 
-        response = self.driver.get(f'{self.live_server_url}/census/remove/')
+        self.driver.get(f'{self.live_server_url}/census/remove/')
         dropdown = self.driver.find_element(By.ID, "voting-select")
         dropdown.find_element(By.XPATH, "//option[. = 'test voting']").click()
         element = self.driver.find_element(By.ID, "voting-select")
@@ -444,3 +438,82 @@ class ViewTestCase(StaticLiveServerTestCase):
 
         message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
         self.assertEqual(message, "User removed from the voting correctly")
+
+
+    def generate_import_csv(self):
+        #Creates a csv file with a row containing the user admin
+        try:
+            user_admin = User.objects.get(username="admin")
+            self.file = open('./census/export/import_test.csv', 'w', encoding='UTF8')
+            wr = csv.writer(self.file)
+            header = ['username', 'first_name', 'last_name', 'email']
+            wr.writerow(header)
+            row = [user_admin.username,'','','']
+            wr.writerow(row)
+        finally:
+            self.file.close()
+
+
+    def test_import_census_from_gui(self):
+        self.generate_import_csv()
+
+        self.driver.get(f'{self.live_server_url}/census/import/')
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "You must be a staff member to access this page")
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID,'id_username').send_keys("admin")
+        self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
+
+        self.driver.get(f'{self.live_server_url}/census/import/')
+        dropdown = self.driver.find_element(By.ID, "voting-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'test voting']").click()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+
+        actions = ActionChains(self.driver)
+        actions.move_to_element(self.driver.find_element(By.NAME, "csv-file")).click().perform()
+        self.driver.find_element(By.NAME, "csv-file").send_keys(os.getcwd() + "/census/export/import_test.csv")
+
+        self.driver.find_element(By.CSS_SELECTOR, ".col > .btn").click()
+
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "Census was imported correctly")
+
+
+    def test_export_census_from_gui(self):
+        self.generate_import_csv()
+
+        self.driver.get(f'{self.live_server_url}/census/export/')
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "You must be a staff member to access this page")
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID,'id_username').send_keys("admin")
+        self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
+
+        self.driver.get(f'{self.live_server_url}/census/export/')
+        dropdown = self.driver.find_element(By.ID, "voting-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'test voting']").click()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "voting-select")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+
+        self.driver.find_element(By.CSS_SELECTOR, ".col > .btn").click()
+
+        message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
+        self.assertEqual(message, "Census was exported correctly")
+        self.assertTrue(os.path.exists('./census/export/export_' + self.v.name + '.csv'))
