@@ -1,42 +1,46 @@
 name: Publish Docker image
 
-on: [push]
+on:
+  workflow_run:
+    workflows: [Python application]
+    types: [completed]
 
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
-      
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: vicsotber/decide-part-rota-1
+  on-success:
+    push_to_registry:
+      name: Push Docker image to Docker Hub
+      runs-on: ubuntu-latest
+      steps:
+        - name: Check out the repo
+          uses: actions/checkout@v3
+        
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v2
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+        
+        - name: Extract metadata (tags, labels) for Docker
+          id: meta
+          uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+          with:
+            images: vicsotber/decide-part-rota-1
 
-      - name: Build the stack
-        run: |
-          cd docker
-          docker compose build
-      
-      - name: Tags Docker images
-        run: |
-          cd docker
-          docker tag decide_web:latest vicsotber/decide-part-rota-1:decide_web
-          docker tag decide_nginx:latest vicsotber/decide-part-rota-1:decide_nginx
-          docker tag postgres:10.15-alpine vicsotber/decide-part-rota-1:postgres
+        - name: Build the stack
+          run: |
+            cd docker
+            docker compose build
+        
+        - name: Tags Docker images
+          run: |
+            cd docker
+            docker tag decide_web:latest vicsotber/decide-part-rota-1:decide_web
+            docker tag decide_nginx:latest vicsotber/decide-part-rota-1:decide_nginx
+            docker tag postgres:10.15-alpine vicsotber/decide-part-rota-1:postgres
 
-      - name: Push Docker images
-        run: |
-          cd docker
-          docker push vicsotber/decide-part-rota-1:decide_web
-          docker push vicsotber/decide-part-rota-1:decide_nginx
-          docker push vicsotber/decide-part-rota-1:postgres
+        - name: Push Docker images
+          run: |
+            cd docker
+            docker push vicsotber/decide-part-rota-1:decide_web
+            docker push vicsotber/decide-part-rota-1:decide_nginx
+            docker push vicsotber/decide-part-rota-1:postgres
