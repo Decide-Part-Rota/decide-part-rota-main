@@ -6,13 +6,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
-    env:
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
-      EMAIL_USER: ${{ secrets.EMAIL_USER }}
-      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-
 
     services:
       postgres:
@@ -49,23 +42,6 @@ jobs:
         cd decide
         coverage run --branch --source=. ./manage.py test  --keepdb 
         coverage xml 
-    - name: Run Load Test
-      uses:  Decide-Part-Rota/decide-part-rota-1/loadtest
-      with:
-        LOCUSTFILE: "locustfile.py"
-        URL:  "http://localhost:8000"
-        USERS: "100"
-        RATE: "5"
-        RUNTIME: "15s"
-      run: |
-        cd ..
-        cd decide
-        python manage.py runserver
-        cd ..
-        cd loadtest
-        python gen_census.py
-        locust Visualizer
-        locust Voters
     - name: Codacy Coverage Reporter
       uses: codacy/codacy-coverage-reporter-action@v1
       with:

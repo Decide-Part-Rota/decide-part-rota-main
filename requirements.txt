@@ -9,3 +9,8 @@ django-rest-swagger==2.2.0
 coverage==4.5.2
 django-nose==1.4.6
 jsonnet==0.12.1
+selenium
+django-allauth==0.51.0
+django-verify-email==2.0.3
+python-decouple==3.6
+django-countries==7.4.2

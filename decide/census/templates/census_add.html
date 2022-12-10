@@ -28,8 +28,8 @@
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="specificSizeSelect">{% trans "Choose a voting" %}</label>
-            <select class="form-select" id="specificSizeSelect" name="voting-select">
+            <label for="voting-select">{% trans "Choose a voting" %}</label>
+            <select class="form-select" id="voting-select" name="voting-select">
                 {% for voting in votings %}
                 <option value="{{voting.id}}">{{voting}}</option>
                 {%endfor%}
@@ -39,8 +39,8 @@
     </div>
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="specificSizeSelect">{% trans "Choose a user" %}</label>
-            <select class="form-select" id="specificSizeSelect" name="user-select">
+            <label for="user-select">{% trans "Choose a user" %}</label>
+            <select class="form-select" id="user-select" name="user-select">
                 {% for user in users %}
                 <option value="{{user.id}}">{{user}}</option>
                 {%endfor%}
@@ -76,21 +76,7 @@
 
 
 
-<form action="{% url 'set_language' %}" method="post">{% csrf_token %} 
-
-    <input name = "next" type="hidden" value = "{{redirect_to }}">
-    <select name = "language">
-        {% get_current_language as LANGUAGE_CODE %}
-        {% get_available_languages as LANGUAGES %}
-        {% get_language_info_list for LANGUAGES as languages %}
-        {% for language in languages %}
-        <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
-            {{ language.name_local }} ({{ language.code}})
-        </option>
-        {%endfor%}
-    </select>
-    <input type= "submit" value = {% trans "Go" %} >
-</form>
+{% include 'footer.html' %}
 
 
 {% endblock %}
