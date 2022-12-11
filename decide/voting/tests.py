@@ -298,7 +298,3 @@ class VotingTestCase(BaseTestCase):
         v.save()
 
         self.assertTrue(len(Voting.objects.all().filter(public=False, name='Votacion No Publica'))==1)
-    
-
-
-
