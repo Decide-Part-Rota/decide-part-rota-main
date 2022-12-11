@@ -265,13 +265,13 @@ class VotingTestCase(BaseTestCase):
         opt3 = QuestionOption(question=q, option='option 3')
         opt4 = QuestionOption(question=q, option='option 4')
         opt5 = QuestionOption(question=q, option='option 5')
-        
+
         opt.save()
         opt2.save()
         opt3.save()
         opt4.save()
         opt5.save()
-        
+
         v = Voting(name='Votacion Publica', question=q, public=True)
         v.save()
 
@@ -287,13 +287,13 @@ class VotingTestCase(BaseTestCase):
         opt3 = QuestionOption(question=q, option='option 3')
         opt4 = QuestionOption(question=q, option='option 4')
         opt5 = QuestionOption(question=q, option='option 5')
-        
+
         opt.save()
         opt2.save()
         opt3.save()
         opt4.save()
         opt5.save()
-        
+
         v = Voting(name='Votacion No Publica', question=q, public=False)
         v.save()
 
