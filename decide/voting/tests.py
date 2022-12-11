@@ -26,10 +26,6 @@ class VotingTestView(StaticLiveServerTestCase):
         self.base = BaseTestCase()
         self.base.setUp()
 
-        options = webdriver.ChromeOptions()
-        options.headless = False
-        self.driver = webdriver.Chrome(options=options)
-
         q = Question(desc='Prueba para votacion publica')
         q.save()
 
@@ -39,7 +35,6 @@ class VotingTestView(StaticLiveServerTestCase):
         opt3 = QuestionOption(question=q, option='option 3')
         opt4 = QuestionOption(question=q, option='option 4')
         opt5 = QuestionOption(question=q, option='option 5')
-        
         opt.save()
         opt2.save()
         opt3.save()
@@ -53,7 +48,6 @@ class VotingTestView(StaticLiveServerTestCase):
         self.v2.save()
 
         super().setUp()   
-            
     def tearDown(self):
         super().tearDown()
         self.driver.quit()
