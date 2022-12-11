@@ -42,7 +42,6 @@ class GraphicsTestCases(BaseTestCase):
             u.save()
             c = Census(voter_id=u.id, voting_id=v.id)
             c.save()
-        
         user, _ = User.objects.get_or_create(pk=v.pk)
         user.username = 'user{}'.format(v.pk)
         user.set_password('qwerty')
