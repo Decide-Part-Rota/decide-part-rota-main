@@ -11,7 +11,6 @@ class StartedFilter(SimpleListFilter):
             ('S', 'Started'),
             ('R', 'Running'),
             ('F', 'Finished'),
-            ('V', 'Visibility')
         ]
 
     def queryset(self, request, queryset):
