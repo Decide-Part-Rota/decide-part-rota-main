@@ -1,5 +1,4 @@
 import random
-import itertools
 from django.utils import timezone
 from django.conf import settings
 from django.test import TestCase
@@ -15,30 +14,14 @@ from census.models import Census
 from django.contrib.auth.models import User
 
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
 
 
 # Create your tests here.
 
 class GraphicsTestCases(BaseTestCase):
     def setUp(self):
-        
-        super().setUp()
-    
-    def tearDown(self):
-        super().tearDown()
-
-    def encrypt_msg(self, msg, v, bits=settings.KEYBITS):
-        pk = v.pub_key
-        p, g, y = (pk.p, pk.g, pk.y)
-        k = MixCrypt(bits=bits)
-        k.k = ElGamal.construct((p, g, y))
-        return k.encrypt(msg)
-    
-    def create_voting(self):
+        #Creamos votación
         q = Question(desc='Tipos de helados')
         q.save()
         
@@ -57,54 +40,28 @@ class GraphicsTestCases(BaseTestCase):
         a.save()
         v.auths.add(a)
 
-        return v
-
-    def create_voters(self, v):
+        #Creamos usuarios para la votación
         for i in range(25):
             u, _ = User.objects.get_or_create(username='testvoter{}'.format(i))
             u.is_active = True
             u.save()
             c = Census(voter_id=u.id, voting_id=v.id)
             c.save()
-
-    def get_or_create_user(self, pk):
-        user, _ = User.objects.get_or_create(pk=pk)
-        user.username = 'user{}'.format(pk)
+        
+        user, _ = User.objects.get_or_create(pk=v.pk)
+        user.username = 'user{}'.format(v.pk)
         user.set_password('qwerty')
         user.save()
-        return user
 
-    def store_votes(self, v):
-        voters = list(Census.objects.filter(voting_id=v.id))
-        voter = voters.pop()
-
-        clear = {}
-        for opt in v.question.options.all():
-            clear[opt.number] = 0
-            for i in range(random.randint(0, 5)):
-                a, b = self.encrypt_msg(opt.number, v)
-                data = {
-                    'voting': v.id,
-                    'voter': voter.voter_id,
-                    'vote': { 'a': a, 'b': b },
-                }
-                clear[opt.number] += 1
-                user = self.get_or_create_user(voter.voter_id)
-                self.login(user=user.username)
-                voter = voters.pop()
-                mods.post('store', json=data)
-        return clear
-
+        super().setUp()
+    
+    def tearDown(self):
+        super().tearDown()
 
     def test_correct_access_graphics(self):
-        v = self.create_voting()
-        self.create_voters(v)
-
-        v.create_pubkey()
+        v = Voting.objects.get(name='Helado')
         v.start_date = timezone.now()
         v.save()
-
-        clear = self.store_votes(v)
 
         self.login()  # set token
         v.tally_votes(self.token)
@@ -114,14 +71,10 @@ class GraphicsTestCases(BaseTestCase):
         self.assertEquals(response.status_code,200)
 
     def test_graphic_template_correct(self):
-        v = self.create_voting()
-        self.create_voters(v)
+        v = Voting.objects.get(name='Helado')
 
-        v.create_pubkey()
         v.start_date = timezone.now()
         v.save()
-
-        clear = self.store_votes(v)
 
         self.login()  # set token
         v.tally_votes(self.token)
@@ -148,13 +101,6 @@ class SeleniumGraphics(StaticLiveServerTestCase):
         self.driver.quit()
 
         self.base.tearDown()
-
-    def encrypt_msg(self, msg, v, bits=settings.KEYBITS):
-        pk = v.pub_key
-        p, g, y = (pk.p, pk.g, pk.y)
-        k = MixCrypt(bits=bits)
-        k.k = ElGamal.construct((p, g, y))
-        return k.encrypt(msg)
 
     def create_voting(self):
         q = Question(desc='Tipos de helados')
