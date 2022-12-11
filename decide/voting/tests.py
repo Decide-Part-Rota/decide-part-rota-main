@@ -42,7 +42,6 @@ class VotingTestView(StaticLiveServerTestCase):
         opt5.save()
         self.v1 = Voting(name='Votacion Publica', question=q, public=True)
         self.v2 = Voting(name='Votacion No Publica', question=q, public=False)
-        
         self.v1.save()
         self.v2.save()
 
