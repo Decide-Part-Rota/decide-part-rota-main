@@ -30,10 +30,10 @@ class VotacionList(TemplateView):
             if v.id not in votaciones_participa:
                 votaciones_no_participa.append(v)
             else:
-                votaciones_participa_aux.append(v)  
+                votaciones_participa_aux.append(v)
 
         data={
-            'votaciones_no_participa': votaciones_no_participa, 
+            'votaciones_no_participa': votaciones_no_participa,
             'votaciones_participa': votaciones_participa_aux
         }
 
