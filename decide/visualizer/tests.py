@@ -1,13 +1,9 @@
-import random
 from django.utils import timezone
 from django.conf import settings
 from django.test import TestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
-from base import mods
 from base.tests import BaseTestCase
-from mixnet.mixcrypt import ElGamal
-from mixnet.mixcrypt import MixCrypt
 from mixnet.models import Auth
 from voting.models import Voting, Question, QuestionOption
 from census.models import Census
@@ -24,7 +20,6 @@ class GraphicsTestCases(BaseTestCase):
         #Creamos votación
         q = Question(desc='Tipos de helados')
         q.save()
-        
         opt1 = QuestionOption(question=q, option='Chocolate')
         opt1.save()
         opt2 = QuestionOption(question=q, option='Vainilla')
@@ -93,19 +88,8 @@ class SeleniumGraphics(StaticLiveServerTestCase):
         options = webdriver.ChromeOptions()
         options.headless = True
         self.driver = webdriver.Chrome(options=options)
-        
-        super().setUp()
-
-    def tearDown(self):
-        super().tearDown()
-        self.driver.quit()
-
-        self.base.tearDown()
-
-    def create_voting(self):
         q = Question(desc='Tipos de helados')
         q.save()
-        
         opt1 = QuestionOption(question=q, option='Chocolate')
         opt1.save()
         opt2 = QuestionOption(question=q, option='Vainilla')
@@ -121,10 +105,16 @@ class SeleniumGraphics(StaticLiveServerTestCase):
         a.save()
         v.auths.add(a)
 
-        return v
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.driver.quit()
+
+        self.base.tearDown()
 
     def test_exist_graphic_bars(self):
-        v = self.create_voting()
+        v = Voting.objects.get(name='Helado')
 
         self.driver.get('{}/graphics/{}'.format(self.live_server_url, v.pk))
         tituloPag = self.driver.find_element(By.XPATH, '//div[@class="logo"]').text
