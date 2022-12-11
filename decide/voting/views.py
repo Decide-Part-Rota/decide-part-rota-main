@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
+
 
 from census.models import Census
 
@@ -19,6 +21,7 @@ class VotacionList(TemplateView):
     template_name = 'voting/listVoting.html'
 
     #Método para mostrar un listado de todas las votaciones.
+    @login_required
     def mostrarVotacionesPublicas(request):
         censo = Census.objects.filter(voter_id=request.user.id)
         votaciones_participa = [c.voting_id for c in censo]
