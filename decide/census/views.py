@@ -85,7 +85,7 @@ def add_user(request, voting_id):
 def delete_user_from_census(request, voting_id):
     
     try:
-        censo = Census.objects.get(voting_id = voting_id, voter_id=request.user.id)  
+        censo = Census.objects.get(voting_id = voting_id, voter_id=request.user.id)
     except Census.DoesNotExist:
         censo = None
 
