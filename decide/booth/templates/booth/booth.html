@@ -4,6 +4,7 @@
 {% block extrahead %}
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="{% static "reactComponents/styles.css" %}" />
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
     <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
@@ -24,8 +25,10 @@
         <b-alert :variant="alertLvl" dismissible v-model="alertShow">
             [[ alertMsg ]]
         </b-alert>
-
+        <div id="contenedor">        </div>
+  
         <div class="voting">
+             
             <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
 
             <!-- Register -->
@@ -49,7 +52,6 @@
                 <b-button type="submit" variant="primary">{% trans "Login" %}</b-button>
             </b-form>
 
-            <div id="like-button-root"></div>
 
             <!-- Voting -->
             <div v-if="!signup">
@@ -66,7 +68,9 @@
                     {% trans "Vote" %}
                 </b-button>
             </div>
-        </div>
+    </div>
+
+
     </div>
 {% endblock %}
 
@@ -214,7 +218,6 @@
 
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <script src="{% static "crypto/like-button.js" %}"></script>
-
+    <script src="{%static "crypto/contenedor.js" %}"></script>
 </body>
 {% endblock %}
