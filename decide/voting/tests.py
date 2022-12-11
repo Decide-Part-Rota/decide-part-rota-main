@@ -9,14 +9,8 @@ from rest_framework.test import APITestCase
 
 from base import mods
 from base.tests import BaseTestCase
-from django.test import TestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
 from base import mods
 from base.tests import BaseTestCase
 from census.models import Census
@@ -51,16 +45,16 @@ class VotingTestView(StaticLiveServerTestCase):
         opt3.save()
         opt4.save()
         opt5.save()
-
+        
         self.v1 = Voting(name='Votacion Publica', question=q, public=True)
         self.v2 = Voting(name='Votacion No Publica', question=q, public=False)
         
         self.v1.save()
         self.v2.save()
 
-        super().setUp()            
+        super().setUp()   
             
-    def tearDown(self):           
+    def tearDown(self):
         super().tearDown()
         self.driver.quit()
 
