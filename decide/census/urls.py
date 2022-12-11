@@ -8,6 +8,7 @@ urlpatterns = [
     path('add/', views.census_add, name='census_add'),
     path('add/add_to_census', views.add_to_census),
     path('addUser/<int:voting_id>', views.add_user),
+    path('deleteUser/<int:voting_id>', views.delete_user_from_census),
     path('remove/', views.census_remove, name='census_remove'),
     path('remove/remove_from_census', views.remove_from_census),
     path('export/', views.export_census),
