@@ -26,15 +26,12 @@ class GraphicsTestCases(BaseTestCase):
         opt2.save()
         opt3 = QuestionOption(question=q, option='Frambuesa')
         opt3.save()
-
         v = Voting(name='Helado', question=q)
         v.save()
-
         a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
                                           defaults={'me': True, 'name': 'test auth'})
         a.save()
         v.auths.add(a)
-
         #Creamos usuarios para la votación
         for i in range(25):
             u, _ = User.objects.get_or_create(username='testvoter{}'.format(i))
@@ -46,9 +43,8 @@ class GraphicsTestCases(BaseTestCase):
         user.username = 'user{}'.format(v.pk)
         user.set_password('qwerty')
         user.save()
-
         super().setUp()
-    
+
     def tearDown(self):
         super().tearDown()
 
@@ -56,34 +52,27 @@ class GraphicsTestCases(BaseTestCase):
         v = Voting.objects.get(name='Helado')
         v.start_date = timezone.now()
         v.save()
-
         self.login()  # set token
         v.tally_votes(self.token)
-
         #Se comprueba que se puede acceder a las gráficas de dicha votación
         response = self.client.post('/graphics/{}'.format(v.pk), format='json')
         self.assertEquals(response.status_code,200)
 
     def test_graphic_template_correct(self):
         v = Voting.objects.get(name='Helado')
-
         v.start_date = timezone.now()
         v.save()
-
         self.login()  # set token
         v.tally_votes(self.token)
-
 
         #Se comprueba que el template se cargó correctamente
         response = self.client.post('/graphics/{}'.format(v.pk), format='json')
         self.assertTemplateUsed(response, "graphics.html")
-    
-class SeleniumGraphics(StaticLiveServerTestCase):
 
+class SeleniumGraphics(StaticLiveServerTestCase):
     def setUp(self):
         self.base = BaseTestCase()
         self.base.setUp()
-
         options = webdriver.ChromeOptions()
         options.headless = True
         self.driver = webdriver.Chrome(options=options)
@@ -95,34 +84,24 @@ class SeleniumGraphics(StaticLiveServerTestCase):
         opt2.save()
         opt3 = QuestionOption(question=q, option='Frambuesa')
         opt3.save()
-
         v = Voting(name='Helado', question=q)
         v.save()
-
         a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
                                           defaults={'me': True, 'name': 'test auth'})
         a.save()
         v.auths.add(a)
-
         super().setUp()
 
     def tearDown(self):
         super().tearDown()
         self.driver.quit()
-
         self.base.tearDown()
 
     def test_exist_graphic_bars(self):
         v = Voting.objects.get(name='Helado')
-
         self.driver.get('{}/graphics/{}'.format(self.live_server_url, v.pk))
         tituloPag = self.driver.find_element(By.XPATH, '//div[@class="logo"]').text
         graficaBarras = self.driver.find_elements(By.ID, 'grafic')
         self.assertTrue(len(graficaBarras)==1)
         self.assertEquals(tituloPag, "Votaciones para 'Helado'")
-
-
-
-   
-    
-    
+      
