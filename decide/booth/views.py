@@ -1,7 +1,10 @@
 import json
 from django.views.generic import TemplateView
+from rest_framework.views import APIView
 from django.conf import settings
 from django.http import Http404
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 from base import mods
 
@@ -31,15 +34,19 @@ class BoothView(TemplateView):
         return context
 
 class BoothListView(TemplateView):
+    
     template_name = 'booth/boothList.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["userdata"]=self.request.user
         return context
+
 
 class BoothListPrivateView(TemplateView):
     template_name = 'booth/boothListPrivate.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["userdata"]=self.request.user
         return context
