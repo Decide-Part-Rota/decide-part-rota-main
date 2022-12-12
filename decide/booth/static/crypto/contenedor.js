@@ -1,6 +1,11 @@
 'use strict';
 
 const create = React.createElement;
+const MyReactComponent = (props) => {
+  const { message } = props;
+  // Use the message prop in your component here
+};
+
 
 class Contenedor extends React.Component {
   
@@ -8,16 +13,7 @@ class Contenedor extends React.Component {
   render() {
 
 
-    return create(
-      'header',{},
-        create("div", {className: "flip-card"},
-          create("div", {className: "flip-card-inner"},
-            create("div", {className: "flip-card-front"},
-              create('h1',{className:'Logo'},"Let's vote!")),
-
-            create("div", {className: "flip-card-back"},
-              create('h3',{className:'Logo'},"Not sure on what to vote?")))),
-    );
+    return React.createElement('h1', message);
   }
 }
 
