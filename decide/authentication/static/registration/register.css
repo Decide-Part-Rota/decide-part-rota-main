@@ -1,0 +1,36 @@
+.bar{
+    color: #edf0f1;
+}
+
+header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 30px 10%;
+    background-color: #0b0c10;
+}
+
+.registerForm {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    height: auto;
+    width: 47vw;
+    background-color: white;
+    border-radius: 10px;
+    text-align: justify;
+}
+
+.Title{
+    background-color: white;
+    text-align: center;
+}
+
+.buttons {
+    text-align: center;
+}
+
+td, th {
+    vertical-align: top;
+}
