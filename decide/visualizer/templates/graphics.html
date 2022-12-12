@@ -76,6 +76,19 @@
              });
           </script>
     </div>
+    <div class="tarjeta">
+        <h1 class="titulo">Estadísticas para esta votación</h1>
+        <div class="cuerpo">
+            <div class="letras">
+                El voto ganador es "{{ winner.option }}" <br>
+                El voto perdedor es "{{ loser.option }}" <br>
+                <strong>Porcentages:</strong> <br>
+                {% for opt, p in porcentages %}
+                La opción "{{ opt.option }}" fue votada un {{ p }} % <br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
     
 </body>
 </html>
