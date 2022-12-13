@@ -132,7 +132,8 @@ def welcome(request):
     print(request.user)
     return render(request, 'welcome.html', {'user':usuario})
 
-
+def anonymous(request):
+    return render(request, 'anonymous.html')
 
 
 def salir(request):

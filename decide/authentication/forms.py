@@ -17,9 +17,24 @@ class PersonForm(UserCreationForm):
     age = forms.IntegerField(required=False)
     status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
     country = CountryField().formfield()
+
+    def clean_age(self):
+        data = self.cleaned_data["age"]
+
+        if not data:
+          self.add_error("age", "Debes especificar una edad")
+
+        if data == 0:
+          self.add_error("age", "Introduce una edad valida")
+        return data
+    
+    
+    
     class Meta:
           model=User
           fields=["username","password1","password2","email","sex","age","status","country"]
+
+
 
 class CompleteForm(forms.Form):
     sex = forms.ChoiceField(choices=sexos, required=True)
