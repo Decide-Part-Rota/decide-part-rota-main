@@ -1,4 +1,3 @@
-import random
 from django.utils import timezone
 from django.conf import settings
 from django.test import TestCase
@@ -48,41 +47,6 @@ class GraphicsTestCases(BaseTestCase):
 
     def tearDown(self):
         super().tearDown()
-    
-    def encrypt_msg(self, msg, v, bits=settings.KEYBITS):
-        pk = v.pub_key
-        p, g, y = (pk.p, pk.g, pk.y)
-        k = MixCrypt(bits=bits)
-        k.k = ElGamal.construct((p, g, y))
-        return k.encrypt(msg)
-    
-    def get_or_create_user(self, pk):
-        user, _ = User.objects.get_or_create(pk=pk)
-        user.username = 'user{}'.format(pk)
-        user.set_password('qwerty')
-        user.save()
-        return user
-
-    def store_votes(self, v):
-        voters = list(Census.objects.filter(voting_id=v.id))
-        voter = voters.pop()
-        
-        clear = {}
-        for opt in v.question.options.all():
-            clear[opt.number] = 0
-            for i in range(random.randint(0, 3)):
-                a, b = self.encrypt_msg(opt.number, v)
-                data = {
-                    'voting': v.id,
-                    'voter': voter.voter_id,
-                    'vote': { 'a': a, 'b': b },
-                }
-                clear[opt.number] += 1
-                user = self.get_or_create_user(voter.voter_id)
-                self.login(user=user.username)
-                voter = voters.pop()
-                mods.post('store', json=data)
-        return clear
 
     def test_correct_access_graphics(self):
         v = Voting.objects.get(name='Helado')
@@ -90,7 +54,30 @@ class GraphicsTestCases(BaseTestCase):
         v.start_date = timezone.now()
         v.save()
 
-        self.store_votes(v)
+        voters = list(Census.objects.filter(voting_id=v.id))
+        voter = voters.pop()
+        
+        clear = {}
+        for opt in v.question.options.all():
+            clear[opt.number] = 0
+            pk = v.pub_key
+            p, g, y = (pk.p, pk.g, pk.y)
+            k = MixCrypt(bits=settings.KEYBITS)
+            k.k = ElGamal.construct((p, g, y))
+            a, b = k.encrypt(opt.number)
+            data = {
+                'voting': v.id,
+                'voter': voter.voter_id,
+                'vote': { 'a': a, 'b': b },
+            }
+            clear[opt.number] += 1
+            user, _ = User.objects.get_or_create(pk=voter.voter_id)
+            user.username = 'user{}'.format(voter.voter_id)
+            user.set_password('qwerty')
+            user.save()
+            self.login(user=user.username)
+            voter = voters.pop()
+            mods.post('store', json=data)
         self.login()  # set token
         v.tally_votes(self.token)
 
@@ -103,8 +90,30 @@ class GraphicsTestCases(BaseTestCase):
         v.create_pubkey()
         v.start_date = timezone.now()
         v.save()
+        voters = list(Census.objects.filter(voting_id=v.id))
+        voter = voters.pop()
 
-        self.store_votes(v)
+        clear = {}
+        for opt in v.question.options.all():
+            clear[opt.number] = 0
+            pk = v.pub_key
+            p, g, y = (pk.p, pk.g, pk.y)
+            k = MixCrypt(bits=settings.KEYBITS)
+            k.k = ElGamal.construct((p, g, y))
+            a, b = k.encrypt(opt.number)
+            data = {
+                'voting': v.id,
+                'voter': voter.voter_id,
+                'vote': { 'a': a, 'b': b },
+            }
+            clear[opt.number] += 1
+            user, _ = User.objects.get_or_create(pk=voter.voter_id)
+            user.username = 'user{}'.format(voter.voter_id)
+            user.set_password('qwerty')
+            user.save()
+            self.login(user=user.username)
+            voter = voters.pop()
+            mods.post('store', json=data)
         self.login()  # set token
         v.tally_votes(self.token)
 
@@ -146,48 +155,35 @@ class SeleniumGraphics(StaticLiveServerTestCase):
         super().tearDown()
         self.driver.quit()
         self.base.tearDown()
-    
-    def encrypt_msg(self, msg, v, bits=settings.KEYBITS):
-        pk = v.pub_key
-        p, g, y = (pk.p, pk.g, pk.y)
-        k = MixCrypt(bits=bits)
-        k.k = ElGamal.construct((p, g, y))
-        return k.encrypt(msg)
-    
-    def get_or_create_user(self, pk):
-        user, _ = User.objects.get_or_create(pk=pk)
-        user.username = 'user{}'.format(pk)
-        user.set_password('qwerty')
-        user.save()
-        return user
-
-    def store_votes(self, v):
-        voters = list(Census.objects.filter(voting_id=v.id))
-        voter = voters.pop()
-
-        clear = {}
-        for opt in v.question.options.all():
-            clear[opt.number] = 0
-            for i in range(random.randint(0, 3)):
-                a, b = self.encrypt_msg(opt.number, v)
-                data = {
-                    'voting': v.id,
-                    'voter': voter.voter_id,
-                    'vote': { 'a': a, 'b': b },
-                }
-                clear[opt.number] += 1
-                user = self.get_or_create_user(voter.voter_id)
-                self.base.login(user=user.username)
-                voter = voters.pop()
-                mods.post('store', json=data)
-        return clear
 
     def test_exist_graphics(self):
         v = Voting.objects.get(name='Helado')
         v.create_pubkey()
         v.start_date = timezone.now()
         v.save()
-        self.store_votes(v)
+        voters = list(Census.objects.filter(voting_id=v.id))
+        voter = voters.pop()
+        clear = {}
+        for opt in v.question.options.all():
+            clear[opt.number] = 0
+            pk = v.pub_key
+            p, g, y = (pk.p, pk.g, pk.y)
+            k = MixCrypt(bits=settings.KEYBITS)
+            k.k = ElGamal.construct((p, g, y))
+            a, b = k.encrypt(opt.number)
+            data = {
+                'voting': v.id,
+                'voter': voter.voter_id,
+                'vote': { 'a': a, 'b': b },
+            }
+            clear[opt.number] += 1
+            user, _ = User.objects.get_or_create(pk=voter.voter_id)
+            user.username = 'user{}'.format(voter.voter_id)
+            user.set_password('qwerty')
+            user.save()
+            self.base.login(user=user.username)
+            voter = voters.pop()
+            mods.post('store', json=data)
         self.base.login()
         v.tally_votes(self.base.token)
         self.driver.get('{}/graphics/{}'.format(self.live_server_url, v.pk))

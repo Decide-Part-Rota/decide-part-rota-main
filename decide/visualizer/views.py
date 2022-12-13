@@ -54,7 +54,7 @@ def funcionPorcentaje(voting_id):
     for v in listaV:
         porcentages.append(calcPorc(v, listaV))
     return porcentages
-  
+
 def graphics(request, voting_id):
     template = loader.get_template("graphics.html")
     votacion = Voting.objects.get(id=voting_id)

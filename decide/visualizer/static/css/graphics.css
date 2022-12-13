@@ -39,7 +39,7 @@ header .logo {
 
 .tarjeta {
   display: flex;
-  background-color: rgb(69,177,223);
+  background-color: rgb(69, 177, 223);
   flex-direction: column;
   justify-content: space-between;
   width: 600px;
