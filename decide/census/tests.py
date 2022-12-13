@@ -232,7 +232,6 @@ class CensusAddRemove(BaseTestCase):
         self.assertTrue(Census.objects.all().filter(voting_id=self.v1.id, voter_id=self.user.id).exists())
 
     def test_remove_user_from_census(self):
-        request = {'user': self.voter}
 
         self.user = User(username= 'user_prueba')
         self.user.save()
