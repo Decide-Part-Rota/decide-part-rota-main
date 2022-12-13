@@ -848,11 +848,6 @@ class CensusByGroupStatusAndNationalityTest(BaseTestCase):
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
         self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
     
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 
 class CensusByNationalityAndStatusSelenium(StaticLiveServerTestCase):
     def setUp(self):
