@@ -44,7 +44,6 @@ class GraphicsTestCases(BaseTestCase):
             c.save()
         super().setUp()
 
-
     def tearDown(self):
         super().tearDown()
 
@@ -53,10 +52,8 @@ class GraphicsTestCases(BaseTestCase):
         v.create_pubkey()
         v.start_date = timezone.now()
         v.save()
-
         voters = list(Census.objects.filter(voting_id=v.id))
         voter = voters.pop()
-        
         clear = {}
         for opt in v.question.options.all():
             clear[opt.number] = 0
@@ -80,7 +77,6 @@ class GraphicsTestCases(BaseTestCase):
             mods.post('store', json=data)
         self.login()  # set token
         v.tally_votes(self.token)
-
         #Se comprueba que se puede acceder a las gráficas de dicha votación
         response = self.client.post('/graphics/{}'.format(v.pk), format='json')
         self.assertEquals(response.status_code,200)
@@ -92,7 +88,6 @@ class GraphicsTestCases(BaseTestCase):
         v.save()
         voters = list(Census.objects.filter(voting_id=v.id))
         voter = voters.pop()
-
         clear = {}
         for opt in v.question.options.all():
             clear[opt.number] = 0
@@ -116,7 +111,6 @@ class GraphicsTestCases(BaseTestCase):
             mods.post('store', json=data)
         self.login()  # set token
         v.tally_votes(self.token)
-
         #Se comprueba que el template se cargó correctamente
         response = self.client.post('/graphics/{}'.format(v.pk), format='json')
         self.assertTemplateUsed(response, "graphics.html")
@@ -193,4 +187,3 @@ class SeleniumGraphics(StaticLiveServerTestCase):
         self.assertTrue(len(graficaBarras)==1)
         self.assertTrue(len(graficaPie)==1)
         self.assertEquals(tituloPag, "Votaciones para 'Helado'")
-
