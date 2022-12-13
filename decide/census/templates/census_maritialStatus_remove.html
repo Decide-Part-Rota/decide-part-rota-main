@@ -42,10 +42,12 @@
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
             <label for="specificSizeSelect">{% trans "Maritial Status" %}</label>
-            <select multiple class="form-select" id="specificSizeSelect" name="maritialStatus-select">
-                <!--{% for maritialstatus in maritialStatus %}
-            <option value="{{maritialstatus}}">{{maritialstatus}}</option>
-                {%endfor%}-->
+            <select class="form-select" id="specificSizeSelect" name="maritialStatus-select">
+                <option value="soltero">Solteros</option>
+                <option value="conviviente">Convivientes</option>
+                <option value="casado">Casados</option>
+                <option value="divorciado">Divorciados</option>
+                <option value="viudo">Viudos</option>
             </select>    
         </div>
     </div>

@@ -31,4 +31,6 @@ urlpatterns = [
     path('remove/by_group_remove/', views.census_group_remove, name='census_by_group_remove'),
     path('remove/by_group_remove/maritialStatus_remove', views.census_maritialStatus_remove),
     path('remove/by_group_remove/nationality_remove', views.census_nationality_remove),
+    path('remove/by_group_remove/maritialStatus/remove_by_maritialStatus_to_census', views.remove_by_maritialStatus_to_census),
+    path('remove/by_group_remove/nationality/remove_by_nationality_to_census', views.remove_by_nationality_to_census),
 ]
