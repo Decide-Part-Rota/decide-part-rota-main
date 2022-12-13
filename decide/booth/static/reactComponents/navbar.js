@@ -1,7 +1,7 @@
 'use strict';
 
 const create = React.createElement;
-var user = document.getElementById("userdata").value;
+const user = document.getElementById("userdata").value;
 class Navbar extends React.Component {
 
   render() {

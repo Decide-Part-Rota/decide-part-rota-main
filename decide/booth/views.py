@@ -1,10 +1,7 @@
 import json
 from django.views.generic import TemplateView
-from rest_framework.views import APIView
 from django.conf import settings
 from django.http import Http404
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
 from census.models import Census
 from voting.models import Voting
 from base import mods
