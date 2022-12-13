@@ -2,27 +2,27 @@
 
 const build = React.createElement;
 var userInfo = document.getElementById("userdata").value;
-var votacionAbiertas = document.getElementById("hide").value;
-var dicc = JSON.parse(votacionAbiertas)
+const votacionAbiertas = document.getElementById("hide").value;
+const dicc = JSON.parse(votacionAbiertas);
 
-const view = []
-const keys = Object.keys(dicc)
+const view = [];
+const keys = Object.keys(dicc);
 
-for(let i =0; i<keys.length; i++){
-    const id= keys[i]
-    const lista = dicc[id]
-    const name=lista[1]
-    const desc=lista[2]
+for(let i = 0; i<keys.length; i++){
+    const id = keys[i];
+    const lista = dicc[id];
+    const name = lista[1];
+    const desc = lista[2];
     const aux = build ("tr", {key: i}, 
                     build("td",{key: "id", className: "tablebody"},id),
                     build("td",{key: "name", className: "tablebody"},name),
                     build("td",{key: "desc", className: "tablebody"},desc),
                     build("td",{key: "button"},
                         build("button",{},
-                            build("a",{href:"/census/addUser/".concat(id)}, "Join census"),                 
-                        ),
+                            build("a",{href:"/census/addUser/".concat(id)}, "Join census")                 
+                        )
                     ),
-    )
+    );
     view.push(aux)
 }
 

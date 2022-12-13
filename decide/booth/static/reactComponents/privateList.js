@@ -2,18 +2,18 @@
 
 const build = React.createElement;
 var userInfo = document.getElementById("userdata").value;
-var votacionParticipo = document.getElementById("hide").value;
-var dicc = JSON.parse(votacionParticipo)
+const votacionParticipo = document.getElementById("hide").value;
+const dicc = JSON.parse(votacionParticipo);
 
-const view = []
-const keys = Object.keys(dicc)
+const view = [];
+const keys = Object.keys(dicc);
 
 for(let i =0; i<keys.length; i++){
-    const id= keys[i]
-    const lista = dicc[id]
-    const name=lista[1]
-    const desc=lista[2]
-    const publico=lista[3].toString()
+    const id= keys[i];
+    const lista = dicc[id];
+    const name=lista[1];
+    const desc=lista[2];
+    const publico=lista[3].toString();
 
     const aux = build ("tr", {key: i}, 
                     build("td",{key: "id", className: "tablebody"},id),
@@ -26,10 +26,10 @@ for(let i =0; i<keys.length; i++){
                         ),
                         build("button",{},
                             build("a",{href:"/census/deleteUser/".concat(id)}, "Quit Census"),                 
-                        ),
-                    ),
+                        )
+                    )
                         
-    )
+    );
     view.push(aux)
 }
 class List extends React.Component {

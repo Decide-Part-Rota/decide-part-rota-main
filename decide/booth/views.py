@@ -47,11 +47,11 @@ class BoothListView(TemplateView):
         dict_no_participa= {}
         dict_participa= {}
         for v in votaciones:
-            tuple=(v.id,v.name,v.desc,v.public)
+            tupla=(v.id,v.name,v.desc,v.public)
             if v.id not in votaciones_participa:
-                dict_no_participa.update({v.id:tuple})
+                dict_no_participa.update({v.id:tupla})
             else:
-                dict_participa.update({v.id:tuple})
+                dict_participa.update({v.id:tupla})
                 print("hey")
 
         context["userdata"]=self.request.user
@@ -72,11 +72,11 @@ class BoothListPrivateView(TemplateView):
         dict_no_participa= {}
         dict_participa= {}
         for v in votaciones:
-            tuple=(v.id,v.name,v.desc,v.public)
+            tupla=(v.id,v.name,v.desc,v.public)
             if v.id not in votaciones_participa:
-                dict_no_participa.update({v.id:tuple})
+                dict_no_participa.update({v.id:tupla})
             else:
-                dict_participa.update({v.id:tuple})
+                dict_participa.update({v.id:tupla})
                 print("hey")
 
         context["userdata"]=self.request.user
