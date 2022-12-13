@@ -20,6 +20,7 @@ from base.tests import BaseTestCase
 import os
 
 from .views import exporting_census, importing_census, add_to_census, remove_from_census, add_by_age_to_census, add_by_gender_to_census
+from .views import remove_by_age_to_census, remove_by_gender_to_census
 import csv
 
 
@@ -625,6 +626,39 @@ class CensusByGroup(BaseTestCase):
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
 
+    def test_remove_by_gender(self):
+        self.c1 = Census(voting_id = self.v.id, voter_id=self.u1.id)
+        self.c2 = Census(voting_id = self.v.id, voter_id=self.u2.id)
+        self.c3 = Census(voting_id = self.v.id, voter_id=self.u3.id)
+        self.c4 = Census(voting_id = self.v.id, voter_id=self.u4.id)
+
+        self.c1.save()
+        self.c2.save()
+        self.c3.save()
+        self.c4.save()
+
+        self.user = AnonymousUser()
+        data = {'voting-select': self.v.id, 'gender-select': ["Mujer", "Indefinido"]}
+        request = self.factory.post('remove/by_group_remove/gender/remove', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_gender_to_census(request)
+        self.assertEqual(response.status_code, 401)
+
+        user_admin = User.objects.get(username="admin")
+        self.user = user_admin
+        data = {'voting-select': self.v.id, 'gender-select': ["Mujer", "Indefinido"]}
+        request = self.factory.post('remove/by_group_remove/gender/remove', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_gender_to_census(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
 class CensusByGroupSelenium(StaticLiveServerTestCase):
     def setUp(self):
         #Load base test functionality for decide
