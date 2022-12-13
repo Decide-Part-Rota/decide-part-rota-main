@@ -11,11 +11,11 @@ class Navbar extends React.Component {
         'header',{},
         create('h1',{className:'Logo'},"Decide Booth"),
         create('nav', {className:'NavBar'},
-          create("ul",{className: "nav_links"},
+          create("ul",{className: "nav_links"}, 
             create("li",{},
               create("a",{href: "/booth/boothList", className: "Link"}, "Open Votings")),
             create("li",{},
-              create("a",{href: "/booth/boothListPrivate", className: "Link"}, "My Votings")),
+              create("a",{href: "/booth/boothListPrivate", className: "Link"}, "My Votings"))
           ),
         ),
         create('a',{className:'cta', href: "/authentication/salir"}, 

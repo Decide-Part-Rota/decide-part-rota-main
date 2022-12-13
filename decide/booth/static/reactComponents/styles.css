@@ -66,3 +66,27 @@ header {
 body{
     background-color: #1f2833;
 }
+
+table{
+    text-align: center;
+    border: 1pt solid #edf0f1;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+    width: 1000px;
+}
+table td{
+    padding: 1rem;
+    outline: 1pt solid #b4b4b4;
+}
+.tableHead{
+    text-align: center;
+    color: #edf0f1;
+    font-size: 1.25em;
+    background-color: #0b0c10;
+}
+
+.tablebody{
+    text-align: center;
+    color: #edf0f1;
+}
