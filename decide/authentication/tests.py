@@ -152,6 +152,7 @@ class AuthTestCase(APITestCase):
 
 
     # No funcionan las llamadas y creo que es por el csrf token que hay que pasarlo cogiendolo de las cookies
+    # Hay que implementarlo con el chromeDriver
 
     def test_register_with_person_data(self):
         data = {"username": "voter1", "password1":"123", "password2":"123", "email": "voter1@gmail.com", "sex": "Mujer", "Age": "20"}
