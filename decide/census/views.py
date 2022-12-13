@@ -287,7 +287,7 @@ def census_nationality(request):
         template = loader.get_template("census_nationality.html")
         votings = Voting.objects.all()
         try:
-            nationality = set(u.country for u in Person.objects.all())
+            nationality = set(u.country.name for u in Person.objects.all())
         except BaseException:
             nationality = set()
         context = {
