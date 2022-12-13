@@ -251,6 +251,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
         print(self.live_server_url)
 
         self.assertEqual(self.driver.title, 'Register')
+        
     def test_simpleIncorrectStatusRegister(self): 
         self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
         self.driver.find_element(By.ID,'id_username').send_keys("test1")
@@ -262,6 +263,23 @@ class RegisterTestCase(StaticLiveServerTestCase):
         # Probar un register con estado invalida
         self.driver.find_element(By.ID,'id_status').send_keys("Con novia")
         self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        print(self.live_server_url)
+
+        self.assertEqual(self.driver.title, 'Register')
+
+    def test_simpleIncorrectCountryRegister(self): 
+        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
+        self.driver.find_element(By.ID,'id_username').send_keys("test1")
+        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
+        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword")
+        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
+        self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
+        self.driver.find_element(By.ID,'id_age').send_keys("0")
+        self.driver.find_element(By.ID,'id_status').send_keys("Con novia")
+        # Probar un register con sexo invalida
+        self.driver.find_element(By.ID,'id_country').send_keys("Sevilla")
         self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
 
         print(self.live_server_url)
