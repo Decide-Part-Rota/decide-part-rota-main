@@ -32,7 +32,6 @@ class BoothView(TemplateView):
         return context
 
 class BoothListView(TemplateView):
-    
     template_name = 'booth/boothList.html'
 
     def get_context_data(self, **kwargs):
