@@ -7,6 +7,16 @@ from rest_framework.authtoken.models import Token
 
 from base import mods
 
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+
+from base.tests import BaseTestCase
+import time
 
 class AuthTestCase(APITestCase):
 
@@ -148,18 +158,79 @@ class AuthTestCase(APITestCase):
         response = self.client.post('/authentication/login/', data, format='json')
         self.assertEqual(response.status_code, 400)
 
+
+class RegisterTestCase(StaticLiveServerTestCase):
+
+    def setUp(self):
+        self.base = BaseTestCase()
+        self.base.setUp()
+
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+
+        super().setUp()
+
+
+    def tearDown(self):
+        super().tearDown()
+        self.driver.quit()
+        self.base.tearDown()
+
+
+    def test_simpleCorrectRegister(self):
+        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
+        self.driver.find_element(By.ID,'id_username').send_keys("test1")
+        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
+        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword")
+        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
+        self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
+        self.driver.find_element(By.ID,'id_age').send_keys("20")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        # time.sleep(10)
+
+        print(self.live_server_url)
+
+        self.assertEqual(self.driver.title, 'Login')
+
+    def test_simpleIncorrectPasswordRegister(self):
+        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
+        self.driver.find_element(By.ID,'id_username').send_keys("test1")
+        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
+
+        # Probar un registro con una contrasenya que no coincide
         
+        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword2")
+        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
+        self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
+        self.driver.find_element(By.ID,'id_age').send_keys("20")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
 
+        print(self.live_server_url)
 
-    # No funcionan las llamadas y creo que es por el csrf token que hay que pasarlo cogiendolo de las cookies
-    # Hay que implementarlo con el chromeDriver
+        self.assertEqual(self.driver.title, 'Register')
 
-    # def test_register_with_person_data(self):
-    #     data = {"username": "voter1", "password1":"123", "password2":"123", "email": "voter1@gmail.com", "sex": "Mujer", "Age": "20"}
-    #     resp = self.client.post('/authentication/registerForm/', data, format='json')
-    #     self.assertEquals(resp.status_code, 200)
+    
+    def test_simpleIncorrectAgeRegister(self): 
+        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
+        self.driver.find_element(By.ID,'id_username').send_keys("test1")
+        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
+        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword")
+        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
+        self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
 
-    # def test_register_with_person_data_fail(self):
-    #     data = {'username': 'voter10', 'password1':'123', 'password2':'321', 'email': 'voter10@gmail.com', 'sex': 'Mujer', 'Age': ''}
-    #     resp = self.client.post('/authentication/registerForm/', data, format='json')
-    #     self.assertEquals(resp.status_code, 400)
+        # Probar un register con una edad invalida
+
+        self.driver.find_element(By.ID,'id_age').send_keys("0")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        print(self.live_server_url)
+
+        self.assertEqual(self.driver.title, 'Register')
