@@ -10,10 +10,6 @@ from django.template import loader
 from base import mods
 from voting.models import Voting
 
-def inicio(request):
-    template = loader.get_template("inicio.html")
-    return HttpResponse(template.render({}, request))
-
 class VisualizerView(TemplateView):
     template_name = 'visualizer/visualizer.html'
 

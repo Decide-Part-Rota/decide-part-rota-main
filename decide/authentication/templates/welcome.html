@@ -1,23 +1,28 @@
-{% extends "base.html" %}
-{% load i18n static %}
+{% load static %}
+<html lang="es-ES">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="{% static 'registration/header.css' %}">
+</head>
+<body>
+    <header>
+        <div class="wrapper">
+            
+            <div class="logo">Decide</div>
+            
+            <nav>
+                <a href="#">Perfil</a>
+                <a href="#">Censo</a>
+                <a href="#">Mis votaciones</a>
+                <a href="{% url 'salir'%}">Cerrar sesión</a>
+            </nav>
+        </div>
+    </header>
 
-{% block extrahead %}
-    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-    
-    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
-{% endblock %}
+    <h2>¡Bienvenido, {{user.username}}!</h2>
 
-{% block content %}
-<!-- Navbar -->
-<div >
-
-    <h2>¡Bienvenido, {{user.first_name}}!</h2>
-
-
-<a href="{% url 'salir'%}">Cerrar sesion</a>
-
-{% if message %}
-<p>Error: {{message}}</p>
-{% endif %}
-</div>
-{% endblock %}
+</body>
+</html>

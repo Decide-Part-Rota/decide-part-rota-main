@@ -28,7 +28,6 @@ schema_view = get_swagger_view(title='Decide API')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('doc/', schema_view),
-    path('inicio/', views.inicio),
     path('graphics/<int:voting_id>', views.graphics),
     path('gateway/', include('gateway.urls')),
     path('i18n', include('django.conf.urls.i18n')),
