@@ -1,18 +1,17 @@
-'use strict';
+"use strict";
 
 const create = React.createElement;
 
 class Title extends React.Component {
-  
   render() {
     return create(
-      'body',{},
-      create('h2',{className:'Title'},"Inicia sesión"),
+      "body",{},
+      create("h2",{className:"Title"},"Inicia sesión"),
     );
   }
     
 }
 
-const domContainer = document.querySelector('#title');
+const domContainer = document.querySelector("#title");
 const root = ReactDOM.createRoot(domContainer);
 root.render(create(Title));

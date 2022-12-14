@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const build = React.createElement;
 var userInfo = document.getElementById("userdata").value;
@@ -21,7 +21,7 @@ for(let i = 0; i<keys.length; i++){
                         build("button",{},
                             build("a",{href:"/census/addUser/".concat(id)}, "Join census")                 
                         )
-                    ),
+                    )
     );
     view.push(aux)
 }
@@ -31,16 +31,16 @@ class List extends React.Component {
     render (){
         if(userInfo != 'AnonymousUser'){
             return build("table", {},
-                    build("thead", {},
-                        build("tr",{},
-                            build("td", {className: "tableHead"}, "ID"),
-                            build("td", {className: "tableHead"}, "Name"),
-                            build("td", {className: "tableHead"}, "Description"),
-                            build("td", {className: "tableHead"}, "Actions"),
-                        )    
-                    ),
-                    build("tbody",{},view))
-                ;
+                        build("thead", {},
+                            build("tr",{},
+                                build("td", {className: "tableHead"}, "ID"),
+                                build("td", {className: "tableHead"}, "Name"),
+                                build("td", {className: "tableHead"}, "Description"),
+                                build("td", {className: "tableHead"}, "Actions"),
+                            )    
+                        ),
+                        build("tbody",{},view)
+                    );
         } else {
             return build(
                 "div", {},
