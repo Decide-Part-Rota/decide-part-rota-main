@@ -1,7 +1,7 @@
 "use strict";
 
 const build = React.createElement;
-var userInfo = document.getElementById("userdata").value;
+const userInfo = document.getElementById("userdata").value;
 const votacionAbiertas = document.getElementById("hide").value;
 const dicc = JSON.parse(votacionAbiertas);
 
@@ -28,8 +28,8 @@ for(let i = 0; i<keys.length; i++){
 
 class List extends React.Component {
 
-    render (){
-        if(userInfo != 'AnonymousUser'){
+    render () {
+        if(userInfo != "AnonymousUser"){
             return build("table", {},
                         build("thead", {},
                             build("tr",{},
@@ -44,13 +44,12 @@ class List extends React.Component {
         } else {
             return build(
                 "div", {},
-                build("h1", {className: "Title"}, "If you wanto to see this service you need to log in"),
-                
+                build("h1", {className: "Title"}, "If you wanto to see this service you need to log in"), 
             );
         }
     }
 }    
 
-const domContainerBody = document.querySelector('#list');
+const domContainerBody = document.querySelector("#list");
 const rootBody = ReactDOM.createRoot(domContainerBody);
 rootBody.render(build(List));

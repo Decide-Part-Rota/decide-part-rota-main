@@ -26,7 +26,7 @@ button:hover {
 .Logo {
   cursor: pointer;
   margin-right: auto;
-  color: #edf0f1
+  color: #edf0f1;
 }
 
 header {
@@ -37,7 +37,7 @@ header {
   background-color: #0b0c10;
 }
 
-.logo { 
+.logo {
   cursor: pointer;
 }
 
