@@ -602,6 +602,40 @@ class CensusByGroup(BaseTestCase):
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
 
+    def test_remove_by_age(self):
+        self.c1 = Census(voting_id = self.v.id, voter_id=self.u1.id)
+        self.c2 = Census(voting_id = self.v.id, voter_id=self.u2.id)
+        self.c3 = Census(voting_id = self.v.id, voter_id=self.u3.id)
+        self.c4 = Census(voting_id = self.v.id, voter_id=self.u4.id)
+
+        self.c1.save()
+        self.c2.save()
+        self.c3.save()
+        self.c4.save()
+
+        self.user = AnonymousUser()
+        data = {'voting-select': self.v.id, 'minimum-age': 30, 'maximum-age':40}
+        request = self.factory.post('add/by_group/age/create', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_age_to_census(request)
+        self.assertEqual(response.status_code, 401)
+
+        user_admin = User.objects.get(username="admin")
+        self.user = user_admin
+        data = {'voting-select': self.v.id, 'minimum-age': 30, 'maximum-age':40}
+        request = self.factory.post('add/by_group/age/create', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_age_to_census(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
+
     def test_add_by_gender(self):
         self.user = AnonymousUser()
         data = {'voting-select': self.v.id, 'gender-select': ["Mujer", "Indefinido"]}
@@ -697,7 +731,7 @@ class CensusByGroupSelenium(StaticLiveServerTestCase):
         self.p4.save()
 
         options = webdriver.ChromeOptions()
-        options.headless = True
+        options.headless = False
         self.driver = webdriver.Chrome(options=options)
 
         super().setUp()
@@ -748,11 +782,82 @@ class CensusByGroupSelenium(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
     
+    def test_deleteByAgeSelenium(self):
+        self.c1 = Census(voting_id = self.v.id, voter_id=self.u1.id)
+        self.c2 = Census(voting_id = self.v.id, voter_id=self.u2.id)
+        self.c3 = Census(voting_id = self.v.id, voter_id=self.u3.id)
+        self.c4 = Census(voting_id = self.v.id, voter_id=self.u4.id)
+
+        self.c1.save()
+        self.c2.save()
+        self.c3.save()
+        self.c4.save()
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/census/remove')
+        self.driver.find_element(By.CSS_SELECTOR, "html").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(3) .btn").click()
+        dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
+        dropdown.find_element(By.XPATH, "//option[. = 'VotacionTestCensusByGroup']").click()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        self.driver.find_element(By.NAME, "minimum-age").click()
+        self.driver.find_element(By.NAME, "minimum-age").send_keys("30")
+        self.driver.find_element(By.NAME, "maximum-age").click()
+        self.driver.find_element(By.NAME, "maximum-age").send_keys("40")
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
+    
     def test_addBySexSelenium(self):
         self.driver.get(f'{self.live_server_url}/admin/')
         self.driver.find_element(By.ID, "id_username").send_keys("admin")
         self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
         self.driver.get(f'{self.live_server_url}/census/add')
+        self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(4) .btn").click()
+        dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
+        dropdown.find_element(By.XPATH, "//option[. = 'VotacionTestCensusByGroup']").click()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        dropdown = self.driver.find_element(By.NAME, "gender-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'Hombre']").click()
+        dropdown = self.driver.find_element(By.NAME, "gender-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'Mujer']").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
+    
+    def test_removeBySexSelenium(self):
+        self.c1 = Census(voting_id = self.v.id, voter_id=self.u1.id)
+        self.c2 = Census(voting_id = self.v.id, voter_id=self.u2.id)
+        self.c3 = Census(voting_id = self.v.id, voter_id=self.u3.id)
+        self.c4 = Census(voting_id = self.v.id, voter_id=self.u4.id)
+
+        self.c1.save()
+        self.c2.save()
+        self.c3.save()
+        self.c4.save()
+        
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/census/remove')
         self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
         self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(4) .btn").click()
         dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
