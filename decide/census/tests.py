@@ -1085,7 +1085,7 @@ class CensusByGroupStatusAndNationalityDeleteTest(BaseTestCase):
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
         self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
 
-class CensusByNationalityAndStatusSelenium(StaticLiveServerTestCase):
+class CensusByNationalityAndStatusRemoveSelenium(StaticLiveServerTestCase):
     def setUp(self):
         #Load base test functionality for decide
         self.base = BaseTestCase()
