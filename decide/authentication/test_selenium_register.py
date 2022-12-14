@@ -5,13 +5,14 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-import time 
+import time
 
 class RegisterTestCase(StaticLiveServerTestCase):
       
     def setUp(self):
         self.base = BaseTestCase()
         self.base.setUp()
+
         options = webdriver.ChromeOptions()
         #Si se quieren ver en navegador, cambiar a false
         options.headless = True
@@ -24,7 +25,8 @@ class RegisterTestCase(StaticLiveServerTestCase):
 
     def test_register_ok(self):
         self.driver.maximize_window()
-        self.driver.get(''f'{self.live_server_url}''/authentication/registerForm/') 
+        self.driver.get(''f'{self.live_server_url}''/authentication/registerForm/')
+
         self.driver.find_element(By.ID, "id_username").clear()
         self.driver.find_element(By.ID, "id_username").send_keys("user")
         time.sleep(0.5)
@@ -53,7 +55,8 @@ class RegisterTestCase(StaticLiveServerTestCase):
 
     def test_register_fail_username_wrong_character(self):
         self.driver.maximize_window()
-        self.driver.get(''f'{self.live_server_url}''/authentication/registerForm/') 
+        self.driver.get(''f'{self.live_server_url}''/authentication/registerForm/')
+
         self.driver.find_element(By.ID, "id_username").clear()
         self.driver.find_element(By.ID, "id_username").send_keys("user,")
         time.sleep(0.5)
@@ -77,5 +80,5 @@ class RegisterTestCase(StaticLiveServerTestCase):
         time.sleep(0.5)
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         time.sleep(0.5)
-            
+
         self.assertTrue("Registro" in self.driver.page_source)
