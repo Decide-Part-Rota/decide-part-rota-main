@@ -309,7 +309,7 @@ def census_nationality(request):
         template = loader.get_template("census_nationality.html")
         votings = Voting.objects.all()
         try:
-            nationality = set(u.country.name for u in Person.objects.all())
+            nationality = set(u.country for u in Person.objects.all())
         except BaseException:
             nationality = set()
         context = {
@@ -529,7 +529,7 @@ def census_maritialStatus_remove(request):
         context = {
             'votings': votings,
         }
-        return HttpResponse(template.render(context, request))
+        return HttpResponse(template.render(context, request),status=200)
     else:
         template = loader.get_template("result_page.html")
         messages.error(request, "You must be a staff member to access this page")
@@ -552,11 +552,11 @@ def remove_by_maritialStatus_to_census(request):
                 pass
         messages.success(request, "Users removed from the voting correctly")
 
-        return HttpResponse(template.render({}, request))
+        return HttpResponse(template.render({}, request), status=200)
 
     else:
         messages.error(request, "You must be a staff member to access this page")
-        return HttpResponse(template.render({}, request))
+        return HttpResponse(template.render({}, request), status=ST_401)
 
 
 def census_nationality_remove(request):
@@ -571,7 +571,7 @@ def census_nationality_remove(request):
             'votings': votings,
             'nationality': nationality,
         }
-        return HttpResponse(template.render(context, request))
+        return HttpResponse(template.render(context, request),status=200)
     else:
         template = loader.get_template("result_page.html")
         messages.error(request, "You must be a staff member to access this page")
@@ -594,11 +594,11 @@ def remove_by_nationality_to_census(request):
                 pass
         messages.success(request, "Users removed from the voting correctly")
 
-        return HttpResponse(template.render({}, request))
+        return HttpResponse(template.render({}, request), status=200)
 
     else:
         messages.error(request, "You must be a staff member to access this page")
-        return HttpResponse(template.render({}, request))
+        return HttpResponse(template.render({}, request), status=ST_401)
 
 
 
