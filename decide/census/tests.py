@@ -636,7 +636,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
         self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
         self.driver.find_element(By.CLASS_NAME, "boton-personalizado-join-census").click()
-        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "boton-personalizado-go-vote"))==2)#2 porque ya había uno más el que acabamos de añadir
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "boton-personalizado-go-vote"))==2)#2 porque ya había uno más el que acabo de añadir
 
     #Va al listado y comprueba que hay una votacion en la que participa
     def test_listado_votacion_participa(self):

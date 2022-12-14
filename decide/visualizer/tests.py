@@ -371,26 +371,29 @@ class SeleniumGraphics(StaticLiveServerTestCase):
                     voter = voters.pop()
                     mods.post('store', json=data)
                     i+=1
-            else:
-                clear[opt.number] = 0
-                pk = v.pub_key
-                p, g, y = (pk.p, pk.g, pk.y)
-                k = MixCrypt(bits=settings.KEYBITS)
-                k.k = ElGamal.construct((p, g, y))
-                a, b = k.encrypt(opt.number)
-                data = {
-                    'voting': v.id,
-                    'voter': voter.voter_id,
-                    'vote': { 'a': a, 'b': b },
-                }
-                clear[opt.number] += 1
-                user, _ = User.objects.get_or_create(pk=voter.voter_id)
-                user.username = 'user{}'.format(voter.voter_id)
-                user.set_password('qwerty')
-                user.save()
-                self.base.login(user=user.username)
-                voter = voters.pop()
-                mods.post('store', json=data)
+            elif opt.number == 2:
+                while i < 2:
+                    clear[opt.number] = 0
+                    pk = v.pub_key
+                    p, g, y = (pk.p, pk.g, pk.y)
+                    k = MixCrypt(bits=settings.KEYBITS)
+                    k.k = ElGamal.construct((p, g, y))
+                    a, b = k.encrypt(opt.number)
+                    data = {
+                        'voting': v.id,
+                        'voter': voter.voter_id,
+                        'vote': { 'a': a, 'b': b },
+                    }
+                    clear[opt.number] += 1
+                    user, _ = User.objects.get_or_create(pk=voter.voter_id)
+                    user.username = 'user{}'.format(voter.voter_id)
+                    user.set_password('qwerty')
+                    user.save()
+                    self.base.login(user=user.username)
+                    voter = voters.pop()
+                    mods.post('store', json=data)
+                    i+=1
+                    
             self.base.login()  # set token
             v.tally_votes(self.base.token)
             #Se comprueba que la opción más votada es Chocolate
