@@ -1085,5 +1085,107 @@ class CensusByGroupStatusAndNationalityDeleteTest(BaseTestCase):
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
         self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
 
+class CensusByNationalityAndStatusSelenium(StaticLiveServerTestCase):
+    def setUp(self):
+        #Load base test functionality for decide
+        self.base = BaseTestCase()
+        self.base.setUp()
+        
+        self.q = Question(desc='Description')
+        self.q.save()
+        
+        self.opt1 = QuestionOption(question=self.q, option='opcion 1')
+        self.opt1.save()
+        self.opt2 = QuestionOption(question=self.q, option='opcion 2')
+        self.opt2.save()
+
+        self.v = Voting(name='VotacionNacionalidadYEstadoCivil', question=self.q)
+        self.v.save()
+
+        self.u1 = User(username="soltero1")
+        self.u2 = User(username="soltero2")
+        self.u3 = User(username="casado1")
+        self.u4 = User(username="viudo1")
+
+        self.u1.save()
+        self.u2.save()
+        self.u3.save()
+        self.u4.save()
+
+        self.p1 = Person(user=self.u1, age = 20,status="soltero", country="ES")
+        self.p2 = Person(user=self.u2, age = 20,status="soltero", country="ES")
+        self.p3 = Person(user=self.u3, age = 20,status="casado", country="ES")
+        self.p4 = Person(user=self.u4, age = 20,status="viudo", country="AD")
+
+        self.p1.save()
+        self.p2.save()
+        self.p3.save()
+        self.p4.save()
+
+        #añadimos al censo manualmente
+        self.c1 = Census(voting_id=self.v.id, voter_id=self.u1.id)
+        self.c2 = Census(voting_id=self.v.id, voter_id=self.u2.id)
+        self.c3 = Census(voting_id=self.v.id, voter_id=self.u3.id)
+        self.c4 = Census(voting_id=self.v.id, voter_id=self.u4.id)
+
+        self.c1.save()
+        self.c2.save()
+        self.c3.save()
+        self.c4.save()
+
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+
+        super().setUp()
+            
+    def tearDown(self):
+        super().tearDown()
+        self.driver.quit()
+
+        self.q = None
+        self.opt = None
+        self.v = None
+
+        self.u1 = None
+        self.u2 = None
+        self.u3 = None
+        self.u4 = None
+
+        self.p1 = None
+        self.p2 = None
+        self.p3 = None
+        self.p4 = None
+
+        self.c1 = None
+        self.c2 = None
+        self.c3 = None
+        self.c4 = None
+
+        self.base.tearDown()
+    
+    def test_removeByMaritialStatusSelenium(self):
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/census/remove')
+        self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(1) .btn").click()
+        dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
+        dropdown.find_element(By.XPATH, "//option[. = 'VotacionNacionalidadYEstadoCivil']").click()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        dropdown = self.driver.find_element(By.NAME, "maritialStatus-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'Casados']").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
+
 
 
