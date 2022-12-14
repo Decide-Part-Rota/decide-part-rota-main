@@ -21,7 +21,7 @@ from base import mods
 from base.tests import BaseTestCase
 import os
 
-from .views import add_by_maritialStatus_to_census, add_by_nationality_to_census, exporting_census, importing_census, add_to_census, remove_by_maritialStatus_to_census, remove_from_census, add_by_age_to_census, add_by_gender_to_census
+from .views import add_by_maritialStatus_to_census, add_by_nationality_to_census, exporting_census, importing_census, add_to_census, remove_by_maritialStatus_to_census, remove_by_nationality_to_census, remove_from_census, add_by_age_to_census, add_by_gender_to_census
 import csv
 
 
@@ -1057,6 +1057,32 @@ class CensusByGroupStatusAndNationalityDeleteTest(BaseTestCase):
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
         self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
         self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
+
+    def test_remove_by_nationality(self):
+        self.user = AnonymousUser()
+        data = {'voting-select': self.v.id, 'nationality-select': 'ES'}
+        request = self.factory.post('remove/by_group_remove/nationality/remove_by_nationality_to_census', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_nationality_to_census(request)
+        #nos debe dar 401 debido a que no estamos logueados como admin
+        self.assertEqual(response.status_code, 401)
+
+        user_admin = User.objects.get(username="admin")
+        self.user = user_admin
+        data = {'voting-select': self.v.id, 'nationality-select': 'ES' }
+        request = self.factory.post('remove/by_group_remove/nationality/remove_by_nationality_to_census', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_nationality_to_census(request)
+        self.assertEqual(response.status_code, 200)
+        #comprobamos que se han borrado del censo solo los usuarios españoles
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
         self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
 
 
