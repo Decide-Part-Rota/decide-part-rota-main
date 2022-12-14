@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-26 01:00+0000\n"
+"POT-Creation-Date: 2022-12-14 11:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,36 +20,36 @@ msgstr ""
 
 #: booth/templates/booth/booth.html:19
 msgid "logout"
-msgstr ""
+msgstr "Cerrar Sesión"
 
 #: booth/templates/booth/booth.html:33
 msgid "Username"
-msgstr ""
+msgstr "Nombre de usuario"
 
 #: booth/templates/booth/booth.html:41
 msgid "Password"
-msgstr ""
+msgstr "Contraseña"
 
 #: booth/templates/booth/booth.html:49
 msgid "Login"
-msgstr ""
+msgstr "Iniciar Sesión"
 
 #: booth/templates/booth/booth.html:64
 msgid "Vote"
-msgstr ""
+msgstr "Votar"
 
 #: booth/templates/booth/booth.html:160 booth/templates/booth/booth.html:170
 #: booth/templates/booth/booth.html:201
 msgid "Error: "
-msgstr ""
+msgstr "Error: "
 
 #: booth/templates/booth/booth.html:198
 msgid "Conglatulations. Your vote has been sent"
-msgstr ""
+msgstr "Felicidades. Tu voto ha sido enviado."
 
 #: census/templates/census_add.html:14 census/templates/census_remove.html:14
 msgid "Manage Census"
-msgstr "Gestione censo"
+msgstr "Gestionar censo"
 
 #: census/templates/census_add.html:19
 msgid ""
@@ -63,7 +63,9 @@ msgstr ""
 #: census/templates/census_gender.html:33
 #: census/templates/census_import.html:31
 #: census/templates/census_maritialStatus.html:33
+#: census/templates/census_maritialStatus_remove.html:33
 #: census/templates/census_nationality.html:33
+#: census/templates/census_nationality_remove.html:33
 #: census/templates/census_remove.html:31
 msgid "Choose a voting"
 msgstr "Elija votación"
@@ -72,6 +74,14 @@ msgstr "Elija votación"
 msgid "Choose a user"
 msgstr "Elija usuario"
 
+#: census/templates/census_add.html:52 census/templates/census_age.html:52
+#: census/templates/census_gender.html:54
+#: census/templates/census_maritialStatus.html:56
+#: census/templates/census_nationality.html:53
+#: census/templates/census_remove.html:52
+msgid "Submit"
+msgstr "Enviar"
+
 #: census/templates/census_add.html:59
 msgid "Or Add By Group"
 msgstr "O agrega por grupo"
@@ -79,64 +89,75 @@ msgstr "O agrega por grupo"
 #: census/templates/census_age.html:15 census/templates/census_by_group.html:15
 #: census/templates/census_gender.html:15
 #: census/templates/census_maritialStatus.html:15
+#: census/templates/census_nationality.html:15
 msgid "Census Groups"
-msgstr ""
+msgstr "Grupos de censo"
 
 #: census/templates/census_age.html:20 census/templates/census_gender.html:20
 #: census/templates/census_maritialStatus.html:20
 #: census/templates/census_nationality.html:20
-#, fuzzy
-#| msgid ""
-#| "In this view you can manage the census by adding a user to a specific "
-#| "voting"
+#: census/templates/census_nationality_remove.html:20
 msgid "Now you can add groups of voters to an specific voting"
 msgstr ""
 "En esta página puede gestionar el censo agregando a un usuario concreto en "
-"una votación"
+"una votación."
 
 #: census/templates/census_age.html:21
 msgid ""
 "for example, if you select minmun age 22 and maximum age 28, every user who "
 "satisfies that requirement will be added to the chosen voting"
 msgstr ""
+"Por ejemplo, si seleccionas una edad mínima de 22 años y una edad máxima de "
+"28 años, cada usuario que satisfaga este requisito, será añadido a la "
+"votación elegida."
 
 #: census/templates/census_age.html:44
-#, fuzzy
-#| msgid "Choose a user"
-msgid "Choose age"
-msgstr "Elija usuario"
+msgid "Minimum age"
+msgstr "Edad Mínima"
+
+#: census/templates/census_age.html:46
+msgid "Maximum age"
+msgstr "Edad Máxima"
 
 #: census/templates/census_by_group.html:20
+#: census/templates/census_by_group_remove.html:20
 msgid "Select which type of grouping you want to apply"
-msgstr ""
+msgstr "Seleccione el tipo de grupo al que quiere aplicar"
 
 #: census/templates/census_by_group.html:30
+#: census/templates/census_by_group_remove.html:30
 #: census/templates/census_maritialStatus.html:44
+#: census/templates/census_maritialStatus_remove.html:44
+
 msgid "Maritial Status"
-msgstr ""
+msgstr "Estado Civil"
 
 #: census/templates/census_by_group.html:33
+#: census/templates/census_by_group_remove.html:33
 #: census/templates/census_nationality.html:43
+#: census/templates/census_nationality_remove.html:43
 msgid "Nationality"
-msgstr ""
+msgstr "Nacionalidad"
 
 #: census/templates/census_by_group.html:36
+#: census/templates/census_by_group_remove.html:36
 msgid "Age"
-msgstr ""
+msgstr "Edad"
 
 #: census/templates/census_by_group.html:39
+#: census/templates/census_by_group_remove.html:39
 msgid "Gender"
-msgstr ""
+msgstr "Género"
+
+#: census/templates/census_by_group_remove.html:15
+msgid "Census Groups Remove"
+msgstr "Grupos de censo"
 
 #: census/templates/census_export.html:14
 msgid "Export Census"
-msgstr ""
+msgstr "Exportar Censo"
 
 #: census/templates/census_export.html:19
-#, fuzzy
-#| msgid ""
-#| "In this view you can manage the census by adding a user to a specific "
-#| "voting"
 msgid ""
 "In this view you can manage the census by exporting the users participating "
 "in a voting"
@@ -146,27 +167,25 @@ msgstr ""
 
 #: census/templates/census_export.html:42
 msgid "Export"
-msgstr ""
+msgstr "Exportar"
 
 #: census/templates/census_gender.html:21
-msgid "for example, if you select "
+msgid ""
+"for example, if you select 'Male', every user who satisfies that requirement "
+"will be added to the chosen voting"
 msgstr ""
+"Por ejemplo, si selecciona Soltero, cada usuario que satisfaga este "
+"requisito será añadido a la votación elegida."
 
 #: census/templates/census_gender.html:44
-#, fuzzy
-#| msgid "Choose a user"
 msgid "Choose gender"
 msgstr "Elija usuario"
 
 #: census/templates/census_import.html:14
 msgid "Import Census"
-msgstr ""
+msgstr "Importar Censo"
 
 #: census/templates/census_import.html:19
-#, fuzzy
-#| msgid ""
-#| "In this view you can manage the census by adding a user to a specific "
-#| "voting"
 msgid ""
 "In this view you can manage the census by importing users participating in a "
 "voting"
@@ -176,29 +195,47 @@ msgstr ""
 
 #: census/templates/census_import.html:42
 msgid "Upload a csv file"
-msgstr ""
+msgstr "Descargar archivo CSV"
 
 #: census/templates/census_import.html:49
 msgid "Import"
-msgstr ""
+msgstr "Importar"
 
 #: census/templates/census_maritialStatus.html:21
 msgid ""
 "for example, if you select Single, every user who satisfies that requirement "
 "will be added to the chosen voting"
 msgstr ""
+"Por ejemplo, si selecciona Soltero, cada usuario que satisfaga este "
+"requisito será añadido a la votación elegida."
+
+#: census/templates/census_maritialStatus_remove.html:20
+msgid "Now you can remove groups of voters to an specific voting"
+msgstr ""
+"En esta página puedes eliminar grupos de vontantes de una votación específica"
+
+#: census/templates/census_maritialStatus_remove.html:21
+msgid ""
+"for example, if you select Single, every user who satisfies that requirement "
+"will be removed from the chosen voting"
+msgstr ""
+"Por ejemplo, si selecciona Soltero, cada usuario que satisfaga este "
+"requisito será eliminado de la votación elegida."
+
+#: census/templates/census_maritialStatus_remove.html:56
+#: census/templates/census_nationality_remove.html:53
+msgid "Remove"
+msgstr "Eliminar"
 
 #: census/templates/census_nationality.html:21
 msgid ""
 "for example, if you select Spain, every spanish user will be added to the "
 "chosen voting"
 msgstr ""
+"Por ejemplo, si selecciona España, cada usuario español será añadido a la "
+"votación elegida."
 
 #: census/templates/census_remove.html:19
-#, fuzzy
-#| msgid ""
-#| "In this view you can manage the census by adding a user to a specific "
-#| "voting"
 msgid ""
 "In this view you can manage the census by deleting a user from a specific "
 "voting"
@@ -206,11 +243,66 @@ msgstr ""
 "En esta página puede gestionar el censo agregando a un usuario concreto en "
 "una votación"
 
+#: census/templates/census_remove.html:59
+msgid "Or remove by group"
+msgstr "O elimina por grupo"
+
 #: census/templates/footer.html:15
 msgid "Go"
 msgstr "Confirmar"
 
+#: census/templates/result_group_page.html:28
+#: census/templates/result_group_page2.html:28
 #: census/templates/result_page.html:29 census/templates/result_page.html:31
 #: census/templates/result_page.html:33 census/templates/result_page.html:35
 msgid "Return"
-msgstr ""
+msgstr "Volver"
+
+#: voting/templates/voting/listVoting.html:19
+msgid "List of Public Votings"
+msgstr "Listado de Votaciones Públicas"
+
+#: voting/templates/voting/listVoting.html:28
+#: voting/templates/voting/listVoting.html:84
+msgid "Name"
+msgstr "Nombre"
+
+#: voting/templates/voting/listVoting.html:29
+#: voting/templates/voting/listVoting.html:85
+msgid "Description"
+msgstr "Descripción"
+
+#: voting/templates/voting/listVoting.html:30
+#: voting/templates/voting/listVoting.html:86
+msgid "Visibility"
+msgstr "Visibilidad"
+
+#: voting/templates/voting/listVoting.html:31
+#: voting/templates/voting/listVoting.html:87
+msgid "Actions"
+msgstr "Acciones"
+
+#: voting/templates/voting/listVoting.html:40
+#: voting/templates/voting/listVoting.html:69
+msgid "List of votings that you are not participating"
+msgstr "Listado de votaciones en las que no participas"
+
+#: voting/templates/voting/listVoting.html:56
+msgid "Join Census"
+msgstr "Gestionar censo"
+
+#: voting/templates/voting/listVoting.html:96
+msgid "List of votings that you are participating"
+msgstr "Listado de votaciones en las que no participas"
+
+#: voting/templates/voting/listVoting.html:112
+msgid "Go Vote"
+msgstr "Votar"
+
+#: voting/templates/voting/listVoting.html:118
+msgid "Quit Census"
+msgstr "Quitar Censo"
+
+#: voting/templates/voting/listVoting.html:131
+msgid "List of voting that you participating"
+msgstr "Listado de votaciones en la que participas"
