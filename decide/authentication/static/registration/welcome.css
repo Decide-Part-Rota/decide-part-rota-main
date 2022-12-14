@@ -6,15 +6,16 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: auto;
     height: auto;
     width: 21vw;
     border-radius: 10px;
     text-align: center;
     background-color: white;
+        margin: auto;
 }
 
-.pWelcome, .h2Welcome {
+.pWelcome, 
+.h2Welcome {
     color: black;
 }
 
@@ -22,3 +23,4 @@
     text-align: justify;
     margin-left: 25px;
 }
+\n

@@ -4,10 +4,10 @@
 
 header {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
     padding: 30px 10%;
     background-color: #0b0c10;
+        justify-content: flex-end;
 }
 
 .registerForm {
@@ -17,9 +17,9 @@ header {
     margin: auto;
     height: auto;
     width: 47vw;
-    background-color: white;
-    border-radius: 10px;
     text-align: justify;
+        background-color: white;
+        border-radius: 10px;
 }
 
 .Title{
@@ -31,6 +31,8 @@ header {
     text-align: center;
 }
 
-td, th {
-    vertical-align: top;
+td,
+th {
+    vertical-align: top; 
 }
+\n
