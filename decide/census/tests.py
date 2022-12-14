@@ -624,7 +624,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_username").send_keys("admin")
         self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
         self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
-        self.assertTrue(len(self.driver.find_elements(By.LINK_TEXT, "Join census"))==1)
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "public-votings-not-participate"))==1)
 
     #Va al listado y comprueba que hay una votacion en la que no participa, hace click en join census
     #y comprueba que la votación ha pasado a la tabla de "Votaciones en las que participa" debido a que
@@ -635,8 +635,8 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_username").send_keys("admin")
         self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
         self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
-        self.driver.find_element(By.LINK_TEXT, "Join census").click()
-        self.assertTrue(len(self.driver.find_elements(By.LINK_TEXT, "Go Vote"))==2)#2 porque ya había uno más el que acabamos de añadir
+        self.driver.find_element(By.CLASS_NAME, "boton-personalizado-join-census").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "boton-personalizado-go-vote"))==2)#2 porque ya había uno más el que acabo de añadir
 
     #Va al listado y comprueba que hay una votacion en la que participa
     def test_listado_votacion_participa(self):
@@ -645,7 +645,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_username").send_keys("admin")
         self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
         self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
-        self.assertTrue(len(self.driver.find_elements(By.LINK_TEXT, "Quit Census"))==1)
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "public-votings-participate")))
 
     #Va al listado y comprueba que hay una votacion en la que participa, hace click en quit census
     #y comprueba que la votación ha pasado a la tabla de "Votaciones en las que no participa" debido a que
@@ -656,8 +656,8 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_username").send_keys("admin")
         self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
         self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
-        self.driver.find_element(By.LINK_TEXT, "Quit Census").click()
-        self.assertTrue(len(self.driver.find_elements(By.LINK_TEXT, "Join census"))==2)#2 porque ya había uno más el que acabamos de añadir
+        self.driver.find_element(By.CLASS_NAME, "boton-personalizado-quit-census").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "boton-personalizado-join-census"))==2)#2 porque ya había uno más el que acabo de añadir
 
 class CensusByGroup(BaseTestCase):
     def setUp(self):
