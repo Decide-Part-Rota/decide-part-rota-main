@@ -497,7 +497,6 @@ def remove_by_age_to_census(request):
                 census_by_voting = Census.objects.get(voting_id=voting_id,voter_id=user.id)
                 census_by_voting.delete()
             except Census.DoesNotExist:
-                census = Census(voting_id=voting_id, voter_id=user.id)
         messages.success(request, "Users removed of the voting correctly")
         return HttpResponse(template.render({}, request), status=200)
 
