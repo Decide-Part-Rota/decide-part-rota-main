@@ -148,7 +148,7 @@ class GraphicsTestCases(BaseTestCase):
                     voter = voters.pop()
                     mods.post('store', json=data)
                     i+=1
-            else:       
+            else: 
                 clear[opt.number] = 0
                 pk = v.pub_key
                 p, g, y = (pk.p, pk.g, pk.y)
@@ -172,7 +172,7 @@ class GraphicsTestCases(BaseTestCase):
             v.tally_votes(self.token)
             #Se comprueba que la opción más votada es Chocolate
             self.assertEquals(funcionWinner(voting_id=v.id)['option'], 'Chocolate')
-    
+
     def test_loser_option(self):
         v = Voting.objects.get(name='Helado')
         v.create_pubkey()
@@ -395,7 +395,6 @@ class SeleniumGraphics(StaticLiveServerTestCase):
             v.tally_votes(self.base.token)
             #Se comprueba que la opción más votada es Chocolate
             self.driver.get('{}/graphics/{}'.format(self.live_server_url, v.pk))
-            response = funcionWinner(voting_id=v.id)
             ganador = self.driver.find_element(By.ID, 'winner').text
             self.assertEquals(ganador, 'El voto ganador es "Chocolate"')
    
@@ -457,6 +456,5 @@ class SeleniumGraphics(StaticLiveServerTestCase):
             v.tally_votes(self.base.token)
             #Se comprueba que la opción más votada es Chocolate
             self.driver.get('{}/graphics/{}'.format(self.live_server_url, v.pk))
-            response = funcionLoser(voting_id=v.id)
             ganador = self.driver.find_element(By.ID, 'loser').text
             self.assertEquals(ganador, 'El voto perdedor es "Vainilla"')
