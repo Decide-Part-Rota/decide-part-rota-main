@@ -9,12 +9,58 @@ from rest_framework.test import APITestCase
 
 from base import mods
 from base.tests import BaseTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
+from base import mods
+from base.tests import BaseTestCase
 from census.models import Census
 from mixnet.mixcrypt import ElGamal
 from mixnet.mixcrypt import MixCrypt
 from mixnet.models import Auth
 from voting.models import Voting, Question, QuestionOption
 
+class VotingTestView(StaticLiveServerTestCase):
+
+    def setUp(self):
+        #Load base test functionality for decide
+        self.base = BaseTestCase()
+        self.base.setUp()
+
+        q = Question(desc='Prueba para votacion publica')
+        q.save()
+
+        #Creamos respuestas
+        opt = QuestionOption(question=q, option='option 1')
+        opt2 = QuestionOption(question=q, option='option 2')
+        opt3 = QuestionOption(question=q, option='option 3')
+        opt4 = QuestionOption(question=q, option='option 4')
+        opt5 = QuestionOption(question=q, option='option 5')
+        opt.save()
+        opt2.save()
+        opt3.save()
+        opt4.save()
+        opt5.save()
+        self.v1 = Voting(name='Votacion Publica', question=q, public=True)
+        self.v2 = Voting(name='Votacion No Publica', question=q, public=False)
+        self.v1.save()
+        self.v2.save()
+
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.driver.quit()
+
+        self.q = None
+        self.opt = None
+        self.opt2 = None
+        self.opt3 = None
+        self.opt4 = None
+        self.opt5 = None
+
+        self.v1 = None
+        self.v2 = None
+
+        self.base.tearDown()
 
 class VotingTestCase(BaseTestCase):
 
@@ -208,3 +254,47 @@ class VotingTestCase(BaseTestCase):
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already tallied')
+
+    def test_createPublicVoting(self):
+        q = Question(desc='Prueba para votacion publica')
+        q.save()
+
+        #Creamos respuestas
+        opt = QuestionOption(question=q, option='option 1')
+        opt2 = QuestionOption(question=q, option='option 2')
+        opt3 = QuestionOption(question=q, option='option 3')
+        opt4 = QuestionOption(question=q, option='option 4')
+        opt5 = QuestionOption(question=q, option='option 5')
+
+        opt.save()
+        opt2.save()
+        opt3.save()
+        opt4.save()
+        opt5.save()
+
+        v = Voting(name='Votacion Publica', question=q, public=True)
+        v.save()
+
+        self.assertTrue(Voting.objects.all().filter(public=True, name='Votacion Publica').exists())
+
+    def test_createNoPublicVoting(self):
+        q = Question(desc='Prueba para votacion publica')
+        q.save()
+
+        #Creamos respuestas
+        opt = QuestionOption(question=q, option='option 1')
+        opt2 = QuestionOption(question=q, option='option 2')
+        opt3 = QuestionOption(question=q, option='option 3')
+        opt4 = QuestionOption(question=q, option='option 4')
+        opt5 = QuestionOption(question=q, option='option 5')
+
+        opt.save()
+        opt2.save()
+        opt3.save()
+        opt4.save()
+        opt5.save()
+
+        v = Voting(name='Votacion No Publica', question=q, public=False)
+        v.save()
+
+        self.assertTrue(len(Voting.objects.all().filter(public=False, name='Votacion No Publica'))==1)
