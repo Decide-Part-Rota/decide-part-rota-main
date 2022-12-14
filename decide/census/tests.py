@@ -14,6 +14,7 @@ from rest_framework.test import APIClient
 from authentication.models import Person
 
 from .models import Census
+from .views import add_user, delete_user_from_census
 from authentication.models import Person
 #Added the necessary models
 from voting.models import Voting, Question, QuestionOption
@@ -202,6 +203,61 @@ class CensusAddRemove(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(existing_censuss, Census.objects.count())
 
+    def test_add_user(self):
+
+        self.user = User(username= 'user_prueba')
+        self.user.save()
+
+        q1 = Question(desc='Prueba para añadir a censo')
+        q1.save()
+
+        #Creamos respuestas
+        opt = QuestionOption(question=q1, option='option 1')
+        opt2 = QuestionOption(question=q1, option='option 2')
+        opt3 = QuestionOption(question=q1, option='option 3')
+        opt4 = QuestionOption(question=q1, option='option 4')
+        opt5 = QuestionOption(question=q1, option='option 5')
+        
+        opt.save()
+        opt2.save()
+        opt3.save()
+        opt4.save()
+        opt5.save()
+
+        self.v1 = Voting(name='Votacion Publica', question=q1, public=True)
+        self.v1.save()
+
+        add_user(self, self.v1.id)
+
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v1.id, voter_id=self.user.id).exists())
+
+    def test_remove_user_from_census(self):
+
+        self.user = User(username= 'user_prueba')
+        self.user.save()
+
+        q1 = Question(desc='Prueba para añadir a censo')
+        q1.save()
+
+        #Creamos respuestas
+        opt = QuestionOption(question=q1, option='option 1')
+        opt2 = QuestionOption(question=q1, option='option 2')
+        opt3 = QuestionOption(question=q1, option='option 3')
+        opt4 = QuestionOption(question=q1, option='option 4')
+        opt5 = QuestionOption(question=q1, option='option 5')
+        opt.save()
+        opt2.save()
+        opt3.save()
+        opt4.save()
+        opt5.save()
+
+        self.v1 = Voting(name='Votacion Publica', question=q1, public=True)
+        self.v1.save()
+
+        delete_user_from_census(self, self.v1.id)
+
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v1.id, voter_id=self.user.id).exists())
+
 class CensusExportImport(BaseTestCase):
     def setUp(self):
         super().setUp()
@@ -344,6 +400,34 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.census = Census(voting_id=self.v.id, voter_id=self.voter.id)
         self.census.save()
 
+        self.q1 = Question(desc='Prueba para añadir a censo')
+        self.q1.save()
+
+        #Creamos respuestas
+        self.opt = QuestionOption(question=self.q1, option='option 1')
+        self.opt2 = QuestionOption(question=self.q1, option='option 2')
+        self.opt3 = QuestionOption(question=self.q1, option='option 3')
+        self.opt4 = QuestionOption(question=self.q1, option='option 4')
+        self.opt5 = QuestionOption(question=self.q1, option='option 5')
+        self.opt.save()
+        self.opt2.save()
+        self.opt3.save()
+        self.opt4.save()
+        self.opt5.save()
+
+        self.v1 = Voting(name='Votacion Publica', question=self.q1, public=True)
+        self.v1.save()
+
+        self.v2 = Voting(name='Votacion De Prueba Publica', question=self.q1, public=True)
+        self.v2.save()
+
+        self.voter2 = User.objects.get(username='admin')
+        self.voter2.save()
+
+        self.census2 = Census(voting_id=self.v2.id, voter_id=self.voter2.id)
+        self.census2.save()
+
+
         options = webdriver.ChromeOptions()
         options.headless = True
         self.driver = webdriver.Chrome(options=options)
@@ -365,6 +449,16 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.v = None
         self.census = None
         self.voter = None
+
+        self.q1 = None
+        self.opt = None
+        self.opt2 = None
+        self.opt3 = None
+        self.opt4 = None
+        self.opt5 = None
+        self.v1 = None
+        self.census2 = None
+        self.voter2 = None
 
         self.base.tearDown()
 
@@ -520,6 +614,48 @@ class ViewTestCase(StaticLiveServerTestCase):
         message = self.driver.find_element(By.TAG_NAME,"ul").find_element(By.TAG_NAME,"li").text
         self.assertEqual(message, "Census was exported correctly")
         self.assertTrue(os.path.exists('./census/export/export_' + self.v.name + '.csv'))
+
+    #Va al listado y comprueba que hay una votacion en la que no participa
+    def test_listado_votacion_no_participa(self):
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
+        self.assertTrue(len(self.driver.find_elements(By.LINK_TEXT, "Join census"))==1)
+
+    #Va al listado y comprueba que hay una votacion en la que no participa, hace click en join census
+    #y comprueba que la votación ha pasado a la tabla de "Votaciones en las que participa" debido a que
+    #ya ha sido unido al censo
+    def test_listado_votacion_no_participa_despues_añadir_censo(self):
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
+        self.driver.find_element(By.LINK_TEXT, "Join census").click()
+        self.assertTrue(len(self.driver.find_elements(By.LINK_TEXT, "Go Vote"))==2)#2 porque ya había uno más el que acabamos de añadir
+
+    #Va al listado y comprueba que hay una votacion en la que participa
+    def test_listado_votacion_participa(self):
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
+        self.assertTrue(len(self.driver.find_elements(By.LINK_TEXT, "Quit Census"))==1)
+
+    #Va al listado y comprueba que hay una votacion en la que participa, hace click en quit census
+    #y comprueba que la votación ha pasado a la tabla de "Votaciones en las que no participa" debido a que
+    #ya ha sido eliminado del censo de dicha votación
+    def test_listado_votacion_participa_despues_quitar_del_censo(self):
+
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
+        self.driver.find_element(By.LINK_TEXT, "Quit Census").click()
+        self.assertTrue(len(self.driver.find_elements(By.LINK_TEXT, "Join census"))==2)#2 porque ya había uno más el que acabamos de añadir
 
 class CensusByGroup(BaseTestCase):
     def setUp(self):
