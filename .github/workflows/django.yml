@@ -85,5 +85,5 @@ jobs:
         run: |
           cd docker
           docker push decidepartrota/decide_part_rota:decide_web
-          docker push vicsotber/decide_part_rota:decide_nginx
-          docker push vicsotber/decide_part_rota-1:postgres
+          docker push decidepartrota/decide_part_rota:decide_nginx
+          docker push decidepartrota/decide_part_rota:postgres
