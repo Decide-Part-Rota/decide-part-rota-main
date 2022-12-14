@@ -3,14 +3,17 @@
 const createLoginForm = React.createElement;
 
 class LoginForm extends React.Component {
-  
   render() {
     return createLoginForm(
-        "body",{},
-        createLoginForm("table",{className:"table"},
-            createLoginForm("tr",{},
+        "body",
+        {},
+        createLoginForm("table",
+            {className:"table"},
+            createLoginForm(
+                "tr",{},
                 createLoginForm("th",{scope:"row"},"Usuario / Email"),
-                createLoginForm("td",{},
+                createLoginForm(
+                    "td",{},
                     createLoginForm("input",{type:"text",name:"username"}),
                 )
             ),
@@ -21,8 +24,7 @@ class LoginForm extends React.Component {
                 ),
             ),
         ),
-    );
-  }
+    );}
     
 }
 
