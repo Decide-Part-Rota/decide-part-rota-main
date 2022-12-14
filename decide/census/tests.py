@@ -22,7 +22,7 @@ from base import mods
 from base.tests import BaseTestCase
 import os
 
-from .views import add_by_maritialStatus_to_census, add_by_nationality_to_census, exporting_census, importing_census, add_to_census, remove_from_census, add_by_age_to_census, add_by_gender_to_census
+from .views import add_by_maritialStatus_to_census, add_by_nationality_to_census, exporting_census, importing_census, add_to_census, remove_by_maritialStatus_to_census, remove_by_nationality_to_census, remove_from_census, add_by_age_to_census, add_by_gender_to_census
 import csv
 
 
@@ -1076,6 +1076,258 @@ class CensusByNationalityAndStatusSelenium(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_username").send_keys("admin")
         self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
         self.driver.get(f'{self.live_server_url}/census/add')
+        self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(2) .btn").click()
+        dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
+        dropdown.find_element(By.XPATH, "//option[. = 'VotacionNacionalidadYEstadoCivil']").click()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        dropdown = self.driver.find_element(By.NAME, "nationality-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'Spain']").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
+
+class CensusByGroupStatusAndNationalityDeleteTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.q = Question(desc='Borrar')
+        self.q.save()
+
+        self.opt1 = QuestionOption(question=self.q, option='opcion 1')
+        self.opt1.save()
+        self.opt2 = QuestionOption(question=self.q, option='opcion 2')
+        self.opt2.save()
+
+        self.v = Voting(name='VotacionBorradoNacionalidadYEstadoCivil', question=self.q)
+        self.v.save()
+
+        self.u1 = User(username="soltero1")
+        self.u2 = User(username="soltero2")
+        self.u3 = User(username="casado1")
+        self.u4 = User(username="viudo1")
+
+        self.u1.save()
+        self.u2.save()
+        self.u3.save()
+        self.u4.save()
+
+        self.p1 = Person(user=self.u1, age = 20,status="soltero", country="ES")
+        self.p2 = Person(user=self.u2, age = 20,status="soltero", country="ES")
+        self.p3 = Person(user=self.u3, age = 20,status="casado", country="ES")
+        self.p4 = Person(user=self.u4, age = 20,status="viudo", country="AD")
+
+        self.p1.save()
+        self.p2.save()
+        self.p3.save()
+        self.p4.save()
+
+        #añadimos al censo manualmente
+        self.c1 = Census(voting_id=self.v.id, voter_id=self.u1.id)
+        self.c2 = Census(voting_id=self.v.id, voter_id=self.u2.id)
+        self.c3 = Census(voting_id=self.v.id, voter_id=self.u3.id)
+        self.c4 = Census(voting_id=self.v.id, voter_id=self.u4.id)
+
+        self.c1.save()
+        self.c2.save()
+        self.c3.save()
+        self.c4.save()
+
+
+        self.factory = RequestFactory()
+        self.sm = SessionMiddleware()
+        self.mm = MessageMiddleware()
+
+    def tearDown(self):
+        super().tearDown()
+        self.q = None
+        self.opt = None
+        self.v = None
+
+        self.u1 = None
+        self.u2 = None
+        self.u3 = None
+        self.u4 = None
+
+        self.p1 = None
+        self.p2 = None
+        self.p3 = None
+        self.p4 = None
+
+        self.c1 = None
+        self.c2 = None
+        self.c3 = None
+        self.c4 = None
+
+        self.factory = None
+        self.sm = None
+        self.mm = None
+
+    def test_remove_by_maritialStatus(self):
+        self.user = AnonymousUser()
+        data = {'voting-select': self.v.id, 'maritialStatus-select': 'soltero'}
+        request = self.factory.post('remove/by_group_remove/maritialStatus/remove_by_maritialStatus_to_census', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_maritialStatus_to_census(request)
+        #nos debe dar 401 debido a que no estamos logueados como admin
+        self.assertEqual(response.status_code, 401)
+
+        user_admin = User.objects.get(username="admin")
+        self.user = user_admin
+        data = {'voting-select': self.v.id, 'maritialStatus-select': 'soltero' }
+        request = self.factory.post('remove/by_group_remove/maritialStatus/remove_by_maritialStatus_to_census', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_maritialStatus_to_census(request)
+        self.assertEqual(response.status_code, 200)
+        #comprobamos que se han borrado del censo solo los usuarios solteros
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
+
+    def test_remove_by_nationality(self):
+        self.user = AnonymousUser()
+        data = {'voting-select': self.v.id, 'nationality-select': 'ES'}
+        request = self.factory.post('remove/by_group_remove/nationality/remove_by_nationality_to_census', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_nationality_to_census(request)
+        #nos debe dar 401 debido a que no estamos logueados como admin
+        self.assertEqual(response.status_code, 401)
+
+        user_admin = User.objects.get(username="admin")
+        self.user = user_admin
+        data = {'voting-select': self.v.id, 'nationality-select': 'ES' }
+        request = self.factory.post('remove/by_group_remove/nationality/remove_by_nationality_to_census', data, format='json')
+        self.sm.process_request(request)
+        self.mm.process_request(request)
+        request.user = self.user
+        response = remove_by_nationality_to_census(request)
+        self.assertEqual(response.status_code, 200)
+        #comprobamos que se han borrado del censo solo los usuarios españoles
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u1.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u2.id).exists())
+        self.assertFalse(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u3.id).exists())
+        self.assertTrue(Census.objects.all().filter(voting_id=self.v.id, voter_id=self.u4.id).exists())
+
+class CensusByNationalityAndStatusRemoveSelenium(StaticLiveServerTestCase):
+    def setUp(self):
+        #Load base test functionality for decide
+        self.base = BaseTestCase()
+        self.base.setUp()
+        
+        self.q = Question(desc='Description')
+        self.q.save()
+        
+        self.opt1 = QuestionOption(question=self.q, option='opcion 1')
+        self.opt1.save()
+        self.opt2 = QuestionOption(question=self.q, option='opcion 2')
+        self.opt2.save()
+
+        self.v = Voting(name='VotacionNacionalidadYEstadoCivil', question=self.q)
+        self.v.save()
+
+        self.u1 = User(username="soltero1")
+        self.u2 = User(username="soltero2")
+        self.u3 = User(username="casado1")
+        self.u4 = User(username="viudo1")
+
+        self.u1.save()
+        self.u2.save()
+        self.u3.save()
+        self.u4.save()
+
+        self.p1 = Person(user=self.u1, age = 20,status="soltero", country="ES")
+        self.p2 = Person(user=self.u2, age = 20,status="soltero", country="ES")
+        self.p3 = Person(user=self.u3, age = 20,status="casado", country="ES")
+        self.p4 = Person(user=self.u4, age = 20,status="viudo", country="AD")
+
+        self.p1.save()
+        self.p2.save()
+        self.p3.save()
+        self.p4.save()
+
+        #añadimos al censo manualmente
+        self.c1 = Census(voting_id=self.v.id, voter_id=self.u1.id)
+        self.c2 = Census(voting_id=self.v.id, voter_id=self.u2.id)
+        self.c3 = Census(voting_id=self.v.id, voter_id=self.u3.id)
+        self.c4 = Census(voting_id=self.v.id, voter_id=self.u4.id)
+
+        self.c1.save()
+        self.c2.save()
+        self.c3.save()
+        self.c4.save()
+
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+
+        super().setUp()
+            
+    def tearDown(self):
+        super().tearDown()
+        self.driver.quit()
+
+        self.q = None
+        self.opt = None
+        self.v = None
+
+        self.u1 = None
+        self.u2 = None
+        self.u3 = None
+        self.u4 = None
+
+        self.p1 = None
+        self.p2 = None
+        self.p3 = None
+        self.p4 = None
+
+        self.c1 = None
+        self.c2 = None
+        self.c3 = None
+        self.c4 = None
+
+        self.base.tearDown()
+    
+    def test_removeByMaritialStatusSelenium(self):
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/census/remove')
+        self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(1) .btn").click()
+        dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
+        dropdown.find_element(By.XPATH, "//option[. = 'VotacionNacionalidadYEstadoCivil']").click()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        dropdown = self.driver.find_element(By.NAME, "maritialStatus-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'Casados']").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
+    
+    def test_removeByNationalitySelenium(self):
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/census/remove')
         self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
         self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(2) .btn").click()
         dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
