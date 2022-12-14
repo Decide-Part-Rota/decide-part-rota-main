@@ -731,7 +731,7 @@ class CensusByGroupSelenium(StaticLiveServerTestCase):
         self.p4.save()
 
         options = webdriver.ChromeOptions()
-        options.headless = False
+        options.headless = True
         self.driver = webdriver.Chrome(options=options)
 
         super().setUp()
@@ -853,7 +853,7 @@ class CensusByGroupSelenium(StaticLiveServerTestCase):
         self.c2.save()
         self.c3.save()
         self.c4.save()
-        
+
         self.driver.get(f'{self.live_server_url}/admin/')
         self.driver.find_element(By.ID, "id_username").send_keys("admin")
         self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
