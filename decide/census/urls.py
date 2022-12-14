@@ -35,5 +35,6 @@ urlpatterns = [
     path('remove/by_group_remove/age/remove', views.remove_by_age_to_census),
     path('remove/by_group_remove/gender', views.census_gender_remove),
     path('remove/by_group_remove/gender/remove', views.remove_by_gender_to_census),
-
+    path('remove/by_group_remove/maritialStatus/remove_by_maritialStatus_to_census', views.remove_by_maritialStatus_to_census),
+    path('remove/by_group_remove/nationality/remove_by_nationality_to_census', views.remove_by_nationality_to_census),
 ]

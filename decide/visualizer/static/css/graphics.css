@@ -36,3 +36,29 @@ header .logo {
   width: 650px;
   height: 450px;
 }
+
+.tarjeta {
+  display: flex;
+  background-color: rgb(69, 177, 223);
+  flex-direction: column;
+  justify-content: space-between;
+  width: 600px;
+  border: 1px solid rgb(0, 0, 0);
+  box-shadow: 2px 2px 8px 4px #d3d3d3d1;
+  border-radius: 15px;
+  font-family: sans-serif;
+  margin-top: 25px;
+  margin-left: 25px;
+}
+
+.cuerpo {
+  padding: 10px;
+}
+
+.letras {
+  font-size: x-large;
+}
+
+.titulo {
+  padding: 10px;
+}
