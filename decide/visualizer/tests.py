@@ -393,7 +393,6 @@ class SeleniumGraphics(StaticLiveServerTestCase):
                     voter = voters.pop()
                     mods.post('store', json=data)
                     i+=1
-                    
             self.base.login()  # set token
             v.tally_votes(self.base.token)
             #Se comprueba que la opción más votada es Chocolate
