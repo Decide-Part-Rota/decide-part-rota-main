@@ -16,7 +16,7 @@
     
 
     <body>
-        <h2 style="text-align:center">{% trans "List of Public Votings" %}</h2>
+        <h2 class="List Public Votings" style="text-align:center">{% trans "List of Public Votings" %}</h2>
         
         <table class="table table-bordered">
 
@@ -37,7 +37,7 @@
             <tbody>
 
                 {% if votaciones_no_participa %}
-                    <h4 style="text-align:center">{% trans "List of votings that you are not participating" %}</h4>
+                    <h4 class="public-votings-not-participate" style="text-align:center">{% trans "List of votings that you are not participating" %}</h4>
     
                     <!-- Cojo la colección votaciones que le paso en views.py --> 
                     {% for votacion in votaciones_no_participa %} 
@@ -51,7 +51,7 @@
 
                             <td>
 
-                                <a class="boton-personalizado" href="/census/addUser/{{votacion.id}}">
+                                <a class="boton-personalizado-join-census" href="/census/addUser/{{votacion.id}}">
 
                                     {% trans "Join Census" %}
 
@@ -93,7 +93,7 @@
             <tbody>
 
                 {% if votaciones_participa %}
-                    <h4 style="text-align:center"> {% trans "List of votings that you are participating" %}</h4>
+                    <h4 class="public-votings-participate" style="text-align:center"> {% trans "List of votings that you are participating" %}</h4>
     
                     <!-- Cojo la colección votaciones que le paso en views.py --> 
                     {% for votacion in votaciones_participa %} 
@@ -107,13 +107,13 @@
 
                             <td>
 
-                                <a class="boton-personalizado" href="/booth/{{votacion.id}}">
+                                <a class="boton-personalizado-go-vote" href="/booth/{{votacion.id}}">
 
                                     {% trans "Go Vote" %}
 
                                 </a>
 
-                                <a class="boton-personalizado" href="/census/deleteUser/{{votacion.id}}">
+                                <a class="boton-personalizado-quit-census" href="/census/deleteUser/{{votacion.id}}">
 
                                     {% trans "Quit Census" %}
 
