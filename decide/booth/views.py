@@ -1,11 +1,9 @@
 import json
 from django.views.generic import TemplateView
-from rest_framework.views import APIView
 from django.conf import settings
 from django.http import Http404
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
-
+from census.models import Census
+from voting.models import Voting
 from base import mods
 
 
@@ -34,12 +32,27 @@ class BoothView(TemplateView):
         return context
 
 class BoothListView(TemplateView):
-    
     template_name = 'booth/boothList.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        censo = Census.objects.filter(voter_id=self.request.user.id)
+        votaciones_participa = [c.voting_id for c in censo]
+        votaciones = Voting.objects.filter(public=True)
+
+        dict_no_participa= {}
+        dict_participa= {}
+        for v in votaciones:
+            tupla=(v.id,v.name,v.desc,v.public)
+            if v.id not in votaciones_participa:
+                dict_no_participa.update({v.id:tupla})
+            else:
+                dict_participa.update({v.id:tupla})
+                print("hey")
+
         context["userdata"]=self.request.user
+        context["votacionesNoParticipa"]=json.dumps(dict_no_participa, indent=4)
+        context["votacionesParticipa"]=json.dumps(dict_participa, indent=4)
         return context
 
 
@@ -48,5 +61,22 @@ class BoothListPrivateView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        censo = Census.objects.filter(voter_id=self.request.user.id)
+        votaciones_participa = [c.voting_id for c in censo]
+        votaciones = Voting.objects.filter(public=True)
+
+        dict_no_participa= {}
+        dict_participa= {}
+        for v in votaciones:
+            tupla=(v.id,v.name,v.desc,v.public)
+            if v.id not in votaciones_participa:
+                dict_no_participa.update({v.id:tupla})
+            else:
+                dict_participa.update({v.id:tupla})
+                print("hey")
+
         context["userdata"]=self.request.user
+        context["votacionesNoParticipa"]=json.dumps(dict_no_participa, indent=4)
+        context["votacionesParticipa"]=json.dumps(dict_participa, indent=4)
         return context
+

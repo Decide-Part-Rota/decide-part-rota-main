@@ -28,18 +28,7 @@
             <div id="title"></div>
             <form method="POST">
                 {%csrf_token%}
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <th scope="row">Usuario / Email </th>
-                            <td><input type="text" name="username"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Contraseña</th>
-                            <td><input type="password" name="password"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <table id="loginForm" class="table"></table>
 
                 <div class="buttons">
             
@@ -68,6 +57,7 @@
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script defer src="{% static "reactComponents/loginTitle.js" %}"></script>
+    <script defer src="{% static "reactComponents/loginForm.js" %}"></script>
 
 {% endblock %}
 
