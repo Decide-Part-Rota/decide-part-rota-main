@@ -9,6 +9,13 @@ from rest_framework.status import (
         HTTP_401_UNAUTHORIZED as ST_401,
         HTTP_409_CONFLICT as ST_409
 )
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.template import loader
+from voting.models import Voting
+from voting.views import VotacionList
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 from base.perms import UserIsStaff
 from .models import Census
