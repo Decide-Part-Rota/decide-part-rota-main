@@ -1186,6 +1186,29 @@ class CensusByNationalityAndStatusSelenium(StaticLiveServerTestCase):
         dropdown.find_element(By.XPATH, "//option[. = 'Casados']").click()
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
+    
+    def test_removeByNationalitySelenium(self):
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID, "id_username").send_keys("admin")
+        self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
+        self.driver.get(f'{self.live_server_url}/census/remove')
+        self.driver.find_element(By.CSS_SELECTOR, ".group-button").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".col:nth-child(2) .btn").click()
+        dropdown = self.driver.find_element(By.ID, "specificSizeSelect")
+        dropdown.find_element(By.XPATH, "//option[. = 'VotacionNacionalidadYEstadoCivil']").click()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).click_and_hold().perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).perform()
+        element = self.driver.find_element(By.ID, "specificSizeSelect")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(element).release().perform()
+        dropdown = self.driver.find_element(By.NAME, "nationality-select")
+        dropdown.find_element(By.XPATH, "//option[. = 'Spain']").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
 
 
 
