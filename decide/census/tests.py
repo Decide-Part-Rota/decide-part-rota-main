@@ -23,7 +23,8 @@ from base.tests import BaseTestCase
 import os
 
 from .views import remove_by_age_to_census, remove_by_gender_to_census, remove_by_maritialStatus_to_census, remove_by_nationality_to_census
-from .views import add_by_maritialStatus_to_census, add_by_nationality_to_census, exporting_census, importing_census, add_to_census, remove_from_census, add_by_age_to_census, add_by_gender_to_census
+from .views import add_by_maritialStatus_to_census, add_by_nationality_to_census, exporting_census, importing_census, add_to_census, remove_from_census
+from .views import add_by_age_to_census, add_by_gender_to_census
 import csv
 
 
