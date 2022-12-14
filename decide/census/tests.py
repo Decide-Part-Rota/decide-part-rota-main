@@ -785,7 +785,7 @@ class CensusByGroupSelenium(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "alert-success"))==1)
     
-   def test_deleteByAgeSelenium(self):
+    def test_deleteByAgeSelenium(self):
         self.c1 = Census(voting_id = self.v.id, voter_id=self.u1.id)
         self.c2 = Census(voting_id = self.v.id, voter_id=self.u2.id)
         self.c3 = Census(voting_id = self.v.id, voter_id=self.u3.id)
