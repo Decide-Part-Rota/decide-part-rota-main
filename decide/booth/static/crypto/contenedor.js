@@ -2,15 +2,19 @@
 
 const create = React.createElement;
 const datos = document.getElementById("hide").value;
-const dicc = JSON.parse(voting);
+//const dicc = Array.map(voting);
+
+const nombreBueno = voting.name
+const id = voting.id
+const desc = voting.desc
 
 //const view = [];
-const keys = Object.keys(dicc);
+//const keys = Object.keys(dicc);
 
-const id = keys[0];
-const lista = dicc[0];
-const nombre = lista[1];
-const desc = lista[2];
+//const id = keys[0];
+//const lista = dicc[0];
+//const nombre = lista[1];
+//const desc = lista[2];
 
 
 
@@ -24,9 +28,9 @@ class Contenedor extends React.Component {
 
 
     return create("body", {}, 
-      create("fiv",{key: "id", className: "flip-card"},
-      create("td",{key: "name", className: "flip-card-inner"},
-      create("td",{key: "desc", className: "flip-card-front"},nombre),
+      create("div",{key: id, className: "flip-card"},
+      create("div",{ className: "flip-card-inner"},
+      create("div",{ className: "flip-card-front"},nombreBueno),
       create("div", {className: "flip-card-back"},
       create('h3',{className:'Logo'},desc)))),
 
