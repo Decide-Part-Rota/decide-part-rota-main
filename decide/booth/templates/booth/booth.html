@@ -11,6 +11,8 @@
 {% endblock %}
 
 {% block content %}
+    <textarea id="hide" style="display:none;">{{voting}}</textarea>
+
     <div id="app-booth">
         <!-- Navbar -->
         <b-navbar type="dark" variant="secondary">
@@ -25,11 +27,11 @@
         <b-alert :variant="alertLvl" dismissible v-model="alertShow">
             [[ alertMsg ]]
         </b-alert>
-        <div id="contenedor" message="{{ voting.name }}">        </div>
-  
+        <!--<div id="contenedor" :message="voting.name">        </div>-->
+        <div id="caja"></div>
         <div class="voting">
              
-            <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
+            <h1 id="nombre">[[ voting.id ]] - [[ voting.name ]]</h1>
 
             <!-- Register -->
             <b-form @submit="onSubmitLogin" v-if="signup">
@@ -73,6 +75,8 @@
 
     </div>
 {% endblock %}
+
+
 
 {% block extrabody %}
     <!-- needed to generate big random -->
@@ -216,8 +220,11 @@
         })
     </script>
 
+
+
+
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <script src="{%static "crypto/contenedor.js" %}"></script>
+    <script src="{% static "crypto/contenedor.js" %}"></script>
 </body>
 {% endblock %}
