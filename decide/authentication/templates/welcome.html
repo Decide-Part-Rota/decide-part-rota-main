@@ -11,18 +11,17 @@
     <header>
         <div class="wrapper">
             
-            <div class="logo">Decide</div>
+            <div class="logo">Decide Voting Platform</div>
             
             <nav>
-                <a href="#">Perfil</a>
-                <a href="#">Censo</a>
-                <a href="#">Mis votaciones</a>
-                <a href="{% url 'salir'%}">Cerrar sesión</a>
+                <a href="#">Profile</a>
+                <a href="voting/listadoVotaciones">Public votings</a>
+                <a href="{% url 'salir'%}">Logout</a>
             </nav>
         </div>
     </header>
 
-    <h2>¡Bienvenido, {{user.username}}!</h2>
+    <h2>Welcome, {{user.username}}!</h2>
 
 </body>
 </html>

@@ -27,13 +27,11 @@ from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib.auth.decorators import login_required
 
-
 class GetUserView(APIView):
     def post(self, request):
         key = request.data.get('token', '')
         tk = get_object_or_404(Token, key=key)
         return Response(UserSerializer(tk.user, many=False).data)
-
 
 class LogoutView(APIView):
     def post(self, request):
@@ -45,7 +43,6 @@ class LogoutView(APIView):
             pass
 
         return Response({})
-
 
 class RegisterView(APIView):
     def post(self, request):
@@ -67,7 +64,6 @@ class RegisterView(APIView):
         except IntegrityError:
             return Response({}, status=HTTP_400_BAD_REQUEST)
         return Response({'user_pk': user.pk, 'token': token.key}, HTTP_201_CREATED)
-
 
 def loginForm(request):
     if request.method=="POST":
@@ -92,16 +88,7 @@ def loginForm(request):
     else:
         form = LoginForm()
     return render(request, 'login.html', {'loginForm':form})
-
-
-
-
-
-
-
-
-
-    
+   
 def register(request):
     form= PersonForm()
     if request.method=="POST":
@@ -125,20 +112,15 @@ def register(request):
             return redirect('/')
     return render(request,'register.html',{'form':form})   
 
-
 @login_required(login_url='authentication/accounts/login/')
 def welcome(request):
     usuario = request.user
     print(request.user)
     return render(request, 'welcome.html', {'user':usuario})
 
-
-
-
 def salir(request):
     logout(request)
     return redirect('/')
-
 
 def complete(request):
     if request.user.is_authenticated and not Person.objects.filter(user = request.user.id).exists():
@@ -162,4 +144,3 @@ def complete(request):
         return render(request,'complete.html',{'form':form})
     else:
         return redirect('/')
-
