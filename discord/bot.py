@@ -39,19 +39,7 @@ async def on_error(event, *args, **kwargs):
 @bot.event
 async def on_command_error(ctx, error):
     message = ""
-    if isinstance(error, commands.errors.CommandNotFound):
-        message += 'Invalid command used.'
-    elif isinstance(error, commands.errors.MissingRequiredArgument):
-        message += 'Missing required argument.'
-    elif isinstance(error, commands.errors.BadArgument):
-        message += 'Bad argument.'
-    elif isinstance(error, commands.errors.CommandInvokeError):
-        message += 'Error in command invocation.'
-    elif isinstance(error, commands.errors.CheckFailure):
-        message += 'You do not have permission to use this command.'
-    else:
-        raise error
-
+    
     if DEV_MODE:
         message += f'\n{error}'
 
@@ -106,8 +94,7 @@ async def list_votings(ctx):
     embed = discord.Embed(title='Votings', color=discord.Color.random())
 
     for voting in votings:
-        # ! TODO add public check
-        if voting["start_date"] != None and voting["end_date"] == None:
+        if voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
             embed.add_field(name=f'{voting["id"]}: {voting["name"]}', value=voting["question"]["desc"], inline=False)
 
     await ctx.send(embed=embed)
@@ -130,9 +117,7 @@ async def get_voting(ctx, voting_id: int):
 
     # Extract the voting, send the message and add reactions
     for voting in votings:
-        # ! TODO add public check
-        print(voting["start_date"])
-        if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None:
+        if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
             # Creating question message
             embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
             option_numbers = []
