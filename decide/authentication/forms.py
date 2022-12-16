@@ -10,7 +10,7 @@ from django_countries.fields import CountryField
 
 sexos=[("mujer","Mujer"),("hombre","Hombre"),("otro","Otro")]
 status=[("soltero","Soltero"),("conviviente","Conviviente"),("casado","Casado"),("divorciado","Divorciado"),("viudo","Viudo")]
-discord_validator = RegexValidator('[a-zA-Z]#[1-9]{4}')
+discord_validator = RegexValidator('.+#\d{4}')
 
 class PersonForm(UserCreationForm):
     sex = forms.ChoiceField(choices=sexos, required=True, label="Seleccione su sexo")

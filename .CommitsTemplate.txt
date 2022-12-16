@@ -1,0 +1,12 @@
+<type>: <description>
+
+[optional body]
+
+(Important this is template to be erase before you do a commit. DO NOT FORGET TO ERASE ALL THE INFO IN THIS TEMPLATE!)
+Types of <type>:
+	fix: this commit patches a bug in your codebase
+	feat: this commit introduces a new feature to the codebase
+	test: this commit introduces new test for a funtionality in the codebase
+
+<description> An usuful an short summary  of the work done in the commit
+<body> A more in depth description of the new functionality (optional)

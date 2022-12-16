@@ -34,15 +34,16 @@ APIS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'decide',
         'USER': 'decide',
-        'PASSWORD': 'decide',
-        'HOST': '127.0.0.1',
+        'PASSWORD':'decide',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
 
 # number of bits for the key, all auths should use the same number of bits
+
 KEYBITS = 256
 
 INSTALLED_APPS = [
@@ -102,3 +103,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = EMAIL_USER
 EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 LOGIN_URL='login'
+
