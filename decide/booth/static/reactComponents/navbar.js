@@ -26,7 +26,7 @@ class Navbar extends React.Component {
         create(
           "a",
           {className:"cta", href: "/authentication/salir"}, 
-          create("button",{type: "submit" }, "Log Off"),
+          create("button",{type: "submit" }, "Log Out"),
         ),
       );
     } else {

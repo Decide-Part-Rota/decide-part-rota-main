@@ -49,7 +49,7 @@ class List extends React.Component {
         }else {
             return build(
                 "div", {},
-                build("h1", {className: "Title"}, "If you wanto to see this service you need to log in"),
+                build("h1", {className: "Title"}, "If you want to see this service you need to log in"),
                 
             );
         }
