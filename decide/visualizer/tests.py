@@ -334,9 +334,7 @@ class SeleniumGraphics(StaticLiveServerTestCase):
         self.base.login()
         v.tally_votes(self.base.token)
         self.driver.get('{}/graphics/{}'.format(self.live_server_url, v.pk))
-        tituloPag = self.driver.find_element(By.XPATH, '//div[@class="logo"]').text
         graficaBarras = self.driver.find_elements(By.ID, 'grafic')
         graficaPie = self.driver.find_elements(By.ID, 'grafica')
         self.assertTrue(len(graficaBarras)==1)
         self.assertTrue(len(graficaPie)==1)
-        self.assertEquals(tituloPag, "Votaciones para 'Helado'")
