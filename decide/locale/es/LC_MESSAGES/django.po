@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-14 11:00+0000\n"
+"POT-Creation-Date: 2022-12-16 13:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: authentication/templates/welcome.html:18
+msgid "Profile"
+msgstr "Perfil"
+
+#: authentication/templates/welcome.html:19
+msgid "Public Votings"
+msgstr "Votaciones Públicas"
+
+#: authentication/templates/welcome.html:20
+msgid "Logout"
+msgstr "Cerrar Sesión"
+
+#: authentication/templates/welcome.html:29
+msgid "Welcome,"
+msgstr "Bienvenido,"
 
 #: booth/templates/booth/booth.html:19
 msgid "logout"
@@ -59,8 +75,10 @@ msgstr ""
 "una votación"
 
 #: census/templates/census_add.html:31 census/templates/census_age.html:33
+#: census/templates/census_age_remove.html:33
 #: census/templates/census_export.html:31
 #: census/templates/census_gender.html:33
+#: census/templates/census_gender_remove.html:33
 #: census/templates/census_import.html:31
 #: census/templates/census_maritialStatus.html:33
 #: census/templates/census_maritialStatus_remove.html:33
@@ -86,8 +104,11 @@ msgstr "Enviar"
 msgid "Or Add By Group"
 msgstr "O agrega por grupo"
 
-#: census/templates/census_age.html:15 census/templates/census_by_group.html:15
+#: census/templates/census_age.html:15
+#: census/templates/census_age_remove.html:15
+#: census/templates/census_by_group.html:15
 #: census/templates/census_gender.html:15
+#: census/templates/census_gender_remove.html:15
 #: census/templates/census_maritialStatus.html:15
 #: census/templates/census_nationality.html:15
 msgid "Census Groups"
@@ -112,12 +133,30 @@ msgstr ""
 "votación elegida."
 
 #: census/templates/census_age.html:44
+#: census/templates/census_age_remove.html:44
 msgid "Minimum age"
 msgstr "Edad Mínima"
 
 #: census/templates/census_age.html:46
+#: census/templates/census_age_remove.html:46
 msgid "Maximum age"
 msgstr "Edad Máxima"
+
+#: census/templates/census_age_remove.html:20
+#: census/templates/census_gender_remove.html:20
+#: census/templates/census_maritialStatus_remove.html:20
+msgid "Now you can remove groups of voters to an specific voting"
+msgstr ""
+"En esta página puedes eliminar grupos de vontantes de una votación específica"
+
+#: census/templates/census_age_remove.html:21
+msgid ""
+"for example, if you select minmun age 22 and maximum age 28, every user who "
+"satisfies that requirement will be removed to the chosen voting"
+msgstr ""
+"Por ejemplo, si seleccionas una edad mínima de 22 años y una edad máxima de "
+"28 años, cada usuario que satisfaga este requisito, será añadido a la "
+"votación elegida."
 
 #: census/templates/census_by_group.html:20
 #: census/templates/census_by_group_remove.html:20
@@ -128,7 +167,6 @@ msgstr "Seleccione el tipo de grupo al que quiere aplicar"
 #: census/templates/census_by_group_remove.html:30
 #: census/templates/census_maritialStatus.html:44
 #: census/templates/census_maritialStatus_remove.html:44
-
 msgid "Maritial Status"
 msgstr "Estado Civil"
 
@@ -178,8 +216,17 @@ msgstr ""
 "requisito será añadido a la votación elegida."
 
 #: census/templates/census_gender.html:44
+#: census/templates/census_gender_remove.html:44
 msgid "Choose gender"
 msgstr "Elija usuario"
+
+#: census/templates/census_gender_remove.html:21
+msgid ""
+"for example, if you select 'Male', every user who satisfies that requirement "
+"will be removed to the chosen voting"
+msgstr ""
+"Por ejemplo, si selecciona Soltero, cada usuario que satisfaga este "
+"requisito será añadido a la votación elegida."
 
 #: census/templates/census_import.html:14
 msgid "Import Census"
@@ -208,11 +255,6 @@ msgid ""
 msgstr ""
 "Por ejemplo, si selecciona Soltero, cada usuario que satisfaga este "
 "requisito será añadido a la votación elegida."
-
-#: census/templates/census_maritialStatus_remove.html:20
-msgid "Now you can remove groups of voters to an specific voting"
-msgstr ""
-"En esta página puedes eliminar grupos de vontantes de una votación específica"
 
 #: census/templates/census_maritialStatus_remove.html:21
 msgid ""
