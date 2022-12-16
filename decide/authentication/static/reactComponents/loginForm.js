@@ -11,14 +11,14 @@ class LoginForm extends React.Component {
             {className:"table"},
             createLoginForm(
                 "tr",{},
-                createLoginForm("th",{scope:"row"},"Usuario / Email"),
+                createLoginForm("th",{scope:"row"},"Username / Email"),
                 createLoginForm(
                     "td",{},
                     createLoginForm("input",{type:"text",name:"username"}),
                 )
             ),
             createLoginForm("tr",{},
-                createLoginForm("th",{scope:"row"},"Contraseña"),
+                createLoginForm("th",{scope:"row"},"Password"),
                 createLoginForm("td",{},
                     createLoginForm("input",{type:"password",name:"password"}),
                 ),

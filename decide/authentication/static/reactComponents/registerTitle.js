@@ -4,7 +4,7 @@ const create = React.createElement;
 
 class Title extends React.Component {
   render() {
-    return create("body",{}, create("h2",{className:"Title"},"Registro"));}
+    return create("body",{}, create("h2",{className:"Title"},"Sign Up"));}
     
 }
 

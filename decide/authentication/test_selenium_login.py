@@ -48,7 +48,7 @@ class LoginTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         time.sleep(0.5)
 
-        self.assertTrue("¡Bienvenido!" in self.driver.page_source)
+        self.assertTrue("Welcome!" in self.driver.page_source)
 
     def test_login_fail_wrong_User_Password(self):
         self.driver.maximize_window()
@@ -63,7 +63,7 @@ class LoginTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         time.sleep(0.5)
 
-        self.assertTrue("Inicia sesión" in self.driver.page_source)
+        self.assertTrue("Login" in self.driver.page_source)
 
     def test_login_fail_blank_user(self):
         self.driver.maximize_window()
@@ -75,7 +75,7 @@ class LoginTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         time.sleep(0.5)
 
-        self.assertTrue("Inicia sesión" in self.driver.page_source)
+        self.assertTrue("Login" in self.driver.page_source)
 
     def test_login_fail_blank_password(self):
         self.driver.maximize_window()
@@ -87,4 +87,4 @@ class LoginTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         time.sleep(0.5)
 
-        self.assertTrue("Inicia sesión" in self.driver.page_source)
+        self.assertTrue("Login" in self.driver.page_source)

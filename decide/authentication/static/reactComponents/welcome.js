@@ -11,11 +11,11 @@ class Welcome extends React.Component {
           "div",{className:"welcome"},
           createWelcome("br"),
           createWelcome(
-            "h2",{className:"h2Welcome"},"¡Bienvenido!"),
+            "h2",{className:"h2Welcome"},"Welcome!"),
           createWelcome(
             "p",
             {className:"pWelcome"},
-            "Para entrar en el modo admin, haz clic al botón."),
+            "To enter admin mode, just click the button!"),
           createWelcome(
             "div",{className:"divWelcomeButton"},
             createWelcome(

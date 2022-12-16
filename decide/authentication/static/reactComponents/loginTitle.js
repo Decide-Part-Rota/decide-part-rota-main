@@ -6,7 +6,7 @@ class Title extends React.Component {
   render() {
     return create(
       "body",{},
-      create("h2",{className:"Title"},"Inicia sesión"),
+      create("h2",{className:"Title"},"Login"),
     );
   }
     
