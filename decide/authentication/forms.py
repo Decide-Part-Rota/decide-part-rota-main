@@ -7,15 +7,15 @@ from .models import Person
 from django.contrib.auth.forms import UserCreationForm
 from django_countries.fields import CountryField
 
-sexos=[("mujer","Mujer"),("hombre","Hombre"),("otro","Otro")]
-status=[("soltero","Soltero"),("conviviente","Conviviente"),("casado","Casado"),("divorciado","Divorciado"),("viudo","Viudo")]
+sexos=[("woman","Woman"),("man","Man"),("other","Other")] 
+status=[("single","Single"),("partner","Partner"),("married","Married"),("divorced","Divorced"),("widow","Widow")]
      
 
 
 class PersonForm(UserCreationForm):
-    sex = forms.ChoiceField(choices=sexos, required=True, label="Seleccione su sexo")
+    sex = forms.ChoiceField(choices=sexos, required=True, label="Select your gender")
     age = forms.IntegerField(required=False)
-    status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
+    status = forms.ChoiceField(choices=status, required=True, label="Select your civil status")
     country = CountryField().formfield()
     class Meta:
           model=User
@@ -24,7 +24,7 @@ class PersonForm(UserCreationForm):
 class CompleteForm(forms.Form):
     sex = forms.ChoiceField(choices=sexos, required=True)
     age = forms.IntegerField(required=True)
-    status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
+    status = forms.ChoiceField(choices=status, required=True, label="Select your civil status")
     country = CountryField().formfield()
 
 
