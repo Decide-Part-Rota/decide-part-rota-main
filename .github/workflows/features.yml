@@ -2,7 +2,7 @@ name: Python application
 
 on:
   push:
-    branches:
+    branches-ignore:
       - master
 
 jobs:
@@ -58,35 +58,3 @@ jobs:
       with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: decide/coverage.xml 
-  
-  push_to_registry:
-    needs: build
-    name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
-      
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: vicsotber/decide-part-rota-1
-
-      - name: Build the stack
-        run: |
-          cd docker
-          docker compose build
-
-      - name: Push Docker images
-        run: |
-          cd docker
-          docker push decidepartrota/decide_part_rota:decide_web
-          docker push decidepartrota/decide_part_rota:decide_nginx
-          docker push decidepartrota/decide_part_rota:postgres
