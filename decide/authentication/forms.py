@@ -7,13 +7,13 @@ from .models import Person
 from django.contrib.auth.forms import UserCreationForm
 from django_countries.fields import CountryField
 
-sexos=[("woman","Woman"),("man","Man"),("other","Other")] 
+sex=[("woman","Woman"),("man","Man"),("other","Other")]
 status=[("single","Single"),("partner","Partner"),("married","Married"),("divorced","Divorced"),("widow","Widow")]
      
 
 
 class PersonForm(UserCreationForm):
-    sex = forms.ChoiceField(choices=sexos, required=True, label="Select your gender")
+    sex = forms.ChoiceField(choices=sex, required=True, label="Select your gender")
     age = forms.IntegerField(required=False)
     status = forms.ChoiceField(choices=status, required=True, label="Select your civil status")
     country = CountryField().formfield()
@@ -22,7 +22,7 @@ class PersonForm(UserCreationForm):
           fields=["username","password1","password2","email","sex","age","status","country"]
 
 class CompleteForm(forms.Form):
-    sex = forms.ChoiceField(choices=sexos, required=True)
+    sex = forms.ChoiceField(choices=sex, required=True)
     age = forms.IntegerField(required=True)
     status = forms.ChoiceField(choices=status, required=True, label="Select your civil status")
     country = CountryField().formfield()
