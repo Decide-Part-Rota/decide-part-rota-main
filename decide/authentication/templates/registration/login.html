@@ -23,44 +23,25 @@
 
 <body style="background-color: #1f2833;">
     <br><br>
-        <div class="prueba">
-            <br>
-            <div id="title"></div>
-            <form method="POST">
-                {%csrf_token%}
-                <table id="loginForm" class="table"></table>
+    <div class="prueba">
+        <br>
+        <div id="title"></div>
+        <form method="POST">
+            {%csrf_token%}
+            <table id="loginForm" class="table"></table>
 
-                <div class="buttons">
-            
+            <div class="buttons">
                 <button type="submit" class="btn btn-outline-dark">Iniciar sesión</button>
                 <a href="/authentication/registerForm/">Registro</a>
 
-    <div>
-        <form method="POST">
-            {%csrf_token%}
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <th scope="row">Usuario o email </th>
-                        <td><input id="id_username" type="text" name="username"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Contraseña</th>
-                        <td><input id="id_password" type="password" name="password"></td>
-                    </tr>
-                </tbody>
-            </table>
-        
-            <button id="id_button" type="submit" class="btn btn-outline-dark">Iniciar sesión</button>
-            <a href="/authentication/registerForm/">Registrarse</a>
+                <br><br>
 
-            <br><br>
-
-            <a href="{% provider_login_url 'google' next='/authentication/completeForm/' %}">
-                <button type="button" class="login-with-google-btn" >
-                    Sign in with Google
-                </button>
-            </a>
+                <a href="{% provider_login_url 'google' next='/authentication/completeForm/' %}">
+                    <button type="button" class="login-with-google-btn" >
+                        Sign in with Google
+                    </button>
+                </a>
+            </div>
         </form>
     </div>
 </body>
