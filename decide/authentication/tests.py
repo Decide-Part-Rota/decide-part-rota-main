@@ -17,6 +17,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 
 from base.tests import BaseTestCase
+from authentication.forms import CompleteForm
 import time
 
 class AuthTestCase(APITestCase):
@@ -184,6 +185,92 @@ class AuthTestCase(APITestCase):
         user = response.json()
         self.assertEqual(user['id'], 7)
         self.assertEqual(user['username'], 'voter1')
+
+
+class CompleteUnitTestCase(APITestCase):
+    def test_unitCorrectComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '20',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_unitIncorrectSexComplete(self):
+        form_data = {
+            'sex': 'ninguno',
+            'age': '20',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        
+    def test_unitIncorrectAgeComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '-10',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_unitIncorrectAgeComplete2(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '0',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_unitIncorrectStatusComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '20',
+            'status': 'a dos velas',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+    
+    def test_unitIncorrectDiscordAccountComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '20',
+            'status': 'soltero',
+            'discord_account': 'name#012',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_unitIncorrectCountryComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '20',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "ZZ"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
 
 
 class RegisterTestCase(StaticLiveServerTestCase):
