@@ -83,6 +83,7 @@ async def commands(ctx):
     value += '\n\nExample: !get-voting 1'
     embed.add_field(name='!get-voting [VOTING_ID]', value=value, inline=False)
 
+    print(f"{ctx.author} requested the list of commands")
     await ctx.channel.send(embed=embed)
 
 @bot.command(name='list-votings', help='Lists all votings')
@@ -96,6 +97,7 @@ async def list_votings(ctx):
         if voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
             embed.add_field(name=f'{voting["id"]}: {voting["name"]}', value=voting["question"]["desc"], inline=False)
 
+    print(f"{ctx.author} requested the list of votings")
     await ctx.send(embed=embed)
 
 async def post_voting(ctx, reaction, voting_id, option_id):
@@ -104,7 +106,7 @@ async def post_voting(ctx, reaction, voting_id, option_id):
     user_found = False
 
     for person in people:
-        if person["discord_account"] == ctx.author:
+        if person["discord_account"] == str(ctx.author):
             user_found = True
             user_id = person["user"]["id"]
 
@@ -125,6 +127,7 @@ async def post_voting(ctx, reaction, voting_id, option_id):
             }
         }
 
+        print(f"Vote for voting {voting_id} created by {user_id} with option {option_id}")
         return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
 
     else:
@@ -194,9 +197,9 @@ async def get_voting(ctx, voting_id: int):
     # Extract the voting, send the message and add reactions
     for voting in votings:
         if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
+            print(f"{ctx.author} requested voting {voting_id}")
             return await post_voting_message(ctx, voting, voting_id)
             
-        else:
-            return await ctx.send("Invalid voting ID or voting is not active")
+    return await ctx.send("Invalid voting ID or voting is not active")
 
 bot.run(TOKEN)
