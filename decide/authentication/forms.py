@@ -45,8 +45,8 @@ class PersonForm(UserCreationForm):
 
 
 class CompleteForm(forms.Form):
-    sex = forms.ChoiceField(choices=sexos, required=True)
-    age = forms.IntegerField(required=True)
+    sex = forms.ChoiceField(choices=sexos, required=True, label="Seleccione su sexo")
+    age = forms.IntegerField(required=False)
     status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
     country = CountryField().formfield()
     discord_account = forms.CharField(required=False, help_text="Please use the following format: name#XXXX", validators=[discord_validator], max_length=30)
@@ -60,7 +60,6 @@ class CompleteForm(forms.Form):
         if data == 0:
           self.add_error("age", "Introduce una edad valida")
         return data
-
 
 
 
