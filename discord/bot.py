@@ -138,14 +138,10 @@ async def post_voting(ctx, reaction, voting_id, option_id):
 
         return await ctx.send(embed=embed)
 
-# Reaction lookup table
-emotes = ["0️⃣","1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
-
-@bot.command(name='get-voting', help='Gets a voting from ID')
-async def get_voting(ctx, voting_id: int):
-    response = requests.get(base_url + "voting/")
-    votings = response.json()
-
+async def post_voting_message(ctx, voting, voting_id):
+    # Creating question message
+    embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
+    option_numbers = []
     def check(r: discord.Reaction, u: Union[discord.Member, discord.User]):  # r = discord.Reaction, u = discord.Member or discord.User.
         # Check the user who sent the reaction is the same as the user who sent the message.
         # Check the channel the reaction was sent in is the same as the channel the message was sent in.
@@ -154,46 +150,53 @@ async def get_voting(ctx, voting_id: int):
         return u.id == ctx.author.id and r.message.channel.id == ctx.channel.id and r.message.id == msg.id and \
                emotes.index(str(r.emoji)) - 1 in range(len(option_numbers))
 
+    # Adding options
+    counter = 1
+    for option in voting["question"]["options"]:
+        if counter < 11:
+            embed.add_field(name=emotes[counter],
+                            value=f'{option["option"]}',
+                            inline=True)
+            option_numbers.append(option["number"])
+            counter += 1
+        else:
+            await ctx.send("Invalid option number")
+            return
+    
+    # Sending message
+    msg = await ctx.send(embed=embed)
+
+    # Adding reactions
+    for i in range(1,counter):
+        await msg.add_reaction(emotes[i])
+
+    # Waiting for reaction
+    try:
+        reaction, user = await bot.wait_for('reaction_add', check = check, timeout = 60.0)
+    except asyncio.TimeoutError:
+        # at this point, the check didn't become True.
+        await ctx.send(f"**{ctx.author}**, you didnt react correctly with within 60 seconds.")
+        return
+    else:
+        # at this point, the check has become True and the wait_for has done its work, now we can do ours.
+        # here we are sending some text based on the reaction we detected.
+        await post_voting(ctx, reaction, voting_id, option_numbers[emotes.index(reaction.emoji) - 1])
+        return
+
+# Reaction lookup table
+emotes = ["0️⃣","1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+
+@bot.command(name='get-voting', help='Gets a voting from ID')
+async def get_voting(ctx, voting_id: int):
+    response = requests.get(base_url + "voting/")
+    votings = response.json()
+
     # Extract the voting, send the message and add reactions
     for voting in votings:
         if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
-            # Creating question message
-            embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
-            option_numbers = []
-            # Adding options
-            counter = 1
-            for option in voting["question"]["options"]:
-                if counter < 11:
-                    embed.add_field(name=emotes[counter],
-                                    value=f'{option["option"]}',
-                                    inline=True)
-                    option_numbers.append(option["number"])
-                    counter += 1
-                else:
-                    await ctx.send("Invalid option number")
-                    return
+            return await post_voting_message(ctx, voting, voting_id)
             
-            # Sending message
-            msg = await ctx.send(embed=embed)
-
-            # Adding reactions
-            for i in range(1,counter):
-                await msg.add_reaction(emotes[i])
-
-            # Waiting for reaction
-            try:
-                reaction, user = await bot.wait_for('reaction_add', check = check, timeout = 60.0)
-            except asyncio.TimeoutError:
-                # at this point, the check didn't become True.
-                await ctx.send(f"**{ctx.author}**, you didnt react correctly with within 60 seconds.")
-                return
-            else:
-                # at this point, the check has become True and the wait_for has done its work, now we can do ours.
-                # here we are sending some text based on the reaction we detected.
-                await post_voting(ctx, reaction, voting_id, option_numbers[emotes.index(reaction.emoji) - 1])
-                return
-
         else:
-            await ctx.send("Invalid voting ID or voting is not active")
+            return await ctx.send("Invalid voting ID or voting is not active")
 
 bot.run(TOKEN)
