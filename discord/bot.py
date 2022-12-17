@@ -3,6 +3,7 @@ import random
 import discord
 import requests
 import asyncio
+import random
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -100,7 +101,42 @@ async def list_votings(ctx):
     print(f"{ctx.author} requested the list of votings")
     await ctx.send(embed=embed)
 
-async def post_voting(ctx, reaction, voting_id, option_id):
+# POST VOTE
+def gen_data(voting, user_id, option_id):
+    # Public key
+    #bigpk = {
+    #    'p' : int(voting['pub_key']['p']),
+    #    'g' : int(voting['pub_key']['g']),
+    #    'y' : int(voting['pub_key']['y']),
+    #}
+
+    bigpk = {
+        'p': 283,
+        'g': 47,
+        'y': 60,
+    }
+
+    # ElGamal bits
+    bits = 256
+
+    # Random number generation
+    q = 2^bits - 1
+    r = random.randint(1, q)
+
+    # ElGamal encryption
+    alpha = bigpk['g']^r % bigpk['p']
+    beta = bigpk['y']^r * option_id % bigpk['p']
+
+    data = {
+        "voting": voting["id"],
+        "user": user_id,
+        "a": alpha,
+        "b": beta,
+    }
+
+    return data
+
+async def post_voting(ctx, reaction, voting, option_id):
     people = requests.get(base_url + "authentication/persons/").json()
     user_id = 0
     user_found = False
@@ -114,20 +150,12 @@ async def post_voting(ctx, reaction, voting_id, option_id):
         # TODO
         # to create a vote first
         # we must add user to census with /census/addUser/
-        # then we can create the vote
-        a = 0
-        b = 1
+        # then we can create the vote with /strore
 
-        data = {
-            "voting_id": voting_id,
-            "voter_id": user_id,
-            "vote": {
-                "a": a,
-                "b": b,
-            }
-        }
-
-        print(f"Vote for voting {voting_id} created by {user_id} with option {option_id}")
+        # ElGamal encryption
+        data = gen_data(voting, user_id, option_id)
+        print(data)
+        print(f"Vote for voting {voting['id']} created by {user_id} with option {option_id}")
         return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
 
     else:
@@ -141,7 +169,7 @@ async def post_voting(ctx, reaction, voting_id, option_id):
 
         return await ctx.send(embed=embed)
 
-async def post_voting_message(ctx, voting, voting_id):
+async def post_voting_message(ctx, voting):
     # Creating question message
     embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
     option_numbers = []
@@ -183,7 +211,7 @@ async def post_voting_message(ctx, voting, voting_id):
     else:
         # at this point, the check has become True and the wait_for has done its work, now we can do ours.
         # here we are sending some text based on the reaction we detected.
-        await post_voting(ctx, reaction, voting_id, option_numbers[emotes.index(reaction.emoji) - 1])
+        await post_voting(ctx, reaction, voting, option_numbers[emotes.index(reaction.emoji) - 1])
         return
 
 # Reaction lookup table
@@ -198,7 +226,7 @@ async def get_voting(ctx, voting_id: int):
     for voting in votings:
         if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
             print(f"{ctx.author} requested voting {voting_id}")
-            return await post_voting_message(ctx, voting, voting_id)
+            return await post_voting_message(ctx, voting)
             
     return await ctx.send("Invalid voting ID or voting is not active")
 
