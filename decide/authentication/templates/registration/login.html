@@ -40,6 +40,14 @@
                     Sign in with Google
                 </button>
             </a>
+
+            <a href="{% provider_login_url 'github' next='/authentication/completeForm/' %}">
+                <button type="button" class="login-with-github-btn" >
+                    Sign in with Github
+                </button>
+            </a>
+           
+
         </form>
     </div>
 </body>

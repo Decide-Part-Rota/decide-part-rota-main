@@ -4,6 +4,8 @@ GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_SECRET = config('GOOGLE_SECRET')
 EMAIL_USER = config('EMAIL_USER')
 EMAIL_PASSWORD = config('EMAIL_PASSWORD')
+GITHUB_CLIENT_ID = config('GITHUB_CLIENT_ID')
+GITHUB_SECRET = config('GITHUB_SECRET')
 
 ALLOWED_HOSTS = ["*"]
 # Modules in use, commented modules that you won't use
@@ -66,13 +68,14 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     "verify_email.apps.VerifyEmailConfig",
+    'allauth.socialaccount.providers.github',
 
 ]
 
 AUTHENTICATION_BACKENDS = [
     'base.backends.AuthBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend'
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 SITE_ID = 1
@@ -94,7 +97,21 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
+    },
+    'github': {
+        'APP': {
+            'client_id': GITHUB_CLIENT_ID,
+            'secret': GITHUB_SECRET,
+            'key': ''
+        },
+        'SCOPE': [
+            'user:email',
+        ],
     }
+
+
+
+
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
