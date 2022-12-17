@@ -28,6 +28,14 @@ class PersonForm(UserCreationForm):
         if data == 0:
           self.add_error("age", "Introduce una edad valida")
         return data
+
+    def clean_email(self):
+        data= self.cleaned_data["email"]
+
+        if not data:
+          self.add_error("email", "Debes especificar un email")
+
+        return data
     
     
     
