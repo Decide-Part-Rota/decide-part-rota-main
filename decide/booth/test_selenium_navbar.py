@@ -27,7 +27,7 @@ class TestNavbar(StaticLiveServerTestCase):
     options = webdriver.ChromeOptions()
     options.headless = True
     self.driver = webdriver.Chrome(options=options)
-  
+    
   def tearDown(self):
     super().tearDown() 
     self.driver.quit() 

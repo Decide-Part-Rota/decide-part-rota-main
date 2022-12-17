@@ -1,14 +1,12 @@
-import datetime
 from base import mods
 from base.tests import BaseTestCase
-from django.db import models
 
 from django.contrib.auth.models import User
 from django.conf import settings
 from mixnet.models import Auth
 from voting.models import Voting, Question, QuestionOption
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from selenium.webdriver.common.action_chains import ActionChains
+
 
 from rest_framework.test import APIClient
 
