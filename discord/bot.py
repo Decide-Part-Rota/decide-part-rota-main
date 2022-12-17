@@ -104,16 +104,10 @@ async def list_votings(ctx):
 # POST VOTE
 def gen_data(voting, user_id, option_id):
     # Public key
-    #bigpk = {
-    #    'p' : int(voting['pub_key']['p']),
-    #    'g' : int(voting['pub_key']['g']),
-    #    'y' : int(voting['pub_key']['y']),
-    #}
-
     bigpk = {
-        'p': 283,
-        'g': 47,
-        'y': 60,
+        'p' : int(voting['pub_key']['p']),
+        'g' : int(voting['pub_key']['g']),
+        'y' : int(voting['pub_key']['y']),
     }
 
     # ElGamal bits
