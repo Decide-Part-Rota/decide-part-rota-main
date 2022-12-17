@@ -15,7 +15,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
 
         options = webdriver.ChromeOptions()
         #Si se quieren ver en navegador, cambiar a false
-        options.headless = False
+        options.headless = True
         self.driver = webdriver.Chrome(options=options) 
     
     def tearDown(self):
@@ -91,10 +91,10 @@ class RegisterTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_username").send_keys("user_similar_passw")
         time.sleep(0.5)
         self.driver.find_element(By.ID, "id_password1").clear()
-        self.driver.find_element(By.ID, "id_password1").send_keys("user1234")
+        self.driver.find_element(By.ID, "id_password1").send_keys("user_similar_passw")
         time.sleep(0.5)
         self.driver.find_element(By.ID, "id_password2").clear()
-        self.driver.find_element(By.ID, "id_password2").send_keys("user1234")
+        self.driver.find_element(By.ID, "id_password2").send_keys("user_similar_passw")
         time.sleep(0.5)
         self.driver.find_element(By.ID, "id_email").clear()
         self.driver.find_element(By.ID, "id_email").send_keys("user@user.com")
@@ -109,7 +109,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_country").find_element(By.XPATH, "//option[. = 'Azerbaijan']").click()
         time.sleep(0.5)
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
-        time.sleep(0.5)
+        time.sleep(2)
 
         self.assertTrue("Sign Up" in self.driver.page_source)
 
@@ -167,6 +167,36 @@ class RegisterTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_status").find_element(By.XPATH, "//option[. = 'Married']").click()
         time.sleep(0.5)
         self.driver.find_element(By.ID, "id_country").find_element(By.XPATH, "//option[. = 'Algeria']").click()
+        time.sleep(0.5)
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        time.sleep(2)
+
+        self.assertTrue("Sign Up" in self.driver.page_source)
+
+    def test_register_fail_password_only_numbers(self):
+        self.driver.maximize_window()
+        self.driver.get(''f'{self.live_server_url}''/authentication/registerForm/')
+
+        self.driver.find_element(By.ID, "id_username").clear()
+        self.driver.find_element(By.ID, "id_username").send_keys("user_numeric_passw")
+        time.sleep(0.5)
+        self.driver.find_element(By.ID, "id_password1").clear()
+        self.driver.find_element(By.ID, "id_password1").send_keys("69874123")
+        time.sleep(0.5)
+        self.driver.find_element(By.ID, "id_password2").clear()
+        self.driver.find_element(By.ID, "id_password2").send_keys("69874123")
+        time.sleep(0.5)
+        self.driver.find_element(By.ID, "id_email").clear()
+        self.driver.find_element(By.ID, "id_email").send_keys("user@user.com")
+        time.sleep(0.5)
+        self.driver.find_element(By.ID, "id_sex").find_element(By.XPATH, "//option[. = 'Man']").click()
+        time.sleep(0.5)
+        self.driver.find_element(By.ID, "id_age").clear()
+        self.driver.find_element(By.ID, "id_age").send_keys("75")
+        time.sleep(0.5)
+        self.driver.find_element(By.ID, "id_status").find_element(By.XPATH, "//option[. = 'Widow']").click()
+        time.sleep(0.5)
+        self.driver.find_element(By.ID, "id_country").find_element(By.XPATH, "//option[. = 'Andorra']").click()
         time.sleep(0.5)
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         time.sleep(2)
