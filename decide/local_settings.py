@@ -4,6 +4,8 @@ GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_SECRET = config('GOOGLE_SECRET')
 EMAIL_USER = config('EMAIL_USER')
 EMAIL_PASSWORD = config('EMAIL_PASSWORD')
+LINKEDIN_CLIENT_ID = config('LINKEDIN_CLIENT_ID')
+LINKEDIN_SECRET = config('LINKEDIN_SECRET')
 
 ALLOWED_HOSTS = ["*"]
 # Modules in use, commented modules that you won't use
@@ -66,6 +68,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     "verify_email.apps.VerifyEmailConfig",
+    'allauth.socialaccount.providers.linkedin_oauth2',
 
 ]
 
@@ -94,6 +97,25 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
+    },
+    'linkedin': {
+        'APP': {
+            'client_id': LINKEDIN_CLIENT_ID,
+            'secret': LINKEDIN_SECRET,
+            'key': ''
+        },
+        'SCOPE': [
+            'r_basicprofile',
+            'r_emailaddress'
+        ],
+        'PROFILE_FIELDS': [
+            'id',
+            'first-name',
+            'last-name',
+            'email-address',
+            'picture-url',
+            'public-profile-url',
+        ]
     }
 }
 

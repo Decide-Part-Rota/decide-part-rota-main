@@ -40,6 +40,13 @@
                     Sign in with Google
                 </button>
             </a>
+
+            <a href="{% provider_login_url 'linkedin_oauth2' next='/authentication/completeForm/' %}">
+                <button type="button" class="login-with-linkedin-btn" >
+                    Sign in with LinkedIn
+                </button>
+            </a>
+
         </form>
     </div>
 </body>
