@@ -358,7 +358,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.driver = webdriver.Chrome(options=options)
 
         super().setUp()
- 
+
     def tearDown(self):
         super().tearDown()
         self.driver.quit()
