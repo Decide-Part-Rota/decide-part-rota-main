@@ -19,17 +19,17 @@
         <div class="voting container">
             <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
 
-            <h2 v-if="!voting.start_date">Votación no comenzada</h2>
-            <h2 v-else-if="!voting.end_date">Votación en curso</h2>
+            <h2 v-if="!voting.start_date">{% trans "Voted not started" %}</h2>
+            <h2 v-else-if="!voting.end_date">{% trans "Voting in progress" %}</h2>
             <div v-else>
                 <h2 class="heading">Resultados:</h2>
 
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Opción</th>
-                            <th>Puntuación</th>
-                            <th>Votos</th>
+                            <th>{% trans "Option" %}</th>
+                            <th>{% trans "Punctuation" %}</th>
+                            <th>{% trans "Votes" %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,8 +42,30 @@
                 </table>
             </div>
 
+
+            {% if messages %}
+            <ul class="messages" style="margin-top:2%">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    <li class="{{ message.tags }} alert alert-danger" role="alert">{{ message }}</li>
+                    {% else %}
+                    <li class="{{ message.tags }} alert alert-{{message.tags}}" role="alert">{{ message }}</li>
+                    {% endif %}
+                    
+                {% endfor %}
+            </ul>
+            
+            {% endif %}
+
+            {% include 'footer.html' %}
+
+
         </div>
+
     </div>
+
+
+
 {% endblock %}
 
 {% block extrabody %}
@@ -63,5 +85,5 @@
         })
     </script>
 </body>
-{% include 'footer.html' %}
+
 {% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-14 11:00+0000\n"
+"POT-Creation-Date: 2022-12-17 17:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,45 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: authentication/templates/registration/login.html:14
+#: authentication/templates/registration/login.html:33
+#: booth/templates/booth/booth.html:49
+msgid "Login"
+msgstr "Iniciar Sesión"
+
+#: authentication/templates/registration/login.html:23
+msgid "User or email"
+msgstr "Usuario o email"
+
+#: authentication/templates/registration/login.html:27
+#: booth/templates/booth/booth.html:41
+msgid "Password"
+msgstr "Contraseña"
+
+#: authentication/templates/registration/login.html:34
+msgid "Registration"
+msgstr "Registrase"
+
+#: authentication/templates/registration/login.html:40
+msgid "Sign in with Google"
+msgstr "Iniciar sesión con Google"
+
+#: authentication/templates/welcome.html:18
+msgid "Profile"
+msgstr "Perfil"
+
+#: authentication/templates/welcome.html:19
+msgid "Public Votings"
+msgstr "Votaciones Públicas"
+
+#: authentication/templates/welcome.html:20
+msgid "Logout"
+msgstr "Cerrar Sesión"
+
+#: authentication/templates/welcome.html:29
+msgid "Welcome,"
+msgstr "Bienvenido,"
+
 #: booth/templates/booth/booth.html:19
 msgid "logout"
 msgstr "Cerrar Sesión"
@@ -26,24 +65,16 @@ msgstr "Cerrar Sesión"
 msgid "Username"
 msgstr "Nombre de usuario"
 
-#: booth/templates/booth/booth.html:41
-msgid "Password"
-msgstr "Contraseña"
-
-#: booth/templates/booth/booth.html:49
-msgid "Login"
-msgstr "Iniciar Sesión"
-
 #: booth/templates/booth/booth.html:64
 msgid "Vote"
 msgstr "Votar"
 
-#: booth/templates/booth/booth.html:160 booth/templates/booth/booth.html:170
-#: booth/templates/booth/booth.html:201
+#: booth/templates/booth/booth.html:181 booth/templates/booth/booth.html:191
+#: booth/templates/booth/booth.html:222
 msgid "Error: "
 msgstr "Error: "
 
-#: booth/templates/booth/booth.html:198
+#: booth/templates/booth/booth.html:219
 msgid "Conglatulations. Your vote has been sent"
 msgstr "Felicidades. Tu voto ha sido enviado."
 
@@ -59,8 +90,10 @@ msgstr ""
 "una votación"
 
 #: census/templates/census_add.html:31 census/templates/census_age.html:33
+#: census/templates/census_age_remove.html:33
 #: census/templates/census_export.html:31
 #: census/templates/census_gender.html:33
+#: census/templates/census_gender_remove.html:33
 #: census/templates/census_import.html:31
 #: census/templates/census_maritialStatus.html:33
 #: census/templates/census_maritialStatus_remove.html:33
@@ -86,8 +119,11 @@ msgstr "Enviar"
 msgid "Or Add By Group"
 msgstr "O agrega por grupo"
 
-#: census/templates/census_age.html:15 census/templates/census_by_group.html:15
+#: census/templates/census_age.html:15
+#: census/templates/census_age_remove.html:15
+#: census/templates/census_by_group.html:15
 #: census/templates/census_gender.html:15
+#: census/templates/census_gender_remove.html:15
 #: census/templates/census_maritialStatus.html:15
 #: census/templates/census_nationality.html:15
 msgid "Census Groups"
@@ -99,8 +135,7 @@ msgstr "Grupos de censo"
 #: census/templates/census_nationality_remove.html:20
 msgid "Now you can add groups of voters to an specific voting"
 msgstr ""
-"En esta página puede gestionar el censo agregando a un usuario concreto en "
-"una votación."
+"En esta página puede añadir grupos de votantes a una votación concreto."
 
 #: census/templates/census_age.html:21
 msgid ""
@@ -112,12 +147,30 @@ msgstr ""
 "votación elegida."
 
 #: census/templates/census_age.html:44
+#: census/templates/census_age_remove.html:44
 msgid "Minimum age"
 msgstr "Edad Mínima"
 
 #: census/templates/census_age.html:46
+#: census/templates/census_age_remove.html:46
 msgid "Maximum age"
 msgstr "Edad Máxima"
+
+#: census/templates/census_age_remove.html:20
+#: census/templates/census_gender_remove.html:20
+#: census/templates/census_maritialStatus_remove.html:20
+msgid "Now you can remove groups of voters to an specific voting"
+msgstr ""
+"En esta página puedes eliminar grupos de vontantes de una votación específica"
+
+#: census/templates/census_age_remove.html:21
+msgid ""
+"for example, if you select minmun age 22 and maximum age 28, every user who "
+"satisfies that requirement will be removed to the chosen voting"
+msgstr ""
+"Por ejemplo, si seleccionas una edad mínima de 22 años y una edad máxima de "
+"28 años, cada usuario que satisfaga este requisito, será eliminado de la "
+"votación elegida."
 
 #: census/templates/census_by_group.html:20
 #: census/templates/census_by_group_remove.html:20
@@ -128,7 +181,6 @@ msgstr "Seleccione el tipo de grupo al que quiere aplicar"
 #: census/templates/census_by_group_remove.html:30
 #: census/templates/census_maritialStatus.html:44
 #: census/templates/census_maritialStatus_remove.html:44
-
 msgid "Maritial Status"
 msgstr "Estado Civil"
 
@@ -162,8 +214,8 @@ msgid ""
 "In this view you can manage the census by exporting the users participating "
 "in a voting"
 msgstr ""
-"En esta página puede gestionar el censo agregando a un usuario concreto en "
-"una votación"
+"En esta vista se puede gestionar el censo exportando los usuarios "
+"participantes en una votacion"
 
 #: census/templates/census_export.html:42
 msgid "Export"
@@ -174,12 +226,21 @@ msgid ""
 "for example, if you select 'Male', every user who satisfies that requirement "
 "will be added to the chosen voting"
 msgstr ""
-"Por ejemplo, si selecciona Soltero, cada usuario que satisfaga este "
+"Por ejemplo, si selecciona 'Masculino', cada usuario que satisfaga este "
 "requisito será añadido a la votación elegida."
 
 #: census/templates/census_gender.html:44
+#: census/templates/census_gender_remove.html:44
 msgid "Choose gender"
 msgstr "Elija usuario"
+
+#: census/templates/census_gender_remove.html:21
+msgid ""
+"for example, if you select 'Male', every user who satisfies that requirement "
+"will be removed to the chosen voting"
+msgstr ""
+"Por ejemplo, si selecciona 'Masculino', cada usuario que satisfaga este "
+"requisito será eliminado a la votación elegida."
 
 #: census/templates/census_import.html:14
 msgid "Import Census"
@@ -190,8 +251,8 @@ msgid ""
 "In this view you can manage the census by importing users participating in a "
 "voting"
 msgstr ""
-"En esta página puede gestionar el censo agregando a un usuario concreto en "
-"una votación"
+"En esta vista puede administrar el censo importando los usuarios que "
+"participan en una votacióna"
 
 #: census/templates/census_import.html:42
 msgid "Upload a csv file"
@@ -208,11 +269,6 @@ msgid ""
 msgstr ""
 "Por ejemplo, si selecciona Soltero, cada usuario que satisfaga este "
 "requisito será añadido a la votación elegida."
-
-#: census/templates/census_maritialStatus_remove.html:20
-msgid "Now you can remove groups of voters to an specific voting"
-msgstr ""
-"En esta página puedes eliminar grupos de vontantes de una votación específica"
 
 #: census/templates/census_maritialStatus_remove.html:21
 msgid ""
@@ -257,6 +313,54 @@ msgstr "Confirmar"
 #: census/templates/result_page.html:33 census/templates/result_page.html:35
 msgid "Return"
 msgstr "Volver"
+
+#: visualizer/templates/graphics.html:19
+msgid "Votings for"
+msgstr "Votaciones para"
+
+#: visualizer/templates/graphics.html:82
+msgid "Statics for this voting"
+msgstr "Estadísticas para esta votación"
+
+#: visualizer/templates/graphics.html:86
+msgid "The winner vote is"
+msgstr "El voto ganador fue"
+
+#: visualizer/templates/graphics.html:89
+msgid "The loser vote is"
+msgstr "El voto perdedor fue"
+
+#: visualizer/templates/graphics.html:91
+msgid "Percentages"
+msgstr "Porcentajes"
+
+#: visualizer/templates/graphics.html:93
+msgid "The option"
+msgstr "La opción"
+
+#: visualizer/templates/graphics.html:93
+msgid "was voted"
+msgstr "fue votada"
+
+#: visualizer/templates/visualizer/visualizer.html:22
+msgid "Voted not started"
+msgstr "Votación no comenzada"
+
+#: visualizer/templates/visualizer/visualizer.html:23
+msgid "Voting in progress"
+msgstr "Votación en progreso"
+
+#: visualizer/templates/visualizer/visualizer.html:30
+msgid "Option"
+msgstr "Opción"
+
+#: visualizer/templates/visualizer/visualizer.html:31
+msgid "Punctuation"
+msgstr "Puntuación"
+
+#: visualizer/templates/visualizer/visualizer.html:32
+msgid "Votes"
+msgstr "Votos"
 
 #: voting/templates/voting/listVoting.html:19
 msgid "List of Public Votings"

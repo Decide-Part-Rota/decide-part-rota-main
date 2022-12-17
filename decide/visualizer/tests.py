@@ -14,7 +14,7 @@ from mixnet.mixcrypt import MixCrypt
 from base import mods
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
+from .views import graphics, funcionLoser, funcionPorcentaje, funcionWinner
 
 # Create your tests here.
 
@@ -78,7 +78,8 @@ class GraphicsTestCases(BaseTestCase):
         self.login()  # set token
         v.tally_votes(self.token)
         #Se comprueba que se puede acceder a las gráficas de dicha votación
-        response = self.client.post('/graphics/{}'.format(v.pk), format='json')
+        request = self.client.post('/graphics/{}'.format(v.pk), format='json')
+        response = graphics(request, voting_id=v.id)
         self.assertEquals(response.status_code,200)
 
     def test_graphic_template_correct(self):
@@ -111,9 +112,161 @@ class GraphicsTestCases(BaseTestCase):
             mods.post('store', json=data)
         self.login()  # set token
         v.tally_votes(self.token)
-        #Se comprueba que el template se cargó correctamente
+        #Se comprueba que se carga el template de graphics correctamente
         response = self.client.post('/graphics/{}'.format(v.pk), format='json')
         self.assertTemplateUsed(response, "graphics.html")
+
+    def test_winner_option(self):
+        v = Voting.objects.get(name='Helado')
+        v.create_pubkey()
+        v.start_date = timezone.now()
+        v.save()
+        voters = list(Census.objects.filter(voting_id=v.id))
+        voter = voters.pop()
+        clear = {}
+        i = 0
+        for opt in v.question.options.all():
+            if opt.number == 0:
+                while i < 5:
+                    clear[opt.number] = 0
+                    pk = v.pub_key
+                    p, g, y = (pk.p, pk.g, pk.y)
+                    k = MixCrypt(bits=settings.KEYBITS)
+                    k.k = ElGamal.construct((p, g, y))
+                    a, b = k.encrypt(opt.number)
+                    data = {
+                        'voting': v.id,
+                        'voter': voter.voter_id,
+                        'vote': { 'a': a, 'b': b },
+                    }
+                    clear[opt.number] += 1
+                    user, _ = User.objects.get_or_create(pk=voter.voter_id)
+                    user.username = 'user{}'.format(voter.voter_id)
+                    user.set_password('qwerty')
+                    user.save()
+                    self.login(user=user.username)
+                    voter = voters.pop()
+                    mods.post('store', json=data)
+                    i+=1
+            elif opt.number == 2:
+                while i < 2:
+                    clear[opt.number] = 0
+                    pk = v.pub_key
+                    p, g, y = (pk.p, pk.g, pk.y)
+                    k = MixCrypt(bits=settings.KEYBITS)
+                    k.k = ElGamal.construct((p, g, y))
+                    a, b = k.encrypt(opt.number)
+                    data = {
+                        'voting': v.id,
+                        'voter': voter.voter_id,
+                        'vote': { 'a': a, 'b': b },
+                    }
+                    clear[opt.number] += 1
+                    user, _ = User.objects.get_or_create(pk=voter.voter_id)
+                    user.username = 'user{}'.format(voter.voter_id)
+                    user.set_password('qwerty')
+                    user.save()
+                    self.login(user=user.username)
+                    voter = voters.pop()
+                    mods.post('store', json=data)
+                    i+=1
+            self.login()  # set token
+            v.tally_votes(self.token)
+            #Se comprueba que la opción más votada es Chocolate
+            self.assertEquals(funcionWinner(voting_id=v.id)['option'], 'Chocolate')
+
+    def test_loser_option(self):
+        v = Voting.objects.get(name='Helado')
+        v.create_pubkey()
+        v.start_date = timezone.now()
+        v.save()
+        voters = list(Census.objects.filter(voting_id=v.id))
+        voter = voters.pop()
+        clear = {}
+        i = 0
+        for opt in v.question.options.all():
+            if opt.number == 0:
+                while i < 5:
+                    clear[opt.number] = 0
+                    pk = v.pub_key
+                    p, g, y = (pk.p, pk.g, pk.y)
+                    k = MixCrypt(bits=settings.KEYBITS)
+                    k.k = ElGamal.construct((p, g, y))
+                    a, b = k.encrypt(opt.number)
+                    data = {
+                        'voting': v.id,
+                        'voter': voter.voter_id,
+                        'vote': { 'a': a, 'b': b },
+                    }
+                    clear[opt.number] += 1
+                    user, _ = User.objects.get_or_create(pk=voter.voter_id)
+                    user.username = 'user{}'.format(voter.voter_id)
+                    user.set_password('qwerty')
+                    user.save()
+                    self.login(user=user.username)
+                    voter = voters.pop()
+                    mods.post('store', json=data)
+                    i+=1
+            elif opt.number == 2:
+                while i < 2:
+                    clear[opt.number] = 0
+                    pk = v.pub_key
+                    p, g, y = (pk.p, pk.g, pk.y)
+                    k = MixCrypt(bits=settings.KEYBITS)
+                    k.k = ElGamal.construct((p, g, y))
+                    a, b = k.encrypt(opt.number)
+                    data = {
+                        'voting': v.id,
+                        'voter': voter.voter_id,
+                        'vote': { 'a': a, 'b': b },
+                    }
+                    clear[opt.number] += 1
+                    user, _ = User.objects.get_or_create(pk=voter.voter_id)
+                    user.username = 'user{}'.format(voter.voter_id)
+                    user.set_password('qwerty')
+                    user.save()
+                    self.login(user=user.username)
+                    voter = voters.pop()
+                    mods.post('store', json=data)
+                    i+=1
+            self.login()  # set token
+            v.tally_votes(self.token)
+            #Se comprueba que la opción menos votada es Vainilla
+            self.assertEquals(funcionLoser(voting_id=v.id)['option'], 'Vainilla')
+
+    def test_options_percentage(self):
+        v = Voting.objects.get(name='Helado')
+        v.create_pubkey()
+        v.start_date = timezone.now()
+        v.save()
+        voters = list(Census.objects.filter(voting_id=v.id))
+        voter = voters.pop()
+        clear = {}
+        for opt in v.question.options.all():
+            clear[opt.number] = 0
+            pk = v.pub_key
+            p, g, y = (pk.p, pk.g, pk.y)
+            k = MixCrypt(bits=settings.KEYBITS)
+            k.k = ElGamal.construct((p, g, y))
+            a, b = k.encrypt(opt.number)
+            data = {
+                'voting': v.id,
+                'voter': voter.voter_id,
+                'vote': { 'a': a, 'b': b },
+            }
+            clear[opt.number] += 1
+            user, _ = User.objects.get_or_create(pk=voter.voter_id)
+            user.username = 'user{}'.format(voter.voter_id)
+            user.set_password('qwerty')
+            user.save()
+            self.login(user=user.username)
+            voter = voters.pop()
+            mods.post('store', json=data)
+        self.login()  # set token
+        v.tally_votes(self.token)
+        #Se comprueba que la opción más votada es Chocolate
+        response = funcionPorcentaje(voting_id=v.id)
+        self.assertEquals(response, [33, 33, 33])
 
 class SeleniumGraphics(StaticLiveServerTestCase):
     def setUp(self):
@@ -181,9 +334,7 @@ class SeleniumGraphics(StaticLiveServerTestCase):
         self.base.login()
         v.tally_votes(self.base.token)
         self.driver.get('{}/graphics/{}'.format(self.live_server_url, v.pk))
-        tituloPag = self.driver.find_element(By.XPATH, '//div[@class="logo"]').text
         graficaBarras = self.driver.find_elements(By.ID, 'grafic')
         graficaPie = self.driver.find_elements(By.ID, 'grafica')
         self.assertTrue(len(graficaBarras)==1)
         self.assertTrue(len(graficaPie)==1)
-        self.assertEquals(tituloPag, "Votaciones para 'Helado'")
