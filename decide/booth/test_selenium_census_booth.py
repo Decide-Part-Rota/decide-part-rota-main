@@ -46,9 +46,9 @@ class TestBooth(StaticLiveServerTestCase):
         self.driver = webdriver.Chrome(options=options)
   
     def tearDown(self):
-        super().tearDown() 
-        self.driver.quit() 
-        self.base.tearDown() 
+        super().tearDown()
+        self.driver.quit()
+        self.base.tearDown()
   
     def test_booth_OpenVotings(self):
         self.driver.get(''f'{self.live_server_url}''/booth/boothList/')

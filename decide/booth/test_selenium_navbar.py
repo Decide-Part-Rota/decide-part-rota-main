@@ -27,11 +27,11 @@ class TestNavbar(StaticLiveServerTestCase):
     options = webdriver.ChromeOptions()
     options.headless = True
     self.driver = webdriver.Chrome(options=options)
-    
+
   def tearDown(self):
-    super().tearDown() 
-    self.driver.quit() 
-    self.base.tearDown() 
+    super().tearDown()
+    self.driver.quit()
+    self.base.tearDown()
   
   def test_navbar(self):
     self.driver.get(''f'{self.live_server_url}''/booth/boothList/')
