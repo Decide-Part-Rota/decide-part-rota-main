@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-16 14:44+0000\n"
+"POT-Creation-Date: 2022-12-17 17:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: authentication/templates/registration/login.html:14
+#: authentication/templates/registration/login.html:33
+#: booth/templates/booth/booth.html:49
+msgid "Login"
+msgstr "Iniciar Sesión"
+
+#: authentication/templates/registration/login.html:23
+msgid "User or email"
+msgstr "Usuario o email"
+
+#: authentication/templates/registration/login.html:27
+#: booth/templates/booth/booth.html:41
+msgid "Password"
+msgstr "Contraseña"
+
+#: authentication/templates/registration/login.html:34
+msgid "Registration"
+msgstr "Registrase"
+
+#: authentication/templates/registration/login.html:40
+msgid "Sign in with Google"
+msgstr "Iniciar sesión con Google"
 
 #: authentication/templates/welcome.html:18
 msgid "Profile"
@@ -42,24 +65,16 @@ msgstr "Cerrar Sesión"
 msgid "Username"
 msgstr "Nombre de usuario"
 
-#: booth/templates/booth/booth.html:41
-msgid "Password"
-msgstr "Contraseña"
-
-#: booth/templates/booth/booth.html:49
-msgid "Login"
-msgstr "Iniciar Sesión"
-
 #: booth/templates/booth/booth.html:64
 msgid "Vote"
 msgstr "Votar"
 
-#: booth/templates/booth/booth.html:160 booth/templates/booth/booth.html:170
-#: booth/templates/booth/booth.html:201
+#: booth/templates/booth/booth.html:181 booth/templates/booth/booth.html:191
+#: booth/templates/booth/booth.html:222
 msgid "Error: "
 msgstr "Error: "
 
-#: booth/templates/booth/booth.html:198
+#: booth/templates/booth/booth.html:219
 msgid "Conglatulations. Your vote has been sent"
 msgstr "Felicidades. Tu voto ha sido enviado."
 
@@ -199,10 +214,8 @@ msgid ""
 "In this view you can manage the census by exporting the users participating "
 "in a voting"
 msgstr ""
-"En esta vista se puede gestionar el censo exportando los usuarios participantes "
-"en una votacion"
-
-
+"En esta vista se puede gestionar el censo exportando los usuarios "
+"participantes en una votacion"
 
 #: census/templates/census_export.html:42
 msgid "Export"
@@ -229,7 +242,6 @@ msgstr ""
 "Por ejemplo, si selecciona 'Masculino', cada usuario que satisfaga este "
 "requisito será eliminado a la votación elegida."
 
-
 #: census/templates/census_import.html:14
 msgid "Import Census"
 msgstr "Importar Censo"
@@ -238,10 +250,9 @@ msgstr "Importar Censo"
 msgid ""
 "In this view you can manage the census by importing users participating in a "
 "voting"
-msgstr "En esta vista puede administrar el censo importando los usuarios que participan en una "
-"votacióna"
-
-
+msgstr ""
+"En esta vista puede administrar el censo importando los usuarios que "
+"participan en una votacióna"
 
 #: census/templates/census_import.html:42
 msgid "Upload a csv file"
