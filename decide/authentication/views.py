@@ -15,7 +15,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, PersonSerializer
 from .forms import PersonForm, LoginForm, CompleteForm
 from .models import Person
 from verify_email.email_handler import send_verification_email
@@ -26,6 +26,10 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 from django.contrib.auth.decorators import login_required
+
+from rest_framework import generics
+import django_filters.rest_framework
+from django.conf import settings
 
 
 class GetUserView(APIView):
@@ -93,15 +97,6 @@ def loginForm(request):
         form = LoginForm()
     return render(request, 'login.html', {'loginForm':form})
 
-
-
-
-
-
-
-
-
-    
 def register(request):
     form= PersonForm()
     if request.method=="POST":
@@ -166,3 +161,13 @@ def complete(request):
     else:
         return redirect('/')
 
+class PersonView(generics.ListCreateAPIView):
+    queryset = Person.objects.all()
+    serializer_class = PersonSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+    def get(self, request, *args, **kwargs):
+        version = request.version
+        if version not in settings.ALLOWED_VERSIONS:
+            version = settings.DEFAULT_VERSION
+        return super().get(request, *args, **kwargs)

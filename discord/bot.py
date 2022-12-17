@@ -20,7 +20,6 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 DEV_MODE = True
 
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
-bot_id = 2
 
 ### --- Functions --- ###
 
@@ -39,7 +38,7 @@ async def on_error(event, *args, **kwargs):
 @bot.event
 async def on_command_error(ctx, error):
     message = ""
-    
+
     if DEV_MODE:
         message += f'\n{error}'
 
@@ -99,6 +98,46 @@ async def list_votings(ctx):
 
     await ctx.send(embed=embed)
 
+async def post_voting(ctx, reaction, voting_id, option_id):
+    people = requests.get(base_url + "authentication/persons/").json()
+    user_id = 0
+    user_found = False
+
+    for person in people:
+        if person["discord_account"] == ctx.author:
+            user_found = True
+            user_id = person["user"]["id"]
+
+    if user_found:
+        # TODO
+        # to create a vote first
+        # we must add user to census with /census/addUser/
+        # then we can create the vote
+        a = 0
+        b = 1
+
+        data = {
+            "voting_id": voting_id,
+            "voter_id": user_id,
+            "vote": {
+                "a": a,
+                "b": b,
+            }
+        }
+
+        return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
+
+    else:
+        title = 'This user account is not assigned to any existing Decide user.'
+        description = "Please create an account or link your Discord account to an existing Decide user using these links:"
+
+        embed = discord.Embed(title=title,description=description, color=discord.Color.random())
+
+        embed.add_field(name="Signup", value="http://localhost:8000/authentication/accounts/login/?next=/", inline=False)
+        embed.add_field(name="Profile", value="http://localhost:8000/profile/", inline=False)
+
+        return await ctx.send(embed=embed)
+
 # Reaction lookup table
 emotes = ["0️⃣","1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
 
@@ -113,7 +152,7 @@ async def get_voting(ctx, voting_id: int):
         # Check the reaction was sent to the correct message.
         # Check the emoji used for the reaction is in the list of emojis.
         return u.id == ctx.author.id and r.message.channel.id == ctx.channel.id and r.message.id == msg.id and \
-               emotes.index(str(r.emoji)) in option_numbers
+               emotes.index(str(r.emoji)) - 1 in range(len(option_numbers))
 
     # Extract the voting, send the message and add reactions
     for voting in votings:
@@ -122,12 +161,14 @@ async def get_voting(ctx, voting_id: int):
             embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
             option_numbers = []
             # Adding options
+            counter = 1
             for option in voting["question"]["options"]:
-                if int(option["number"]) < 11 and int(option["number"]) > 0:
-                    option_numbers.append(int(option["number"]))
-                    embed.add_field(name=emotes[int(option["number"])], 
-                                    value=f'{option["option"]}', 
+                if counter < 11:
+                    embed.add_field(name=emotes[counter],
+                                    value=f'{option["option"]}',
                                     inline=True)
+                    option_numbers.append(option["number"])
+                    counter += 1
                 else:
                     await ctx.send("Invalid option number")
                     return
@@ -136,8 +177,8 @@ async def get_voting(ctx, voting_id: int):
             msg = await ctx.send(embed=embed)
 
             # Adding reactions
-            for num in option_numbers:
-                await msg.add_reaction(emotes[num])
+            for i in range(1,counter):
+                await msg.add_reaction(emotes[i])
 
             # Waiting for reaction
             try:
@@ -149,17 +190,10 @@ async def get_voting(ctx, voting_id: int):
             else:
                 # at this point, the check has become True and the wait_for has done its work, now we can do ours.
                 # here we are sending some text based on the reaction we detected.
-                # TODO POST response
-                return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
+                await post_voting(ctx, reaction, voting_id, option_numbers[emotes.index(reaction.emoji) - 1])
+                return
 
         else:
             await ctx.send("Invalid voting ID or voting is not active")
-
-def post_voting(voting_id, option_id):
-    # TODO
-
-
-
-    return
 
 bot.run(TOKEN)
