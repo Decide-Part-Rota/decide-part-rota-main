@@ -3,6 +3,7 @@ from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 
 from django.contrib.auth.models import User
+from authentication.models import Person
 from rest_framework.authtoken.models import Token
 
 from base import mods
@@ -328,3 +329,190 @@ class RegisterTestCase(StaticLiveServerTestCase):
         print(self.live_server_url)
 
         self.assertEqual(self.driver.title, 'Register')
+
+
+class CompleteTestCase(StaticLiveServerTestCase):
+
+    def setUp(self):
+        self.base = BaseTestCase()
+        self.base.setUp()
+
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+
+        u = User(username='voter1', email="voter1@gmail.com")
+        u.set_password('123')
+        u.save()
+
+        p = Person.objects.filter(user=User.objects.get(username='voter1'))
+        if p.exists():
+            p[0].delete()
+
+        super().setUp()
+
+
+    def tearDown(self):
+        super().tearDown()
+        self.driver.quit()
+        self.base.tearDown()
+
+
+    def test_user_without_person(self):
+        self.driver.get(f'{self.live_server_url}/authentication/accounts/login/')
+        self.driver.find_element(By.ID,'id_username').send_keys("voter1")
+        self.driver.find_element(By.ID,'id_password').send_keys("123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+        
+        self.driver.get(f'{self.live_server_url}/authentication/completeForm/')
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Complete')
+
+    def test_user_with_person(self):
+        self.driver.get(f'{self.live_server_url}/authentication/accounts/login/')
+        self.driver.find_element(By.ID,'id_username').send_keys("voter1")
+        self.driver.find_element(By.ID,'id_password').send_keys("123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+        
+        self.driver.get(f'{self.live_server_url}/authentication/completeForm/')
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Complete')
+
+        self.driver.find_element(By.ID,'id_sex').send_keys("Hombre")
+        self.driver.find_element(By.ID,'id_age').send_keys("20")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_discord_account').send_keys("name#0123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Inicio')
+        
+        self.driver.get(f'{self.live_server_url}/authentication/completeForm/')
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Inicio')
+
+
+    def test_simpleCorrectComplete(self):
+        self.driver.get(f'{self.live_server_url}/authentication/accounts/login/')
+        self.driver.find_element(By.ID,'id_username').send_keys("voter1")
+        self.driver.find_element(By.ID,'id_password').send_keys("123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+        
+        self.driver.get(f'{self.live_server_url}/authentication/completeForm/')
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Complete')
+
+        self.driver.find_element(By.ID,'id_sex').send_keys("Hombre")
+        self.driver.find_element(By.ID,'id_age').send_keys("20")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_discord_account').send_keys("name#0123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Inicio')
+
+    def test_simpleIncorrectSexComplete(self):
+        self.driver.get(f'{self.live_server_url}/authentication/accounts/login/')
+        self.driver.find_element(By.ID,'id_username').send_keys("voter1")
+        self.driver.find_element(By.ID,'id_password').send_keys("123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+        
+        self.driver.get(f'{self.live_server_url}/authentication/completeForm/')
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Complete')
+        # Probar un complete con sexo invalido
+        self.driver.find_element(By.ID,'id_sex').send_keys("Helicoptero")
+        self.driver.find_element(By.ID,'id_age').send_keys("0")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_discord_account').send_keys("name#0123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        print(self.live_server_url)
+
+        self.assertEqual(self.driver.title, 'Complete')
+
+    def test_simpleIncorrectAgeComplete(self):
+        self.driver.get(f'{self.live_server_url}/authentication/accounts/login/')
+        self.driver.find_element(By.ID,'id_username').send_keys("voter1")
+        self.driver.find_element(By.ID,'id_password').send_keys("123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+        
+        self.driver.get(f'{self.live_server_url}/authentication/completeForm/')
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Complete')
+
+        self.driver.find_element(By.ID,'id_sex').send_keys("Hombre")
+        # Probar un complete con una edad invalida
+        self.driver.find_element(By.ID,'id_age').send_keys("0")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_discord_account').send_keys("name#0123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+
+        print(self.live_server_url)
+
+        self.assertEqual(self.driver.title, 'Complete')
+
+    def test_simpleIncorrectStatusComplete(self):
+        self.driver.get(f'{self.live_server_url}/authentication/accounts/login/')
+        self.driver.find_element(By.ID,'id_username').send_keys("voter1")
+        self.driver.find_element(By.ID,'id_password').send_keys("123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+        
+        self.driver.get(f'{self.live_server_url}/authentication/completeForm/')
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Complete')
+
+        self.driver.find_element(By.ID,'id_sex').send_keys("Hombre")
+        self.driver.find_element(By.ID,'id_age').send_keys("0")
+        # Probar un complete con estado invalido
+        self.driver.find_element(By.ID,'id_status').send_keys("A dos velas")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_discord_account').send_keys("name#0123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        self.assertEqual(self.driver.title, 'Complete')
+    
+    def test_simpleIncorrectCountryComplete(self):
+        self.driver.get(f'{self.live_server_url}/authentication/accounts/login/')
+        self.driver.find_element(By.ID,'id_username').send_keys("voter1")
+        self.driver.find_element(By.ID,'id_password').send_keys("123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+        
+        self.driver.get(f'{self.live_server_url}/authentication/completeForm/')
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Complete')
+
+        self.driver.find_element(By.ID,'id_sex').send_keys("Hombre")
+        self.driver.find_element(By.ID,'id_age').send_keys("0")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        # Probar un complete con pais invalido
+        self.driver.find_element(By.ID,'id_country').send_keys("Sevilla")
+        self.driver.find_element(By.ID,'id_discord_account').send_keys("name#0123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        self.assertEqual(self.driver.title, 'Complete')
+
+    def test_simpleIncorrectDiscordAccountComplete(self):
+        self.driver.get(f'{self.live_server_url}/authentication/accounts/login/')
+        self.driver.find_element(By.ID,'id_username').send_keys("voter1")
+        self.driver.find_element(By.ID,'id_password').send_keys("123")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+        
+        self.driver.get(f'{self.live_server_url}/authentication/completeForm/')
+        print(self.live_server_url)
+        self.assertEqual(self.driver.title, 'Complete')
+
+        self.driver.find_element(By.ID,'id_sex').send_keys("Hombre")
+        self.driver.find_element(By.ID,'id_age').send_keys("20")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        # Probar un complete con cuenta de discord invalida
+        self.driver.find_element(By.ID,'id_discord_account').send_keys("name#012")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        self.assertEqual(self.driver.title, 'Complete')
