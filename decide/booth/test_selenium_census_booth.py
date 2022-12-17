@@ -44,7 +44,7 @@ class TestBooth(StaticLiveServerTestCase):
         v.auths.add(a)
 
         options = webdriver.ChromeOptions()
-        options.headless = False
+        options.headless = True
         self.driver = webdriver.Chrome(options=options)
   
     def tearDown(self):
