@@ -82,3 +82,34 @@ class RegisterTestCase(StaticLiveServerTestCase):
         time.sleep(0.5)
 
         self.assertTrue("Sign Up" in self.driver.page_source)
+
+
+    def test_register_fail_password_too_similar(self):
+        self.driver.maximize_window()
+        self.driver.get(''f'{self.live_server_url}''/authentication/registerForm/')
+
+        self.driver.find_element(By.ID, "id_username").clear()
+        self.driver.find_element(By.ID, "id_username").send_keys("user1234")
+        time.sleep(2)
+        self.driver.find_element(By.ID, "id_password1").clear()
+        self.driver.find_element(By.ID, "id_password1").send_keys("user1234")
+        time.sleep(2)
+        self.driver.find_element(By.ID, "id_password2").clear()
+        self.driver.find_element(By.ID, "id_password2").send_keys("user1234")
+        time.sleep(2)
+        self.driver.find_element(By.ID, "id_email").clear()
+        self.driver.find_element(By.ID, "id_email").send_keys("user@user.com")
+        time.sleep(2)
+        self.driver.find_element(By.ID, "id_sex").find_element(By.XPATH, "//option[. = 'Woman']").click()
+        time.sleep(2)
+        self.driver.find_element(By.ID, "id_age").clear()
+        self.driver.find_element(By.ID, "id_age").send_keys("42")
+        time.sleep(2)
+        self.driver.find_element(By.ID, "id_status").find_element(By.XPATH, "//option[. = 'Single']").click()
+        time.sleep(2)
+        self.driver.find_element(By.ID, "id_country").find_element(By.XPATH, "//option[. = 'Azerbaijan']").click()
+        time.sleep(2)
+        self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        time.sleep(2)
+
+        self.assertTrue("Sign Up" in self.driver.page_source)
