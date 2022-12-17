@@ -299,7 +299,7 @@ class VotingTestCase(BaseTestCase):
 
         self.assertTrue(len(Voting.objects.all().filter(public=False, name='Votacion No Publica'))==1)
 
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -354,11 +354,11 @@ class ViewTestCase(StaticLiveServerTestCase):
 
 
         options = webdriver.ChromeOptions()
-        options.headless = False
+        options.headless = True
         self.driver = webdriver.Chrome(options=options)
 
         super().setUp()
-            
+ 
     def tearDown(self):
         super().tearDown()
         self.driver.quit()
@@ -386,7 +386,7 @@ class ViewTestCase(StaticLiveServerTestCase):
         self.driver.get(f'{self.live_server_url}/admin/')
         self.driver.find_element(By.ID, "id_username").send_keys("admin")
         self.driver.find_element(By.ID, "id_password").send_keys("qwerty", Keys.ENTER)
-        self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')           
+        self.driver.get(f'{self.live_server_url}/voting/listadoVotaciones')
         dropdown = self.driver.find_element(By.ID, "select-trad")
         dropdown.find_element(By.XPATH, "//*[@id='select-trad']/option[3]").click()
         element = self.driver.find_element(By.ID, "select-trad")
