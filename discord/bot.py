@@ -148,7 +148,7 @@ async def post_voting(ctx, reaction, voting, option_id):
 
         # ElGamal encryption
         data = gen_data(voting, user_id, option_id)
-        print(data)
+
         print(f"Vote for voting {voting['id']} created by {user_id} with option {option_id}")
         return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
 
