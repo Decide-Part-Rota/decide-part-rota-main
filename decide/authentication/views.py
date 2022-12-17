@@ -166,3 +166,17 @@ def complete(request):
     else:
         return redirect('/')
 
+def profileView(request):
+    user = request.user
+    person = Person.objects.get(user = user.id)
+    context = {'username': user.username, 'email': user.email, 'first_name': user.first_name, 'last_name': user.last_name, 'sex': person.sex,
+                    'discord_account': person.discord_account, 'age': person.age}
+    return render(request, 'profile.html', context)        
+
+def editProfile(request):
+    user = request.user
+    new_disc_account = request.POST['discord_account']
+    person = Person.objects.get(user = User.objects.get(id=request.user.id))
+    person.discord_account = new_disc_account
+    person.save()
+    return redirect('/authentication/profile/')

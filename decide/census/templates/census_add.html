@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+
+    <link type="text/css" rel="stylesheet" href="{% static 'style.css' %}" />
+{% endblock %}
+
+
+{% block content %}
+<div class="title">
+    <h2>{% trans "Manage Census" %}</h2>
+</div>
+
+<div class="row justify-content-md-center">
+    <div class="col-sm-8">
+        <h4>{% trans "In this view you can manage the census by adding a user to a specific voting" %}</h4>
+    </div>
+</div>
+
+<div class="row">
+    
+</div>
+
+<form class="row gx-3 gy-2 align-items-center" action="add_to_census" method="POST">
+    {% csrf_token %}
+    <div class="row justify-content-md-center">
+        <div class="col-sm-8">
+            <label for="voting-select">{% trans "Choose a voting" %}</label>
+            <select class="form-select" id="voting-select" name="voting-select">
+                {% for voting in votings %}
+                <option value="{{voting.id}}">{{voting}}</option>
+                {%endfor%}
+            </select>
+                
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-sm-8">
+            <label for="user-select">{% trans "Choose a user" %}</label>
+            <select class="form-select" id="user-select" name="user-select">
+                {% for user in users %}
+                <option value="{{user.id}}">{{user}}</option>
+                {%endfor%}
+            </select>    
+        </div>
+    </div>
+    <div class="row justify-content-center submit">
+        <div class="col col-lg-1">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>
+
+<div class="row justify-content-center submit">
+    <div class="col col-lg-2">
+        <a href="by_group"><button type="button" class="btn btn-primary group-button">{% trans "Or Add By Group" %}</button></a>
+    </div>
+</div>
+
+{% if messages %}
+<ul class="messages" style="margin-top:2%">
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <li class="{{ message.tags }} alert alert-danger" role="alert">{{ message }}</li>
+        {% else %}
+        <li class="{{ message.tags }} alert alert-{{message.tags}}" role="alert">{{ message }}</li>
+        {% endif %}
+        
+    {% endfor %}
+</ul>
+
+{% endif %}
+
+
+
+{% include 'footer.html' %}
+
+
+{% endblock %}
