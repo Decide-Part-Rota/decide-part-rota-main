@@ -51,6 +51,16 @@ class CompleteForm(forms.Form):
     country = CountryField().formfield()
     discord_account = forms.CharField(required=False, help_text="Please use the following format: name#XXXX", validators=[discord_validator], max_length=30)
 
+    def clean_age(self):
+        data = self.cleaned_data["age"]
+
+        if not data:
+          self.add_error("age", "Debes especificar una edad")
+
+        if data == 0:
+          self.add_error("age", "Introduce una edad valida")
+        return data
+
 
 
 
