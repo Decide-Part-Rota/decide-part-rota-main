@@ -57,7 +57,7 @@ class CompleteForm(forms.Form):
         if not data:
           self.add_error("age", "Debes especificar una edad")
 
-        if data == 0:
+        if data <= 0:
           self.add_error("age", "Introduce una edad valida")
         return data
 
