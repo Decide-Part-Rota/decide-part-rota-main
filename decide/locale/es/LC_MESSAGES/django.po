@@ -397,7 +397,7 @@ msgstr "Gestionar censo"
 
 #: voting/templates/voting/listVoting.html:96
 msgid "List of votings that you are participating"
-msgstr "Listado de votaciones en las que no participas"
+msgstr "Listado de votaciones en las que participas"
 
 #: voting/templates/voting/listVoting.html:112
 msgid "Go Vote"
