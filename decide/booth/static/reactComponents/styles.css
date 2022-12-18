@@ -71,12 +71,15 @@
 }
 
 .card .face.face1 .content h1{
-  font-size: 1em;
+  font-size: 20px;
   color: rgb(255, 255, 255);
   text-align: center;
-  
-
+  margin: 0 ;
+  padding: 0;
 }
+
+
+
 .name {
   color:rgb(255, 255, 255)
 }
@@ -110,12 +113,7 @@
   color:#333;
 }
 
-.card .face.face1 .content h1{
-  font-size: 20pt;
-  margin: 0 ;
-  padding: 0;
-  color:rgb(255, 255, 255);
-}
+
 
 .card .face.face2 .content a{
   text-decoration:none;
