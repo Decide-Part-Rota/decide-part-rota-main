@@ -82,7 +82,7 @@ async def list_votings(ctx):
     embed = discord.Embed(title='Votings', color=discord.Color.random())
 
     for voting in votings:
-        if voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
+        if voting["start_date"] is not None and voting["end_date"] is None and voting["public"]:
             embed.add_field(name=f'{voting["id"]}: {voting["name"]}', value=voting["question"]["desc"], inline=False)
 
     print(f"{ctx.author} requested the list of votings")
@@ -155,7 +155,6 @@ async def post_voting_message(ctx, voting):
     # Creating question message
     embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
     option_numbers = []
-    
     def check(r: discord.Reaction, u: Union[discord.Member, discord.User]):  # r = discord.Reaction, u = discord.Member or discord.User.
         # Check the user who sent the reaction is the same as the user who sent the message.
         # Check the channel the reaction was sent in is the same as the channel the message was sent in.
@@ -206,7 +205,7 @@ async def get_voting(ctx, voting_id: int):
 
     # Extract the voting, send the message and add reactions
     for voting in votings:
-        if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None and voting["public"]:
+        if voting["id"] == voting_id and voting["start_date"] is not None and voting["end_date"] == None and voting["public"]:
             print(f"{ctx.author} requested voting {voting_id}")
             return await post_voting_message(ctx, voting)
             
