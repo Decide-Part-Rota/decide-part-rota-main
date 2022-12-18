@@ -37,6 +37,5 @@ class testRegistro(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_country").send_keys("Spain")
         self.driver.find_element(By.XPATH, "/html/body/div/form/button").click()
 
-        #Comprobar redireccion y existencia del perfil
-        assert self.driver.find_element(By.LINK_TEXT, "Registrarse").text == 'Registrarse'
+        #Comprobar redireccion y existencia del perfil 
         assert User.objects.get(username='Voter1').email == 'voter1@gmail.com'

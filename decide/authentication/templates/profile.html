@@ -12,7 +12,7 @@
     <label for="email">Email:</label><br>
     <input type="text" id="email" name="email" value="{{email}}" readonly><br><br>
     <label for="age">Age:</label><br>
-    <input type="text" id="age" name="age" value="{{age}}" readonly><br><br>
+    <input type="number" id="age" name="age" value="{{age}}" min="18" max="100"><br><br>
     <label for="discord_account">Discord account:</label><br>
     <input type="text" id="discord_account" name="discord_account" value="{{discord_account}}" pattern = ".+#\d{4}"><br><br>
     <small id="helpText" class="form-text text-muted">Remember pattern: name#XXXX</small><br><br><br>
