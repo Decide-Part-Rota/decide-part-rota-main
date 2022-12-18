@@ -157,7 +157,7 @@ def complete(request):
                 country = form.cleaned_data.get('country')
                 discord_account = form.cleaned_data.get('discord_account')
 
-                person = Person(user = user, sex = sex, age = age,status=status,country=country, discord_account = discord_account)
+                person = Person(user = user, sex = sex, age = age, status = status, country = country, discord_account = discord_account)
                 person.save()
 
                 return redirect('/')

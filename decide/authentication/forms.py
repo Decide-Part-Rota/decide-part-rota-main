@@ -28,6 +28,14 @@ class PersonForm(UserCreationForm):
         if data == 0:
           self.add_error("age", "Introduce una edad valida")
         return data
+
+    def clean_email(self):
+        data= self.cleaned_data["email"]
+
+        if not data:
+          self.add_error("email", "Debes especificar un email")
+
+        return data
     
     
     
@@ -37,12 +45,21 @@ class PersonForm(UserCreationForm):
 
 
 class CompleteForm(forms.Form):
-    sex = forms.ChoiceField(choices=sexos, required=True)
-    age = forms.IntegerField(required=True)
+    sex = forms.ChoiceField(choices=sexos, required=True, label="Seleccione su sexo")
+    age = forms.IntegerField(required=False)
     status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
     country = CountryField().formfield()
     discord_account = forms.CharField(required=False, help_text="Please use the following format: name#XXXX", validators=[discord_validator], max_length=30)
 
+    def clean_age(self):
+        data = self.cleaned_data["age"]
+
+        if not data:
+          self.add_error("age", "Debes especificar una edad")
+
+        if data <= 0:
+          self.add_error("age", "Introduce una edad valida")
+        return data
 
 
 
