@@ -19,6 +19,7 @@ from selenium.webdriver.common.keys import Keys
 from base.tests import BaseTestCase
 from authentication.forms import CompleteForm
 import time
+from .views import *
 
 class AuthTestCase(APITestCase):
 
@@ -364,7 +365,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
 
         print(self.live_server_url)
 
-        self.assertEqual(self.driver.title, 'Register')
+        self.assertEqual(self.driver.title, 'Login')
 
     def test_simpleIncorrectStatusRegister(self): 
         self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
@@ -381,7 +382,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
 
         print(self.live_server_url)
 
-        self.assertEqual(self.driver.title, 'Register')
+        self.assertEqual(self.driver.title, 'Login')
 
     def test_simpleIncorrectCountryRegister(self): 
         self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
@@ -392,13 +393,13 @@ class RegisterTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
         self.driver.find_element(By.ID,'id_age').send_keys("1")
         self.driver.find_element(By.ID,'id_status').send_keys("Con novia")
-        # Probar un register con sexo invalido
-        self.driver.find_element(By.ID,'id_country').send_keys("Sevilla")
+        # Probar un register con pais invalido
+        self.driver.find_element(By.ID,'id_country').send_keys("Mi casa")
         self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
 
         print(self.live_server_url)
 
-        self.assertEqual(self.driver.title, 'Register')
+        self.assertEqual(self.driver.title, 'Login')
 
     def test_simpleIncorrectMailRegister(self): 
         self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
@@ -605,3 +606,41 @@ class CompleteTestCase(StaticLiveServerTestCase):
         self.assertEqual(self.driver.title, 'Complete')
 
 
+class AuthPageTextCase(TestCase):
+    def test_form_no_username(self):
+        form= PersonForm({'password1':'Probando189!','password2':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+        
+       
+
+        self.assertEquals(form.errors['username'], ["This field is required."])
+
+    def test_form_no_status(self):
+       
+        form= PersonForm({'username':'prueba','password1':'Probando189!','password2':'Probando189!','email':'prueba@decide.es','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['status'], ["This field is required."])
+
+    def test_form_no_password1(self):
+        
+        form= PersonForm({'username':'prueba','password2':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['password1'], ["This field is required."])
+
+    def test_form_no_password2(self):
+       
+        form= PersonForm({'username':'prueba','password1':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['password2'], ["This field is required."])
+
+    def test_form_no_sex(self):
+       
+        form= PersonForm({'username':'prueba','password1':'Probando189!','email':'prueba@decide.es','status':'soltero','country':'NZ','discord_account':'prueba#1111'})
+
+
+        self.assertEquals(form.errors['sex'], ["This field is required."])
+
+    def test_form_no_country(self):
+    
+        form= PersonForm({'username':'prueba','password1':'Probando189!','password2':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['country'], ["This field is required."])
