@@ -1,3 +1,6 @@
+
+
+
 {% extends "base.html" %}
 {% load i18n static %}
 
@@ -15,7 +18,7 @@
         <div class="logo">Decide Voting Platform</div>
         
         <nav>
-            <a href="#">{% trans "Profile" %}</a>
+            <a href="authentication/profile/">{% trans "Profile" %}</a>
             <a href="voting/listadoVotaciones">{% trans "Public Votings" %}</a>
             <a href="{% url 'salir'%}">{% trans "Logout" %}</a>
         </nav>

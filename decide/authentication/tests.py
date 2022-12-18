@@ -3,6 +3,7 @@ from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 
 from django.contrib.auth.models import User
+from authentication.models import Person
 from rest_framework.authtoken.models import Token
 
 from base import mods
@@ -16,7 +17,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 
 from base.tests import BaseTestCase
+from authentication.forms import CompleteForm
 import time
+from .views import *
 
 class AuthTestCase(APITestCase):
 
@@ -185,6 +188,92 @@ class AuthTestCase(APITestCase):
         self.assertEqual(user['username'], 'voter1')
 
 
+class CompleteUnitTestCase(APITestCase):
+    def test_unitCorrectComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '20',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_unitIncorrectSexComplete(self):
+        form_data = {
+            'sex': 'ninguno',
+            'age': '20',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        
+    def test_unitIncorrectAgeComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '-10',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_unitIncorrectAgeComplete2(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '0',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_unitIncorrectStatusComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '20',
+            'status': 'a dos velas',
+            'discord_account': 'name#0123',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+    
+    def test_unitIncorrectDiscordAccountComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '20',
+            'status': 'soltero',
+            'discord_account': 'name#012',
+            'country': "AD"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_unitIncorrectCountryComplete(self):
+        form_data = {
+            'sex': 'hombre',
+            'age': '20',
+            'status': 'soltero',
+            'discord_account': 'name#0123',
+            'country': "ZZ"
+            }
+
+        form = CompleteForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+
 class RegisterTestCase(StaticLiveServerTestCase):
 
     def setUp(self):
@@ -204,23 +293,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
         self.base.tearDown()
 
 
-    def test_simpleCorrectRegister(self):
-        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
-        self.driver.find_element(By.ID,'id_username').send_keys("test1")
-        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
-        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword")
-        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
-        self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
-        self.driver.find_element(By.ID,'id_age').send_keys("20")
-        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
-        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
-        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
-
-        # time.sleep(10)
-
-        print(self.live_server_url)
-
-        self.assertEqual(self.driver.title, 'Login')
+    
 
     def test_simpleIncorrectPasswordRegister(self):
         self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
@@ -261,56 +334,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
 
         self.assertEqual(self.driver.title, 'Register')
 
-    def test_simpleIncorrectSexRegister(self): 
-        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
-        self.driver.find_element(By.ID,'id_username').send_keys("test1")
-        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
-        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword")
-        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
-        # Probar un register con sexo invalida
-        self.driver.find_element(By.ID,'id_sex').send_keys("Helicoptero")
-        self.driver.find_element(By.ID,'id_age').send_keys("0")
-        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
-        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
-        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
-
-        print(self.live_server_url)
-
-        self.assertEqual(self.driver.title, 'Register')
-
-    def test_simpleIncorrectStatusRegister(self): 
-        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
-        self.driver.find_element(By.ID,'id_username').send_keys("test1")
-        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
-        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword")
-        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
-        self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
-        self.driver.find_element(By.ID,'id_age').send_keys("0")
-        # Probar un register con estado invalida
-        self.driver.find_element(By.ID,'id_status').send_keys("Con novia")
-        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
-        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
-
-        print(self.live_server_url)
-
-        self.assertEqual(self.driver.title, 'Register')
-
-    def test_simpleIncorrectCountryRegister(self): 
-        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
-        self.driver.find_element(By.ID,'id_username').send_keys("test1")
-        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
-        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword")
-        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
-        self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
-        self.driver.find_element(By.ID,'id_age').send_keys("0")
-        self.driver.find_element(By.ID,'id_status').send_keys("Con novia")
-        # Probar un register con sexo invalida
-        self.driver.find_element(By.ID,'id_country').send_keys("Sevilla")
-        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
-
-        print(self.live_server_url)
-
-        self.assertEqual(self.driver.title, 'Register')
+   
 
     def test_simpleIncorrectMailRegister(self): 
         self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
@@ -320,7 +344,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
         # Probar un register con mail invalido
         self.driver.find_element(By.ID,'id_email').send_keys("miEmail")
         self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
-        self.driver.find_element(By.ID,'id_age').send_keys("0")
+        self.driver.find_element(By.ID,'id_age').send_keys("1")
         self.driver.find_element(By.ID,'id_status').send_keys("Con novia")
         self.driver.find_element(By.ID,'id_country').send_keys("Sevilla")
         self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
@@ -328,3 +352,43 @@ class RegisterTestCase(StaticLiveServerTestCase):
         print(self.live_server_url)
 
         self.assertEqual(self.driver.title, 'Register')
+
+
+class AuthPageTextCase(TestCase):
+    def test_form_no_username(self):
+        form= PersonForm({'password1':'Probando189!','password2':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+        
+       
+
+        self.assertEquals(form.errors['username'], ["This field is required."])
+
+    def test_form_no_status(self):
+       
+        form= PersonForm({'username':'prueba','password1':'Probando189!','password2':'Probando189!','email':'prueba@decide.es','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['status'], ["This field is required."])
+
+    def test_form_no_password1(self):
+        
+        form= PersonForm({'username':'prueba','password2':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['password1'], ["This field is required."])
+
+    def test_form_no_password2(self):
+       
+        form= PersonForm({'username':'prueba','password1':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['password2'], ["This field is required."])
+
+    def test_form_no_sex(self):
+       
+        form= PersonForm({'username':'prueba','password1':'Probando189!','email':'prueba@decide.es','status':'soltero','country':'NZ','discord_account':'prueba#1111'})
+
+
+        self.assertEquals(form.errors['sex'], ["This field is required."])
+
+    def test_form_no_country(self):
+    
+        form= PersonForm({'username':'prueba','password1':'Probando189!','password2':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['country'], ["This field is required."])
