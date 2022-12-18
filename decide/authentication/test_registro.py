@@ -26,7 +26,7 @@ class testRegistro(StaticLiveServerTestCase):
         self.driver.set_window_size(1366, 728)
 
         #Clickar en registrarse
-        self.driver.find_element(By.LINK_TEXT, "Registrarse").click()
+        self.driver.find_element(By.ID, "button_registrar").click()
         
         #Rellenar los campos
         self.driver.find_element(By.ID, "id_username").send_keys("Voter1")
@@ -38,5 +38,6 @@ class testRegistro(StaticLiveServerTestCase):
         self.driver.find_element(By.XPATH, "/html/body/div/form/button").click()
 
         #Comprobar redireccion y existencia del perfil
-        assert self.driver.find_element(By.LINK_TEXT, "Registrarse").text == 'Registrarse'
+        boton = self.driver.find_elements(By.ID, "button_registrar")
+        assert len(boton) == 1
         assert User.objects.get(username='Voter1').email == 'voter1@gmail.com'

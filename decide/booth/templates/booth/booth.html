@@ -66,6 +66,27 @@
             </div>
         </div>
     </div>
+
+    <br>
+
+    <div>
+    {% if messages %}
+    <ul class="messages" style="margin-top:2%">
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+            <li class="{{ message.tags }} alert alert-danger" role="alert">{{ message }}</li>
+            {% else %}
+            <li class="{{ message.tags }} alert alert-{{message.tags}}" role="alert">{{ message }}</li>
+            {% endif %}
+            
+        {% endfor %}
+    </ul>
+    
+    {% endif %}
+    </div>
+    
+    
+    {% include 'footer.html' %}
 {% endblock %}
 
 {% block extrabody %}
