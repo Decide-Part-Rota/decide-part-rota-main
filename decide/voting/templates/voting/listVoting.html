@@ -13,9 +13,10 @@
 
 {% block content %}
         
-    <h1 style="text-align:center">Listado de Votaciones</h1>
+    
 
     <body>
+        <h2 id="listPubVotings" class="List Public Votings" style="text-align:center">{% trans "List of Public Votings" %}</h2>
         
         <table class="table table-bordered">
 
@@ -24,10 +25,10 @@
                 <tr>
 
                     <td>ID</td>
-                    <td>Name</td>
-                    <td>Description</td>
-                    <td>Visibility</td>
-                    <td></td>
+                    <td>{% trans "Name" %}</td>
+                    <td>{% trans "Description" %}</td>
+                    <td>{% trans "Visibility" %}</td>
+                    <td>{% trans "Actions" %}</td>
 
                 </tr>
 
@@ -35,10 +36,11 @@
 
             <tbody>
 
-                {% if votaciones %}
+                {% if votaciones_no_participa %}
+                    <h4 class="public-votings-not-participate" style="text-align:center">{% trans "List of votings that you are not participating" %}</h4>
     
                     <!-- Cojo la colección votaciones que le paso en views.py --> 
-                    {% for votacion in votaciones %} 
+                    {% for votacion in votaciones_no_participa %} 
     
                         <tr>
     
@@ -49,9 +51,9 @@
 
                             <td>
 
-                                <a class="boton-personalizado" href="http://127.0.0.1:8000/booth/{{votacion.id}}">
+                                <a class="boton-personalizado-join-census" href="/census/addUser/{{votacion.id}}">
 
-                                    Go Vote
+                                    {% trans "Join Census" %}
 
                                 </a>
 
@@ -60,17 +62,95 @@
                         </tr>
                     
                     {% endfor %}
-    
+
+                    
                 {% else %}
                     
-                <h3 style="text-align:center">Listado de Votaciones</h3>
+                <h4 style="text-align:center">{% trans "List of votings that you are not participating" %}</h4>
                         
                 {% endif %}
                         
             </tbody>
 
         </table>
+
+        <table class="table table-bordered">
+
+            <thead>
+
+                <tr>
+
+                    <td>ID</td>
+                    <td>{% trans "Name" %}</td>
+                    <td>{% trans "Description" %}</td>
+                    <td>{% trans "Visibility" %}</td>
+                    <td>{% trans "Actions" %}</td>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% if votaciones_participa %}
+                    <h4 class="public-votings-participate" style="text-align:center"> {% trans "List of votings that you are participating" %}</h4>
+    
+                    <!-- Cojo la colección votaciones que le paso en views.py --> 
+                    {% for votacion in votaciones_participa %} 
+    
+                        <tr>
+    
+                            <td>{{votacion.id}}</td>
+                            <td>{{votacion.name}}</td>
+                            <td>{{votacion.desc}}</td>
+                            <td>{{votacion.public}}</td>
+
+                            <td>
+
+                                <a class="boton-personalizado-go-vote" href="/booth/{{votacion.id}}">
+
+                                    {% trans "Go Vote" %}
+
+                                </a>
+
+                                <a class="boton-personalizado-quit-census" href="/census/deleteUser/{{votacion.id}}">
+
+                                    {% trans "Quit Census" %}
+
+                                </a>
+
+                            </td>
+    
+                        </tr>
                     
+                    {% endfor %}
+
+                    
+                {% else %}
+                    
+                <h4 style="text-align:center"> {% trans "List of voting that you participating" %}</h4>
+                        
+                {% endif %}
+                        
+            </tbody>
+
+        </table> 
+           
+        {% if messages %}
+            <ul class="messages" style="margin-top:2%">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    <li class="{{ message.tags }} alert alert-danger" role="alert">{{ message }}</li>
+                    {% else %}
+                    <li class="{{ message.tags }} alert alert-{{message.tags}}" role="alert">{{ message }}</li>
+                    {% endif %}
+                    
+                {% endfor %}
+            </ul>
+
+        {% endif %}
     </body>
+
+{% include 'footer.html' %}
 
 {% endblock %}

@@ -8,42 +8,7 @@
     <link type="text/css" rel="stylesheet" href="{% static 'style.css' %}" />
 {% endblock %}
 
-
 {% block content %}
-<div class="title">
-    <h2>{% trans "Export Census" %}</h2>
-</div>
-
-<div class="row justify-content-md-center">
-    <div class="col-sm-8">
-        <h4>{% trans "In this view you can manage the census by exporting the users participating in a voting" %}</h4>
-    </div>
-</div>
-
-<div class="row">
-    
-</div>
-
-<form class="row gx-3 gy-2 align-items-center" action="exporting_census/" method="POST">
-    {% csrf_token %}
-    <div class="row justify-content-md-center">
-        <div class="col-sm-8">
-            <label for="voting-select">{% trans "Choose a voting" %}</label>
-            <select class="form-select" id="voting-select" name="voting-select">
-                {% for voting in votings %}
-                <option value="{{voting.id}}">{{voting}}</option>
-                {%endfor%}
-            </select>
-                
-        </div>
-    </div>
-    <div class="row justify-content-center submit">
-        <div class="col col-lg-1">
-            <button type="submit" class="btn btn-primary">{% trans "Export" %}</button>
-        </div>
-    </div>
-</form>
-
 {% if messages %}
 <ul class="messages" style="margin-top:2%">
     {% for message in messages %}
@@ -58,5 +23,10 @@
 
 {% endif %}
 
+<div class="row justify-content-center submit">
+    <div class="col col-lg-2">
+        <a href="/census/remove/by_group_remove"><button type="submit" class="btn btn-primary">{% trans "Return" %}</button></a>
+    </div>
+</div>
 {% include 'footer.html' %}
 {% endblock %}

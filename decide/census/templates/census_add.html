@@ -28,8 +28,8 @@
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="specificSizeSelect">{% trans "Choose a voting" %}</label>
-            <select class="form-select" id="specificSizeSelect" name="voting-select">
+            <label for="voting-select">{% trans "Choose a voting" %}</label>
+            <select class="form-select" id="voting-select" name="voting-select">
                 {% for voting in votings %}
                 <option value="{{voting.id}}">{{voting}}</option>
                 {%endfor%}
@@ -39,8 +39,8 @@
     </div>
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="specificSizeSelect">{% trans "Choose a user" %}</label>
-            <select class="form-select" id="specificSizeSelect" name="user-select">
+            <label for="user-select">{% trans "Choose a user" %}</label>
+            <select class="form-select" id="user-select" name="user-select">
                 {% for user in users %}
                 <option value="{{user.id}}">{{user}}</option>
                 {%endfor%}
@@ -49,7 +49,7 @@
     </div>
     <div class="row justify-content-center submit">
         <div class="col col-lg-1">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary"> {% trans "Submit" %}</button>
         </div>
     </div>
 </form>
