@@ -17,16 +17,20 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_swagger.views import get_swagger_view
+from visualizer import views
 from authentication.views import welcome
 from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib.auth import views as auth_views
+
 
 schema_view = get_swagger_view(title='Decide API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('doc/', schema_view),
+    path('graphics/<int:voting_id>', views.graphics),
     path('gateway/', include('gateway.urls')),
+    path('i18n', include('django.conf.urls.i18n')),
     path('verification/', include('verify_email.urls')),
     path('', welcome),
 

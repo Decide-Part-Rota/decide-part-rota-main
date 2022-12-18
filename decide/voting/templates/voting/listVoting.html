@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+{% load i18n static %}
+
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static "voting/style.css" %}" />
+{% endblock %}
+
+
+{% block content %}
+        
+    <h1 style="text-align:center">Listado de Votaciones</h1>
+
+    <body>
+        
+        <table class="table table-bordered">
+
+            <thead>
+
+                <tr>
+
+                    <td>ID</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Visibility</td>
+                    <td></td>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% if votaciones %}
+    
+                    <!-- Cojo la colección votaciones que le paso en views.py --> 
+                    {% for votacion in votaciones %} 
+    
+                        <tr>
+    
+                            <td>{{votacion.id}}</td>
+                            <td>{{votacion.name}}</td>
+                            <td>{{votacion.desc}}</td>
+                            <td>{{votacion.public}}</td>
+
+                            <td>
+
+                                <a class="boton-personalizado" href="http://127.0.0.1:8000/booth/{{votacion.id}}">
+
+                                    Go Vote
+
+                                </a>
+
+                            </td>
+    
+                        </tr>
+                    
+                    {% endfor %}
+    
+                {% else %}
+                    
+                <h3 style="text-align:center">Listado de Votaciones</h3>
+                        
+                {% endif %}
+                        
+            </tbody>
+
+        </table>
+                    
+    </body>
+
+{% endblock %}

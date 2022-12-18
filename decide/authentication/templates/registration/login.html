@@ -6,6 +6,7 @@
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link type="text/css" rel="stylesheet" href="{% static 'registration/style.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Login</title>
 </head>
 
@@ -21,16 +22,16 @@
                 <tbody>
                     <tr>
                         <th scope="row">Usuario o email </th>
-                        <td><input type="text" name="username"></td>
+                        <td><input id="id_username" type="text" name="username"></td>
                     </tr>
                     <tr>
                         <th scope="row">Contraseña</th>
-                        <td><input type="password" name="password"></td>
+                        <td><input id="id_password" type="password" name="password"></td>
                     </tr>
                 </tbody>
             </table>
         
-            <button type="submit" class="btn btn-outline-dark">Iniciar sesión</button>
+            <button id="id_button" type="submit" class="btn btn-outline-dark">Iniciar sesión</button>
             <a href="/authentication/registerForm/">Registrarse</a>
 
             <br><br>
@@ -40,6 +41,22 @@
                     Sign in with Google
                 </button>
             </a>
+
+
+            <a href="{% provider_login_url 'facebook' next='/authentication/completeForm/' %}">
+                <button class="loginBtn loginBtn--facebook" type="button">
+                    Sign in with Facebook
+                  </button>
+            </a>
+
+            <a href="{% provider_login_url 'github' next='/authentication/completeForm/' %}">
+                <button type="button" class="login-with-github-btn" >
+                    Sign in with Github
+                </button>
+            </a>
+           
+
+
         </form>
     </div>
 </body>

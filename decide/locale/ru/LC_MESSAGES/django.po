@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-26 01:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: booth/templates/booth/booth.html:19
+msgid "logout"
+msgstr "Выйти"
+
+#: booth/templates/booth/booth.html:33
+msgid "Username"
+msgstr "Логин"
+
+#: booth/templates/booth/booth.html:41
+msgid "Password"
+msgstr "Пароль"
+
+#: booth/templates/booth/booth.html:49
+msgid "Login"
+msgstr "Логин"
+
+#: booth/templates/booth/booth.html:64
+msgid "Vote"
+msgstr "Голосовать"
+
+#: booth/templates/booth/booth.html:160 booth/templates/booth/booth.html:170
+#: booth/templates/booth/booth.html:201
+msgid "Error: "
+msgstr "Ошибка"
+
+#: booth/templates/booth/booth.html:198
+msgid "Conglatulations. Your vote has been sent"
+msgstr "Поздравляем. Вы проголосовали."
+
+#: census/templates/census_add.html:14 census/templates/census_remove.html:14
+msgid "Manage Census"
+msgstr "Конфигурация переписи"
+
+#: census/templates/census_add.html:19
+msgid ""
+"In this view you can manage the census by adding a user to a specific voting"
+msgstr ""
+"На этой странице Вы можете управлять переписью добавив пользователя в "
+"конкретное голосование"
+
+#: census/templates/census_add.html:31 census/templates/census_age.html:33
+#: census/templates/census_export.html:31
+#: census/templates/census_gender.html:33
+#: census/templates/census_import.html:31
+#: census/templates/census_maritialStatus.html:33
+#: census/templates/census_nationality.html:33
+#: census/templates/census_remove.html:31
+msgid "Choose a voting"
+msgstr "Выберите предмет голосования"
+
+#: census/templates/census_add.html:42 census/templates/census_remove.html:42
+msgid "Choose a user"
+msgstr "Выберите пользователя"
+
+#: census/templates/census_add.html:59
+msgid "Or Add By Group"
+msgstr "Или выберите группу"
+
+#: census/templates/census_age.html:15 census/templates/census_by_group.html:15
+#: census/templates/census_gender.html:15
+#: census/templates/census_maritialStatus.html:15
+msgid "Census Groups"
+msgstr "Группы перписи"
+
+#: census/templates/census_age.html:20 census/templates/census_gender.html:20
+#: census/templates/census_maritialStatus.html:20
+#: census/templates/census_nationality.html:20
+
+#| msgid ""
+#| "In this view you can manage the census by adding a user to a specific "
+#| "voting"
+msgid "Now you can add groups of voters to an specific voting"
+msgstr "На этой странице Вы можете управлять переписью добавив пользователя в конкретное голосование"
+
+#: census/templates/census_age.html:21
+msgid ""
+"for example, if you select minmun age 22 and maximum age 28, every user who "
+"satisfies that requirement will be added to the chosen voting"
+msgstr "например, если Вы выберите минимальный возраст 22 и максимальный 28, все пользователи которые удовлетворяют этим критериям будут добавлены в голосование"
+
+#: census/templates/census_age.html:44
+#, fuzzy
+#| msgid "Choose a user"
+msgid "Choose age"
+msgstr "Выберите пользователя"
+
+#: census/templates/census_by_group.html:20
+msgid "Select which type of grouping you want to apply"
+msgstr "Выберите, какой тип группировки вы хотите применить"
+
+#: census/templates/census_by_group.html:30
+#: census/templates/census_maritialStatus.html:44
+msgid "Maritial Status"
+msgstr "Семейный статус"
+
+#: census/templates/census_by_group.html:33
+#: census/templates/census_nationality.html:43
+msgid "Nationality"
+msgstr "Гражданство"
+
+#: census/templates/census_by_group.html:36
+msgid "Age"
+msgstr "Возраст"
+
+#: census/templates/census_by_group.html:39
+msgid "Gender"
+msgstr "Пол"
+
+#: census/templates/census_export.html:14
+msgid "Export Census"
+msgstr "Экпортировать перепись"
+
+#: census/templates/census_export.html:19
+#, fuzzy
+#| msgid ""
+#| "In this view you can manage the census by adding a user to a specific "
+#| "voting"
+msgid ""
+"In this view you can manage the census by exporting the users participating "
+"in a voting"
+msgstr ""
+"На этой странице Вы можете управлять переписью добавив пользователя в "
+"конкретное голосование"
+
+#: census/templates/census_export.html:42
+msgid "Export"
+msgstr "Экспортировать"
+
+#: census/templates/census_gender.html:21
+msgid "for example, if you select "
+msgstr "например, ели Вы выберите"
+
+#: census/templates/census_gender.html:44
+#, fuzzy
+#| msgid "Choose a user"
+msgid "Choose gender"
+msgstr "Выберите пользователя"
+
+#: census/templates/census_import.html:14
+msgid "Import Census"
+msgstr "Импортировать перепись"
+
+#: census/templates/census_import.html:19
+#, fuzzy
+#| msgid ""
+#| "In this view you can manage the census by adding a user to a specific "
+#| "voting"
+msgid ""
+"In this view you can manage the census by importing users participating in a "
+"voting"
+msgstr ""
+"На этой странице Вы можете управлять переписью добавив пользователя в "
+"конкретное голосование"
+
+#: census/templates/census_import.html:42
+msgid "Upload a csv file"
+msgstr "Загрузить файл  расширением csv"
+
+#: census/templates/census_import.html:49
+msgid "Import"
+msgstr "Импортировать"
+
+#: census/templates/census_maritialStatus.html:21
+msgid ""
+"for example, if you select Single, every user who satisfies that requirement "
+"will be added to the chosen voting"
+msgstr "например, ели Вы выберите 'не замужем', каждый пользователь, который удовлетворяет этим требованиям будет добавлен в выбранное голосование"
+
+#: census/templates/census_nationality.html:21
+msgid ""
+"for example, if you select Spain, every spanish user will be added to the "
+"chosen voting"
+msgstr "например, если Вы выберите Испания, все пользователи из Испании будут добавлены в выбранное голосование"
+
+#: census/templates/census_remove.html:19
+#, fuzzy
+#| msgid ""
+#| "In this view you can manage the census by adding a user to a specific "
+#| "voting"
+msgid ""
+"In this view you can manage the census by deleting a user from a specific "
+"voting"
+msgstr ""
+"На этой странице Вы можете управлять переписью добавив пользователя в "
+"конкретное голосование"
+
+#: census/templates/footer.html:15
+msgid "Go"
+msgstr "Подтвердить"
+
+#: census/templates/result_page.html:29 census/templates/result_page.html:31
+#: census/templates/result_page.html:33 census/templates/result_page.html:35
+msgid "Return"
+msgstr "Вернутся"
+
+#~ msgid "submit"
+#~ msgstr "Подтвердить"
