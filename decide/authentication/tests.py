@@ -19,6 +19,7 @@ from selenium.webdriver.common.keys import Keys
 from base.tests import BaseTestCase
 from authentication.forms import CompleteForm
 import time
+from .views import *
 
 class AuthTestCase(APITestCase):
 
@@ -603,3 +604,43 @@ class CompleteTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
 
         self.assertEqual(self.driver.title, 'Complete')
+
+
+class AuthPageTextCase(TestCase):
+    def test_form_no_username(self):
+        form= PersonForm({'password1':'Probando189!','password2':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+        
+       
+
+        self.assertEquals(form.errors['username'], ["This field is required."])
+
+    def test_form_no_status(self):
+       
+        form= PersonForm({'username':'prueba','password1':'Probando189!','password2':'Probando189!','email':'prueba@decide.es','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['status'], ["This field is required."])
+
+    def test_form_no_password1(self):
+        
+        form= PersonForm({'username':'prueba','password2':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['password1'], ["This field is required."])
+
+    def test_form_no_password2(self):
+       
+        form= PersonForm({'username':'prueba','password1':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','country':'NZ','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['password2'], ["This field is required."])
+
+    def test_form_no_sex(self):
+       
+        form= PersonForm({'username':'prueba','password1':'Probando189!','email':'prueba@decide.es','status':'soltero','country':'NZ','discord_account':'prueba#1111'})
+
+
+        self.assertEquals(form.errors['sex'], ["This field is required."])
+
+    def test_form_no_country(self):
+    
+        form= PersonForm({'username':'prueba','password1':'Probando189!','password2':'Probando189!','email':'prueba@decide.es','status':'soltero','sex':'hombre','discord_account':'prueba#1111'})
+
+        self.assertEquals(form.errors['country'], ["This field is required."])
