@@ -70,3 +70,49 @@ class StoreView(generics.ListAPIView):
         v.save()
 
         return  Response({})
+
+
+class StoreBotView(generics.ListAPIView):
+    queryset = Vote.objects.all()
+    serializer_class = VoteSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    filter_fields = ('voting_id', 'voter_id')
+
+    def post(self, request):
+        """
+         * voting: id
+         * voter: id
+         * vote: { "a": int, "b": int }
+        """
+
+        vid = request.data.get('voting')
+        voting = mods.get('voting', params={'id': vid})
+        if not voting or not isinstance(voting, list):
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+        start_date = voting[0].get('start_date', None)
+        end_date = voting[0].get('end_date', None)
+        not_started = not start_date or timezone.now() < parse_datetime(start_date)
+        is_closed = end_date and parse_datetime(end_date) < timezone.now()
+        if not_started or is_closed:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
+        for vote in Vote.objects.all():
+            if vote.voter_id == int(request.data.get('voter')):
+                return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
+        uid = request.data.get('voter')
+        a = request.data.get('a')
+        b = request.data.get('b')
+
+        if not vid or not uid or not a or not b:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+        defs = { "a": a, "b": b }
+        v, _ = Vote.objects.get_or_create(voting_id=vid, voter_id=uid,
+                                          defaults=defs)
+        v.a = a
+        v.b = b
+
+        v.save()
+
+        return  Response({})

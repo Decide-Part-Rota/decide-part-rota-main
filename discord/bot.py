@@ -4,11 +4,14 @@ import discord
 import requests
 import asyncio
 import random
+import json
 
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.utils import get
 from typing import Union
+from django.db.models.query import QuerySet
+
 
 ### --- REST api Initialization --- ###
 
@@ -43,6 +46,7 @@ async def on_command_error(ctx, error):
     if DEV_MODE:
         message += f'\n{error}'
 
+    print(error)
     await ctx.send(message)
 
 ### --- Commands --- ###
@@ -123,7 +127,7 @@ def gen_data(voting, user_id, option_id):
 
     data = {
         "voting": voting["id"],
-        "user": user_id,
+        "voter": user_id,
         "a": alpha,
         "b": beta,
     }
@@ -141,16 +145,17 @@ async def post_voting(ctx, reaction, voting, option_id):
             user_id = person["user"]["id"]
 
     if user_found:
-        # TODO
-        # to create a vote first
-        # we must add user to census with /census/addUser/
-        # then we can create the vote with /strore
-
         # ElGamal encryption
+        #data = gen_data(voting, user_id, option_id)
         data = gen_data(voting, user_id, option_id)
 
-        print(f"Vote for voting {voting['id']} created by {user_id} with option {option_id}")
-        return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
+        vote_response = requests.post(base_url + "store/bot/", data=data)
+
+        if vote_response.status_code == 200:
+            print(f"Vote for voting {voting['id']} created by {user_id} with option {option_id}")
+            return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
+        else:
+            return await ctx.send(f"There was an internal error. Please try again later.")
 
     else:
         title = 'This user account is not assigned to any existing Decide user.'
