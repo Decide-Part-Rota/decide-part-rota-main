@@ -27,15 +27,13 @@ class Contenedor extends React.Component {
   render() {
 
 
-    return create("body", {}, 
-      create("div",{key: id, className: "flip-card"},
-      create("div",{ className: "flip-card-inner"},
-      create("div",{ className: "flip-card-front"},nombreBueno),
-      create("div", {className: "flip-card-back"},
-      create('h3',{className:'Logo'},desc)))),
-
-
-);
+    return create("div", {className : "card"},
+      create("div", {className : "face face1"},
+      create("div", {className : "content"},
+      create("h1", {className : "name"},id + "  -  " + nombreBueno,))),
+      create("div", {className : "face face2"},
+      create("div", {className : "content"},
+      create("h5",{className : "nombre"},desc))));
     
   }
 }
