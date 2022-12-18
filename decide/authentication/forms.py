@@ -17,7 +17,6 @@ class PersonForm(UserCreationForm):
     age = forms.IntegerField(required=False)
     status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
     discord_account = forms.CharField(required=False, help_text="Please use the following format: name#XXXX", validators=[discord_validator], max_length=30)
-
     country = CountryField().formfield()
 
     def clean_age(self):
