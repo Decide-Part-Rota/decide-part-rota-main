@@ -13,10 +13,11 @@ status=[("soltero","Soltero"),("conviviente","Conviviente"),("casado","Casado"),
 discord_validator = RegexValidator('.+#\d{4}')
 
 class PersonForm(UserCreationForm):
-    sex = forms.ChoiceField(choices=sexos, required=True, label="Seleccione su sexo")
+    sex = forms.ChoiceField(choices=sexos, required=True, label="Select your gender")
     age = forms.IntegerField(required=False)
     status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
     discord_account = forms.CharField(required=False, help_text="Please use the following format: name#XXXX", validators=[discord_validator], max_length=30)
+
     country = CountryField().formfield()
 
     def clean_age(self):
@@ -39,7 +40,7 @@ class PersonForm(UserCreationForm):
 class CompleteForm(forms.Form):
     sex = forms.ChoiceField(choices=sexos, required=True)
     age = forms.IntegerField(required=True)
-    status = forms.ChoiceField(choices=status, required=True, label="Seleccione su estado civil")
+    status = forms.ChoiceField(choices=status, required=True, label="Select your civil status")
     country = CountryField().formfield()
     discord_account = forms.CharField(required=False, help_text="Please use the following format: name#XXXX", validators=[discord_validator], max_length=30)
 
