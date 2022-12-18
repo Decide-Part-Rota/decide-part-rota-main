@@ -3,14 +3,10 @@ import random
 import discord
 import requests
 import asyncio
-import random
-import json
 
 from dotenv import load_dotenv
 from discord.ext import commands
-from discord.utils import get
 from typing import Union
-from django.db.models.query import QuerySet
 
 
 ### --- REST api Initialization --- ###
@@ -37,7 +33,7 @@ async def on_error(event, *args, **kwargs):
         if event == 'on_message':
             f.write(f'Unhandled message: {args[0]}\n')
         else:
-            raise
+            raise ValueError(f'Unhandled event: {event}')
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -73,7 +69,7 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
     await ctx.send(', '.join(dice))
 
 @bot.command(name='commands', help='List all commands')
-async def commands(ctx):
+async def list_commands(ctx):
     embed = discord.Embed(title='List of all commands', color=discord.Color.random())
 
     # !list-votings
@@ -155,7 +151,7 @@ async def post_voting(ctx, reaction, voting, option_id):
             print(f"Vote for voting {voting['id']} created by {user_id} with option {option_id}")
             return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
         else:
-            return await ctx.send(f"There was an internal error. Please try again later.")
+            return await ctx.send("There was an internal error. Please try again later.")
 
     else:
         title = 'This user account is not assigned to any existing Decide user.'
@@ -192,7 +188,6 @@ async def post_voting_message(ctx, voting):
         else:
             await ctx.send("Invalid option number")
             return
-    
     # Sending message
     msg = await ctx.send(embed=embed)
 
