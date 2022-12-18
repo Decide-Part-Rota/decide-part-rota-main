@@ -17,8 +17,8 @@
 </div>
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
-        <h3>{% trans "Now you can add groups of voters to an specific voting" %}</h3>
-        <h6>{% trans "for example, if you select minmun age 22 and maximum age 28, every user who satisfies that requirement will be added to the chosen voting" %}</h6>
+        <h3>{% trans "Now you can remove groups of voters to an specific voting" %}</h3>
+        <h6>{% trans "for example, if you select minmun age 22 and maximum age 28, every user who satisfies that requirement will be removed to the chosen voting" %}</h6>
     </div>
 </div>
 
@@ -26,7 +26,7 @@
     
 </div>
 
-<form class="row gx-3 gy-2 align-items-center" action="age/create" method="POST">
+<form class="row gx-3 gy-2 align-items-center" action="age/remove" method="POST">
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
@@ -49,7 +49,7 @@
     </div>
     <div class="row justify-content-center submit">
         <div class="col col-lg-1">
-            <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
+            <button type="submit" class="btn btn-primary">Remove</button>
         </div>
     </div>
 </form>

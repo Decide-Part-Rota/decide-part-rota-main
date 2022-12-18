@@ -43,14 +43,14 @@
             <label for="specificSizeSelect">{% trans "Nationality" %}</label>
             <select class="form-select" id="specificSizeSelect" name="nationality-select">
                     {% for nation in nationality %}
-                <option value="{{nation}}">{{nation}}</option>
+                <option value="{{nation}}">{{nation.name}}</option>
                     {%endfor%}
-                </select>  
+            </select>  
         </div>
     </div>
     <div class="row justify-content-center submit">
         <div class="col col-lg-1">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
         </div>
     </div>
 </form>
