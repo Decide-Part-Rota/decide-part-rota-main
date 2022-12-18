@@ -35,7 +35,7 @@ msgstr "Contraseña"
 
 #: authentication/templates/registration/login.html:34
 msgid "Registration"
-msgstr "Registrase"
+msgstr "Registrarse"
 
 #: authentication/templates/registration/login.html:40
 msgid "Sign in with Google"
