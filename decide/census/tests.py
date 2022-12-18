@@ -11,8 +11,6 @@ from django.contrib.sessions.middleware import SessionMiddleware
 
 from rest_framework.test import APIClient
 
-from authentication.models import Person
-
 from .models import Census
 from .views import add_user, delete_user_from_census
 from authentication.models import Person
