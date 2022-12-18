@@ -417,6 +417,46 @@ class RegisterTestCase(StaticLiveServerTestCase):
 
         self.assertEqual(self.driver.title, 'Register')
 
+<<<<<<< HEAD
+    def test_simpleIncorrectDiscordRegister(self):
+        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
+        self.driver.find_element(By.ID,'id_username').send_keys("test1")
+        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
+
+        # Probar un registro con una contrasenya que no coincide
+        
+        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword2")
+        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
+        self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
+        self.driver.find_element(By.ID,'id_age').send_keys("20")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_discord_account').send_keys("Not a correct nick")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        print(self.live_server_url)
+
+        self.assertEqual(self.driver.title, 'Register')
+
+    def test_simpleCorrectDiscordRegister(self):
+        self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
+        self.driver.find_element(By.ID,'id_username').send_keys("test1")
+        self.driver.find_element(By.ID,'id_password1').send_keys("complexpassword")
+        self.driver.find_element(By.ID,'id_password2').send_keys("complexpassword")
+        self.driver.find_element(By.ID,'id_email').send_keys("test1@yopmail.com")
+        self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
+        self.driver.find_element(By.ID,'id_age').send_keys("20")
+        self.driver.find_element(By.ID,'id_status').send_keys("Soltero")
+        self.driver.find_element(By.ID,'id_country').send_keys("Andorra")
+        self.driver.find_element(By.ID,'id_discord_account').send_keys("correct#1234")
+        self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
+
+        # time.sleep(10)
+
+        print(self.live_server_url)
+
+        self.assertEqual(self.driver.title, 'Login')
+=======
 
 class CompleteTestCase(StaticLiveServerTestCase):
 
@@ -603,3 +643,4 @@ class CompleteTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
 
         self.assertEqual(self.driver.title, 'Complete')
+>>>>>>> 0791e32b6a70a901ac306ff29b93bf32069cd571
