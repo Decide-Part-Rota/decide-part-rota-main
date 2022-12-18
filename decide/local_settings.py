@@ -6,6 +6,8 @@ EMAIL_USER = config('EMAIL_USER')
 EMAIL_PASSWORD = config('EMAIL_PASSWORD')
 FACEBOOK_CLIENT_ID = config('FACEBOOK_CLIENT_ID')
 FACEBOOK_SECRET = config('FACEBOOK_SECRET')
+GITHUB_CLIENT_ID = config('GITHUB_CLIENT_ID')
+GITHUB_SECRET = config('GITHUB_SECRET')
 
 ALLOWED_HOSTS = ["*"]
 # Modules in use, commented modules that you won't use
@@ -69,13 +71,13 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     "verify_email.apps.VerifyEmailConfig",
     'allauth.socialaccount.providers.facebook',
-
+    'allauth.socialaccount.providers.github',
 ]
 
 AUTHENTICATION_BACKENDS = [
     'base.backends.AuthBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend'
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 SITE_ID = 1
@@ -98,6 +100,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         }
     },
+
     'facebook': {
         'METHOD': 'oauth2',
         'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
@@ -124,9 +127,24 @@ SOCIALACCOUNT_PROVIDERS = {
         'VERIFIED_EMAIL': False,
         'VERSION': 'v13.0',
         'GRAPH_API_URL': 'https://graph.facebook.com/v13.0',
-    }
-}
+    },
+    'github': {
+        'APP': {
+            'client_id': GITHUB_CLIENT_ID,
+            'secret': GITHUB_SECRET,
+            'key': ''
+        },
+        'SCOPE': [
+            'user:email',
+        ],
 
+    }
+
+
+
+
+}
+SOCIALACCOUNT_QUERY_EMAIL = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
