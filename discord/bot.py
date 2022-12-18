@@ -3,12 +3,11 @@ import random
 import discord
 import requests
 import asyncio
-import random
 
 from dotenv import load_dotenv
 from discord.ext import commands
-from discord.utils import get
 from typing import Union
+
 
 ### --- REST api Initialization --- ###
 
@@ -34,7 +33,7 @@ async def on_error(event, *args, **kwargs):
         if event == 'on_message':
             f.write(f'Unhandled message: {args[0]}\n')
         else:
-            raise
+            raise ValueError(f'Unhandled event: {event}')
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -43,6 +42,7 @@ async def on_command_error(ctx, error):
     if DEV_MODE:
         message += f'\n{error}'
 
+    print(error)
     await ctx.send(message)
 
 ### --- Commands --- ###
@@ -55,21 +55,8 @@ async def on_member_join(member):
         f'Hi {member.name}, welcome to my Discord server!'
     )
 
-@bot.command(name='hello', help='Hello user!')
-async def hello(ctx):
-    response = 'Hello!'
-    await ctx.channel.send(response)
-
-@bot.command(name='roll', help='Rolls a dice')
-async def roll(ctx, number_of_dice: int, number_of_sides: int):
-    dice = [
-        str(random.choice(range(1, number_of_sides + 1)))
-        for _ in range(number_of_dice)
-    ]
-    await ctx.send(', '.join(dice))
-
 @bot.command(name='commands', help='List all commands')
-async def commands(ctx):
+async def list_commands(ctx):
     embed = discord.Embed(title='List of all commands', color=discord.Color.random())
 
     # !list-votings
@@ -95,7 +82,7 @@ async def list_votings(ctx):
     embed = discord.Embed(title='Votings', color=discord.Color.random())
 
     for voting in votings:
-        if voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
+        if voting["start_date"] is not None and voting["end_date"] is None and voting["public"]:
             embed.add_field(name=f'{voting["id"]}: {voting["name"]}', value=voting["question"]["desc"], inline=False)
 
     print(f"{ctx.author} requested the list of votings")
@@ -115,7 +102,7 @@ def gen_data(voting, user_id, option_id):
 
     # Random number generation
     q = 2^bits - 1
-    r = random.randint(1, q)
+    r = random.SystemRandom().randrange(1, q)
 
     # ElGamal encryption
     alpha = bigpk['g']^r % bigpk['p']
@@ -123,7 +110,7 @@ def gen_data(voting, user_id, option_id):
 
     data = {
         "voting": voting["id"],
-        "user": user_id,
+        "voter": user_id,
         "a": alpha,
         "b": beta,
     }
@@ -141,16 +128,17 @@ async def post_voting(ctx, reaction, voting, option_id):
             user_id = person["user"]["id"]
 
     if user_found:
-        # TODO
-        # to create a vote first
-        # we must add user to census with /census/addUser/
-        # then we can create the vote with /strore
-
         # ElGamal encryption
+        #data = gen_data(voting, user_id, option_id)
         data = gen_data(voting, user_id, option_id)
-        print(data)
-        print(f"Vote for voting {voting['id']} created by {user_id} with option {option_id}")
-        return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
+
+        vote_response = requests.post(base_url + "store/bot/", data=data)
+
+        if vote_response.status_code == 200:
+            print(f"Vote for voting {voting['id']} created by {user_id} with option {option_id}")
+            return await ctx.send(f"{ctx.author} answered option {str(reaction[0].emoji)}")
+        else:
+            return await ctx.send("There was an internal error. Please try again later.")
 
     else:
         title = 'This user account is not assigned to any existing Decide user.'
@@ -167,11 +155,8 @@ async def post_voting_message(ctx, voting):
     # Creating question message
     embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
     option_numbers = []
-    def check(r: discord.Reaction, u: Union[discord.Member, discord.User]):  # r = discord.Reaction, u = discord.Member or discord.User.
-        # Check the user who sent the reaction is the same as the user who sent the message.
-        # Check the channel the reaction was sent in is the same as the channel the message was sent in.
-        # Check the reaction was sent to the correct message.
-        # Check the emoji used for the reaction is in the list of emojis.
+    
+    def check(r: discord.Reaction, u: Union[discord.Member, discord.User]):
         return u.id == ctx.author.id and r.message.channel.id == ctx.channel.id and r.message.id == msg.id and \
                emotes.index(str(r.emoji)) - 1 in range(len(option_numbers))
 
@@ -187,7 +172,6 @@ async def post_voting_message(ctx, voting):
         else:
             await ctx.send("Invalid option number")
             return
-    
     # Sending message
     msg = await ctx.send(embed=embed)
 
@@ -197,7 +181,7 @@ async def post_voting_message(ctx, voting):
 
     # Waiting for reaction
     try:
-        reaction, user = await bot.wait_for('reaction_add', check = check, timeout = 60.0)
+        reaction = await bot.wait_for('reaction_add', check = check, timeout = 60.0)
     except asyncio.TimeoutError:
         # at this point, the check didn't become True.
         await ctx.send(f"**{ctx.author}**, you didnt react correctly with within 60 seconds.")
@@ -205,7 +189,7 @@ async def post_voting_message(ctx, voting):
     else:
         # at this point, the check has become True and the wait_for has done its work, now we can do ours.
         # here we are sending some text based on the reaction we detected.
-        await post_voting(ctx, reaction, voting, option_numbers[emotes.index(reaction.emoji) - 1])
+        await post_voting(ctx, reaction, voting, option_numbers[emotes.index(reaction[0].emoji) - 1])
         return
 
 # Reaction lookup table
@@ -218,10 +202,9 @@ async def get_voting(ctx, voting_id: int):
 
     # Extract the voting, send the message and add reactions
     for voting in votings:
-        if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
+        if voting["id"] == voting_id and voting["start_date"] is not None and voting["end_date"] is None and voting["public"]:
             print(f"{ctx.author} requested voting {voting_id}")
             return await post_voting_message(ctx, voting)
-            
     return await ctx.send("Invalid voting ID or voting is not active")
 
 bot.run(TOKEN)
