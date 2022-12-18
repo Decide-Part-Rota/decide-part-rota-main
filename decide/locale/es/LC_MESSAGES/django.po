@@ -393,7 +393,7 @@ msgstr "Listado de votaciones en las que no participas"
 
 #: voting/templates/voting/listVoting.html:56
 msgid "Join Census"
-msgstr "Gestionar censo"
+msgstr "Añadir al censo"
 
 #: voting/templates/voting/listVoting.html:96
 msgid "List of votings that you are participating"
