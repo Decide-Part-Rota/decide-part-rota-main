@@ -12,7 +12,7 @@
 
 <body>
 
-    <h1>Iniciar sesión</h1>
+    <h1>{% trans "Login" %}</h1>
 
 
     <div>
@@ -21,24 +21,24 @@
             <table class="table">
                 <tbody>
                     <tr>
-                        <th scope="row">Usuario o email </th>
+                        <th scope="row">{% trans "User or email" %}</th>
                         <td><input id="id_username" type="text" name="username"></td>
                     </tr>
                     <tr>
-                        <th scope="row">Contraseña</th>
+                        <th scope="row">{% trans "Password" %}</th>
                         <td><input id="id_password" type="password" name="password"></td>
                     </tr>
                 </tbody>
             </table>
         
-            <button id="id_button" type="submit" class="btn btn-outline-dark">Iniciar sesión</button>
-            <a href="/authentication/registerForm/">Registrarse</a>
+            <button id="id_button" type="submit" class="btn btn-outline-dark">{% trans "Login" %}</button>
+            <a href="/authentication/registerForm/" id="button_registrar">{% trans "Registration" %}</a>
 
             <br><br>
 
             <a href="{% provider_login_url 'google' next='/authentication/completeForm/' %}">
                 <button type="button" class="login-with-google-btn" >
-                    Sign in with Google
+                    {% trans "Sign in with Google" %}
                 </button>
             </a>
 
@@ -59,6 +59,22 @@
 
         </form>
     </div>
+
+    {% if messages %}
+        <ul class="messages" style="margin-top:2%">
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                <li class="{{ message.tags }} alert alert-danger" role="alert">{{ message }}</li>
+                {% else %}
+                <li class="{{ message.tags }} alert alert-{{message.tags}}" role="alert">{{ message }}</li>
+                {% endif %}
+                
+            {% endfor %}
+        </ul>
+
+    {% endif %}
+
+{% include 'footer.html' %}
 </body>
 </html>
 
