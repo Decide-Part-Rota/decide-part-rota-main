@@ -603,3 +603,5 @@ class CompleteTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
 
         self.assertEqual(self.driver.title, 'Complete')
+
+
