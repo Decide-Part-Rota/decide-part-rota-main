@@ -100,6 +100,5 @@ class LoginTestCase(StaticLiveServerTestCase):
         time.sleep(0.5)
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
         self.driver.find_element(By.CSS_SELECTOR, ".buttonWelcome").click()
+        
         self.assertTrue("Site administration" in self.driver.page_source)
-
-        self.assertTrue("Login" in self.driver.page_source)
