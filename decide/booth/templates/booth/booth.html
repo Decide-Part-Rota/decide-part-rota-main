@@ -68,7 +68,9 @@
                         v-model="form.password"
                         required />
                 </b-form-group>
-                <b-button type="submit" variant="primary">{% trans "Login" %}</b-button>
+                <b-button type="submit" variant="primary" 
+                style = "display: flex; 
+                background-color: #444;">{% trans "Login" %}</b-button>
             </b-form>
 
 
@@ -79,11 +81,13 @@
                     <b-form-radio v-model="selected"
                                   :id="'q' + opt.number"
                                   name="question"
-                                  :value="opt.number">
+                                  :value="opt.number"
+                                  style="color: rgb(120, 120, 120); font-size: large;">
                         [[ opt.option ]]
                     </b-form-radio>
                 </b-form-group>
-                <b-button type="button" variant="primary" v-on:click="decideSend" style="display: flex;">
+                <b-button type="button" variant="primary" v-on:click="decideSend" style="display: flex;
+                background-color: #444;">
                     {% trans "Vote" %}
                 </b-button>
             </div>
