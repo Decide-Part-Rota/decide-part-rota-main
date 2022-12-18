@@ -15,7 +15,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, PersonSerializer
 from .forms import PersonForm, LoginForm, CompleteForm
 from .models import Person
 from verify_email.email_handler import send_verification_email
@@ -26,6 +26,10 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 from django.contrib.auth.decorators import login_required
+
+from rest_framework import generics
+import django_filters.rest_framework
+from django.conf import settings
 
 
 class GetUserView(APIView):
@@ -93,32 +97,16 @@ def loginForm(request):
         form = LoginForm()
     return render(request, 'login.html', {'loginForm':form})
 
-
-
-
-
-
-
-
-
-    
 def register(request):
     form= PersonForm()
     if request.method=="POST":
         form=PersonForm(request.POST)
         if form.is_valid():
-            
-            username = form.cleaned_data.get('username')
-            password1 = form.cleaned_data.get('password1')
-            password2 = form.cleaned_data.get('password2')
-            email= form.cleaned_data.get('email')
-            sex = form.cleaned_data.get('sex')
-            age = form.cleaned_data.get('age')
-            status = form.cleaned_data.get('status')
-            country = form.cleaned_data.get('country')
+            params = person_params(form.cleaned_data)
 
             inactive_user = send_verification_email(request, form)
-            person1=Person(user=inactive_user,sex=sex,age=age,status=status,country=country)
+            person1=Person(user=inactive_user,sex = params['sex'], age = params['age'],
+                status=params['status'],country=params['country'], discord_account = params['discord_account'])
 
             person1.save()
 
@@ -132,12 +120,22 @@ def welcome(request):
     print(request.user)
     return render(request, 'welcome.html', {'user':usuario})
 
-
+def anonymous(request):
+    return render(request, 'anonymous.html')
 
 
 def salir(request):
     logout(request)
     return redirect('/')
+
+def person_params(form):
+    return {
+        'sex': form.get('sex'),
+        'age': form.get('age'),
+        'status': form.get('status'),
+        'country': form.get('country'),
+        'discord_account': form.get('discord_account')
+    }
 
 
 def complete(request):
@@ -149,12 +147,10 @@ def complete(request):
             form=CompleteForm(request.POST)
 
             if form.is_valid():
-                sex = form.cleaned_data.get('sex')
-                age = form.cleaned_data.get('age')
-                status = form.cleaned_data.get('status')
-                country = form.cleaned_data.get('country')
+                params = person_params(form.cleaned_data)
 
-                person = Person(user = user, sex = sex, age = age,status=status,country=country)
+                person = Person(user = user, sex = params['sex'], age = params['age'],
+                    status=params['status'],country=params['country'], discord_account = params['discord_account'])
                 person.save()
 
                 return redirect('/')
@@ -163,3 +159,13 @@ def complete(request):
     else:
         return redirect('/')
 
+class PersonView(generics.ListCreateAPIView):
+    queryset = Person.objects.all()
+    serializer_class = PersonSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+    def get(self, request, *args, **kwargs):
+        version = request.version
+        if version not in settings.ALLOWED_VERSIONS:
+            version = settings.DEFAULT_VERSION
+        return super().get(request, *args, **kwargs)

@@ -10,6 +10,8 @@ class Person(models.Model):
     sex = models.CharField(max_length=30, blank=False)
     age = models.PositiveIntegerField()
     status = models.CharField(max_length=30, blank=False)
+    discord_account = models.CharField(max_length=30, blank=True)
+    
     country=CountryField()
     
     def __str__(self):
