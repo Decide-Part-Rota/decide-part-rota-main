@@ -12,13 +12,13 @@
 {% block content %}
 <div class="row justify-content-md-center align-items-center">
     <div class="col-sm-8 justify-content-center align-items-center">
-        <h2 class ="justify-content-center align-items-center"> {% trans "Census Groups" %}</h2>
+        <h2 class ="justify-content-center align-items-center">{% trans "Census Groups" %}</h2>
     </div>
 </div>
 <div class="row justify-content-md-center">
     <div class="col-sm-8">
-        <h3>{% trans "Now you can add groups of voters to an specific voting" %}</h3>
-        <h6>{% trans "for example, if you select minmun age 22 and maximum age 28, every user who satisfies that requirement will be added to the chosen voting" %}</h6>
+        <h3>{% trans "Now you can remove groups of voters to an specific voting" %}</h3>
+        <h6>{% trans "for example, if you select 'Male', every user who satisfies that requirement will be removed to the chosen voting" %}</h6>
     </div>
 </div>
 
@@ -26,7 +26,7 @@
     
 </div>
 
-<form class="row gx-3 gy-2 align-items-center" action="age/create" method="POST">
+<form class="row gx-3 gy-2 align-items-center" action="gender/remove" method="POST">
     {% csrf_token %}
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
@@ -41,15 +41,17 @@
     </div>
     <div class="row justify-content-md-center">
         <div class="col-sm-8">
-            <label for="minimum-age">{% trans "Minimum age" %}</label>
-            <input type="number" name="minimum-age" max="100" min="0">
-            <label for="maximum-age">{% trans "Maximum age" %}</label>
-            <input type="number" name="maximum-age" max="100" min="0">
+            <label for="specificSizeSelect">{% trans "Choose gender" %}</label>
+            <select multiple class="form-select" id="specificSizeSelect" name="gender-select">
+                {% for gender in genders %}
+                <option value="{{gender}}">{{gender}}</option>
+                {%endfor%}
+            </select>     
         </div>
     </div>
     <div class="row justify-content-center submit">
         <div class="col col-lg-1">
-            <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
+            <button type="submit" class="btn btn-primary">Remove</button>
         </div>
     </div>
 </form>
@@ -67,6 +69,6 @@
 </ul>
 
 {% endif %}
-{% include 'footer.html' %}
 
+{% include 'footer.html' %}
 {% endblock %}

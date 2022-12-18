@@ -1,20 +1,22 @@
-{% load static %}
-<html lang="es-ES">
-<head>
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graphics and Statistic</title>
     <link type="text/css" rel="stylesheet"
-         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+        href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
     <link type="text/css" rel="stylesheet" href="{% static 'css/graphics.css' %}" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-</head>
-<body>
+{% endblock %}
+
+
+{% block content %}
     <header>
         <div class="wrapper">
-            <div class="logo">Votaciones para '{{votacion.name}}'</div>
+            <div class="logo">{% trans "Votings for" %} '{{votacion.name}}'</div>
         </div>
     </header>
     <div class="box-orange">   
@@ -76,6 +78,38 @@
              });
           </script>
     </div>
+    <div class="tarjeta">
+        <h1 class="titulo">{% trans "Statics for this voting" %}</h1>
+        <div class="cuerpo">
+            <div class="letras">
+                <div id="winner">
+                    {% trans "The winner vote is" %} "{{ winner.option }}" <br>
+                </div>
+                <div id="loser">
+                    {% trans "The loser vote is" %} "{{ loser.option }}" <br>
+                </div>
+                <strong>{% trans "Percentages" %}:</strong> <br>
+                {% for opt, p in porcentages %}
+                {% trans "The option" %} "{{ opt.option }}" {% trans "was voted" %} {{ p }} % <br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+    <ul class="messages" style="margin-top:2%">
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+            <li class="{{ message.tags }} alert alert-danger" role="alert">{{ message }}</li>
+            {% else %}
+            <li class="{{ message.tags }} alert alert-{{message.tags}}" role="alert">{{ message }}</li>
+            {% endif %}
+            
+        {% endfor %}
+    </ul>
     
-</body>
-</html>
+    {% endif %}
+
+{% include 'footer.html' %}
+
+{% endblock %}
