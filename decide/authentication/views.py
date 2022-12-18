@@ -102,19 +102,10 @@ def register(request):
     if request.method=="POST":
         form=PersonForm(request.POST)
         if form.is_valid():
-            
-            username = form.cleaned_data.get('username')
-            password1 = form.cleaned_data.get('password1')
-            password2 = form.cleaned_data.get('password2')
-            email= form.cleaned_data.get('email')
-            sex = form.cleaned_data.get('sex')
-            age = form.cleaned_data.get('age')
-            status = form.cleaned_data.get('status')
-            country = form.cleaned_data.get('country')
-            discord_account = form.cleaned_data.get('discord_account')
+            params = person_params(form.cleaned_data)
 
             inactive_user = send_verification_email(request, form)
-            person1=Person(user=inactive_user,sex=sex,age=age,status=status,country=country,discord_account=discord_account)
+            person1=Person(user=inactive_user,sex = params['sex'], age = params['age'],status=params['status'],country=params['country'], discord_account = params['discord_account'])
 
             person1.save()
 
@@ -136,6 +127,15 @@ def salir(request):
     logout(request)
     return redirect('/')
 
+def person_params(form):
+    return {
+        'sex': form.get('sex'),
+        'age': form.get('age'),
+        'status': form.get('status'),
+        'country': form.get('country'),
+        'discord_account': form.get('discord_account')
+    }
+
 
 def complete(request):
     if request.user.is_authenticated and not Person.objects.filter(user = request.user.id).exists():
@@ -146,13 +146,9 @@ def complete(request):
             form=CompleteForm(request.POST)
 
             if form.is_valid():
-                sex = form.cleaned_data.get('sex')
-                age = form.cleaned_data.get('age')
-                status = form.cleaned_data.get('status')
-                country = form.cleaned_data.get('country')
-                discord_account = form.cleaned_data.get('discord_account')
+                params = person_params(form.cleaned_data)
 
-                person = Person(user = user, sex = sex, age = age,status=status,country=country, discord_account = discord_account)
+                person = Person(user = user, sex = params['sex'], age = params['age'],status=params['status'],country=params['country'], discord_account = params['discord_account'])
                 person.save()
 
                 return redirect('/')

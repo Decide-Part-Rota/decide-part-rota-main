@@ -136,7 +136,7 @@ async def post_voting(ctx, reaction, voting, option_id):
 
         if vote_response.status_code == 200:
             print(f"Vote for voting {voting['id']} created by {user_id} with option {option_id}")
-            return await ctx.send(f"{ctx.author} answered option {str(reaction.emoji)}")
+            return await ctx.send(f"{ctx.author} answered option {str(reaction[0].emoji)}")
         else:
             return await ctx.send("There was an internal error. Please try again later.")
 
@@ -193,7 +193,7 @@ async def post_voting_message(ctx, voting):
     else:
         # at this point, the check has become True and the wait_for has done its work, now we can do ours.
         # here we are sending some text based on the reaction we detected.
-        await post_voting(ctx, reaction, voting, option_numbers[emotes.index(reaction.emoji) - 1])
+        await post_voting(ctx, reaction, voting, option_numbers[emotes.index(reaction[0].emoji) - 1])
         return
 
 # Reaction lookup table

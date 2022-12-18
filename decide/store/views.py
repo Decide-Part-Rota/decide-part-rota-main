@@ -10,7 +10,6 @@ from .serializers import VoteSerializer
 from base import mods
 from base.perms import UserIsStaff
 
-
 class StoreView(generics.ListAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
@@ -79,27 +78,7 @@ class StoreBotView(generics.ListAPIView):
     filter_fields = ('voting_id', 'voter_id')
 
     def post(self, request):
-        """
-         * voting: id
-         * voter: id
-         * vote: { "a": int, "b": int }
-        """
-
         vid = request.data.get('voting')
-        voting = mods.get('voting', params={'id': vid})
-        if not voting or not isinstance(voting, list):
-            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
-        start_date = voting[0].get('start_date', None)
-        end_date = voting[0].get('end_date', None)
-        not_started = not start_date or timezone.now() < parse_datetime(start_date)
-        is_closed = end_date and parse_datetime(end_date) < timezone.now()
-        if not_started or is_closed:
-            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
-
-        for vote in Vote.objects.all():
-            if vote.voter_id == int(request.data.get('voter')):
-                return Response({}, status=status.HTTP_401_UNAUTHORIZED)
-
         uid = request.data.get('voter')
         a = request.data.get('a')
         b = request.data.get('b')
