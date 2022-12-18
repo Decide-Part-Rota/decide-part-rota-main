@@ -21,16 +21,16 @@
                 <tbody>
                     <tr>
                         <th scope="row">{% trans "User or email" %}</th>
-                        <td><input type="text" name="username"></td>
+                        <td><input id="id_username" type="text" name="username"></td>
                     </tr>
                     <tr>
                         <th scope="row">{% trans "Password" %}</th>
-                        <td><input type="password" name="password"></td>
+                        <td><input id="id_password" type="password" name="password"></td>
                     </tr>
                 </tbody>
             </table>
         
-            <button type="submit" class="btn btn-outline-dark">{% trans "Login" %}</button>
+            <button id="id_button" type="submit" class="btn btn-outline-dark">{% trans "Login" %}</button>
             <a href="/authentication/registerForm/">{% trans "Registration" %}</a>
 
             <br><br>

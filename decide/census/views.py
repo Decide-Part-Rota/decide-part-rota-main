@@ -1,5 +1,6 @@
 from django.db.utils import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.status import (
@@ -296,9 +297,7 @@ def add_by_maritialStatus_to_census(request):
             messages.info(request, str(i)+" Users were already in the voting, the rest were added correctly")
         else:
             messages.success(request, "Users added to the voting correctly")
-
         return HttpResponse(template.render({}, request),status = 200)
-
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request),status=ST_401)
@@ -344,9 +343,7 @@ def add_by_nationality_to_census(request):
             messages.info(request, str(i)+" Users were already in the voting, the rest were added correctly")
         else:
             messages.success(request, "Users added to the voting correctly")
-
         return HttpResponse(template.render({}, request), status = 200)
-
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request),status=ST_401)
@@ -404,9 +401,7 @@ def add_by_gender_to_census(request):
                     census.save()
         messages.success(request, "Users added to the voting correctly")
         status_code = 200
-
         return HttpResponse(template.render({}, request), status=status_code)
-
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
@@ -428,9 +423,7 @@ def remove_by_gender_to_census(request):
                     
         messages.success(request, "Users removed of the voting correctly")
         status_code = 200
-
         return HttpResponse(template.render({}, request), status=status_code)
-
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
@@ -479,7 +472,6 @@ def add_by_age_to_census(request):
                 census.save()
         messages.success(request, "Users added to the voting correctly")
         return HttpResponse(template.render({}, request), status=200)
-
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
@@ -500,7 +492,6 @@ def remove_by_age_to_census(request):
                 pass
         messages.success(request, "Users removed of the voting correctly")
         return HttpResponse(template.render({}, request), status=200)
-
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)
@@ -551,7 +542,6 @@ def remove_by_maritialStatus_to_census(request):
             except Census.DoesNotExist:
                 pass
         messages.success(request, "Users removed from the voting correctly")
-
         return HttpResponse(template.render({}, request), status=200)
 
     else:
@@ -593,9 +583,7 @@ def remove_by_nationality_to_census(request):
             except Census.DoesNotExist:
                 pass
         messages.success(request, "Users removed from the voting correctly")
-
         return HttpResponse(template.render({}, request), status=200)
-
     else:
         messages.error(request, "You must be a staff member to access this page")
         return HttpResponse(template.render({}, request), status=ST_401)

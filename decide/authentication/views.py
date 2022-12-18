@@ -103,9 +103,10 @@ def register(request):
             age = form.cleaned_data.get('age')
             status = form.cleaned_data.get('status')
             country = form.cleaned_data.get('country')
+            discord_account = form.cleaned_data.get('discord_account')
 
             inactive_user = send_verification_email(request, form)
-            person1=Person(user=inactive_user,sex=sex,age=age,status=status,country=country)
+            person1=Person(user=inactive_user,sex=sex,age=age,status=status,country=country,discord_account=discord_account)
 
             person1.save()
 
@@ -117,6 +118,9 @@ def welcome(request):
     usuario = request.user
     print(request.user)
     return render(request, 'welcome.html', {'user':usuario})
+
+def anonymous(request):
+    return render(request, 'anonymous.html')
 
 def salir(request):
     logout(request)
@@ -135,8 +139,9 @@ def complete(request):
                 age = form.cleaned_data.get('age')
                 status = form.cleaned_data.get('status')
                 country = form.cleaned_data.get('country')
+                discord_account = form.cleaned_data.get('discord_account')
 
-                person = Person(user = user, sex = sex, age = age,status=status,country=country)
+                person = Person(user = user, sex = sex, age = age,status=status,country=country, discord_account = discord_account)
                 person.save()
 
                 return redirect('/')
