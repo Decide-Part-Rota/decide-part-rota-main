@@ -48,7 +48,6 @@ class BoothListView(TemplateView):
                 dict_no_participa.update({v.id:tupla})
             else:
                 dict_participa.update({v.id:tupla})
-                print("hey")
 
         context["userdata"]=self.request.user
         context["votacionesNoParticipa"]=json.dumps(dict_no_participa, indent=4)
