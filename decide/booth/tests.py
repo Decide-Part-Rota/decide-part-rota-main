@@ -1,19 +1,12 @@
-from base import mods
 from base.tests import BaseTestCase
 
 from django.test import TestCase
-from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from rest_framework.test import APIClient
 
 
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.select import Select
-from selenium.webdriver.support.ui import WebDriverWait
 
 from unittest import skip
 
