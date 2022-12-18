@@ -8,6 +8,7 @@
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
     <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+    
 {% endblock %}
 
 {% block content %}
@@ -72,6 +73,7 @@
                 style = "display: flex; 
                 background-color: #444;">{% trans "Login" %}</b-button>
             </b-form>
+
 
 
             <!-- Voting -->
@@ -245,8 +247,12 @@
 
 
 
+
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="{% static "crypto/contenedor.js" %}"></script>
+    <script src="{% static "reactComponents/like-button.js" %}"></script>
+
+
 </body>
 {% endblock %}
