@@ -1,12 +1,11 @@
-'use strict';
+"use strict";
 
 const create = React.createElement;
-const datos = document.getElementById("hide").value;
 //const dicc = Array.map(voting);
 
-const nombreBueno = voting.name
-const id = voting.id
-const desc = voting.desc
+const nombreBueno = voting.name;
+const id = voting.id;
+const desc = voting.desc;
 
 //const view = [];
 //const keys = Object.keys(dicc);

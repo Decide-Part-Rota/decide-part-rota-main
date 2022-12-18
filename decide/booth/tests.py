@@ -1,27 +1,20 @@
-from base import mods
 from base.tests import BaseTestCase
 
 from django.test import TestCase
-from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from rest_framework.test import APIClient
 
 
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.select import Select
-from selenium.webdriver.support.ui import WebDriverWait
 
 from unittest import skip
 
-import time 
+import time
 
 class BoothTestCases(StaticLiveServerTestCase):
 
-## Para probar los tests de esta sección es necesario que se creen las dos votaciones siguientes:
+#Para probar los tests de esta sección es necesario que se creen las dos votaciones siguientes:
 #Primera votacion-> Nombre: 'Qué hora es', Descripción: '¿Cuál es la hora actual? Indícalo:', opciones: no influye
 #Segunda votacion-> Nombre: 'Fecha de hoy', Descripción: 'Elige cual es la fecha de hoy', opciones: no influye
 #Usuario-> Nombre: 'pruebas', Contraseña:'pruebaspruebas', y darle acceso en el censo a las votaciones creadas anteriores
@@ -39,25 +32,25 @@ class BoothTestCases(StaticLiveServerTestCase):
         #Si se quieren ver en navegador, cambiar a false
         options.headless = True
 
-        self.driver = webdriver.Chrome(options=options) 
+        self.driver = webdriver.Chrome(options=options)
 
         super().setUp()
 
     def tearDown(self):
-        super().tearDown() 
-        self.driver.quit() 
+        super().tearDown()
+        self.driver.quit()
         self.base.tearDown()
     
     @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_join_voting_without_sign_in_succesful_id_name_appear(self):
         self.driver.maximize_window()
-        self.driver.get('http://127.0.0.1:8000/booth/2/') 
+        self.driver.get('http://127.0.0.1:8000/booth/2/')
         self.assertTrue("2  -  Qué hora es" in self.driver.page_source)
 
     @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_join_voting_without_sign_in_succesful_desc_appear(self):
         self.driver.maximize_window()
-        self.driver.get('http://127.0.0.1:8000/booth/2/') 
+        self.driver.get('http://127.0.0.1:8000/booth/2/')
         self.assertTrue("¿Cuál es la hora actual? Indícalo:" in self.driver.page_source)
 
     @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
@@ -80,7 +73,7 @@ class BoothTestCases(StaticLiveServerTestCase):
     @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_voting_without_choosing_option_raises_error(self):
         self.driver.maximize_window()
-        self.driver.get('http://127.0.0.1:8000/booth/2/') 
+        self.driver.get('http://127.0.0.1:8000/booth/2/')
         self.driver.find_element(By.ID, "username").clear()
         self.driver.find_element(By.ID, "username").send_keys("pruebas")
         time.sleep(0.5)
@@ -90,7 +83,7 @@ class BoothTestCases(StaticLiveServerTestCase):
         time.sleep(0.5)
 
         ##If we dont choose any option, voting will not finish
-        self.driver.find_element(By.XPATH, "//*[@id='app-booth']/div/div[3]/div/button").click
+        self.driver.find_element(By.XPATH, "//*[@id='app-booth']/div/div[3]/div/button").click()
         time.sleep(0.5)
         self.assertFalse("            Conglatulations. Your vote has been sent        " in self.driver.page_source)
 
@@ -98,7 +91,7 @@ class BoothTestCases(StaticLiveServerTestCase):
     @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_voting_different_works(self):
         self.driver.maximize_window()
-        self.driver.get('http://127.0.0.1:8000/booth/1/') 
+        self.driver.get('http://127.0.0.1:8000/booth/1/')
         self.driver.find_element(By.ID, "username").clear()
         self.driver.find_element(By.ID, "username").send_keys("pruebas")
         time.sleep(0.5)
@@ -112,7 +105,7 @@ class BoothTestCases(StaticLiveServerTestCase):
     @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_voting(self):
         self.driver.maximize_window()
-        self.driver.get('http://127.0.0.1:8000/booth/1/') 
+        self.driver.get('http://127.0.0.1:8000/booth/1/')
         self.driver.find_element(By.ID, "username").clear()
         self.driver.find_element(By.ID, "username").send_keys("pruebas")
         time.sleep(0.5)
