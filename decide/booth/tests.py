@@ -48,19 +48,19 @@ class BoothTestCases(StaticLiveServerTestCase):
         self.driver.quit() 
         self.base.tearDown()
     
-    @skip("No debe runearse hasta que no se creen las votaciones correspondientes")
+    @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_join_voting_without_sign_in_succesful_id_name_appear(self):
         self.driver.maximize_window()
         self.driver.get('http://127.0.0.1:8000/booth/2/') 
         self.assertTrue("2  -  Qué hora es" in self.driver.page_source)
 
-    @skip("No debe runearse hasta que no se creen las votaciones correspondientes")
+    @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_join_voting_without_sign_in_succesful_desc_appear(self):
         self.driver.maximize_window()
         self.driver.get('http://127.0.0.1:8000/booth/2/') 
         self.assertTrue("¿Cuál es la hora actual? Indícalo:" in self.driver.page_source)
 
-    @skip("No debe runearse hasta que no se creen las votaciones correspondientes")
+    @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_logout_button_works(self):
         self.driver.maximize_window()
         self.driver.get('http://127.0.0.1:8000/booth/2/')
@@ -77,7 +77,7 @@ class BoothTestCases(StaticLiveServerTestCase):
         self.assertTrue("Username" in self.driver.page_source)
 
 
-    @skip("No debe runearse hasta que no se creen las votaciones correspondientes")
+    @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_voting_without_choosing_option_raises_error(self):
         self.driver.maximize_window()
         self.driver.get('http://127.0.0.1:8000/booth/2/') 
@@ -95,7 +95,7 @@ class BoothTestCases(StaticLiveServerTestCase):
         self.assertFalse("            Conglatulations. Your vote has been sent        " in self.driver.page_source)
 
 
-    @skip("No debe runearse hasta que no se creen las votaciones correspondientes")
+    @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_voting_different_works(self):
         self.driver.maximize_window()
         self.driver.get('http://127.0.0.1:8000/booth/1/') 
@@ -109,7 +109,7 @@ class BoothTestCases(StaticLiveServerTestCase):
         self.assertTrue("1  -  Fecha de hoy" in self.driver.page_source)
 
 
-    @skip("No debe runearse hasta que no se creen las votaciones correspondientes")
+    @skip("No debe ejecutarse hasta que no se creen las votaciones correspondientes")
     def test_voting(self):
         self.driver.maximize_window()
         self.driver.get('http://127.0.0.1:8000/booth/1/') 
