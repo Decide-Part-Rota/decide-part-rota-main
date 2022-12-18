@@ -4,7 +4,8 @@ services:
   db:
     restart: always
     container_name: decide_db
-    image: postgres:10.15-alpine
+    image: decidepartrota/decide_part_rota:postgres
+    build: .
     volumes:
       - db:/var/lib/postgresql/data
     networks:
@@ -14,7 +15,7 @@ services:
   web:
     restart: always
     container_name: decide_web
-    image: decide_web:latest
+    image: decidepartrota/decide_part_rota:decide_web
     build: .
     command: ash -c "python manage.py migrate && gunicorn -w 5 decide.wsgi --timeout=500 -b 0.0.0.0:5000"
     expose:
@@ -28,7 +29,7 @@ services:
   nginx:
     restart: always
     container_name: decide_nginx
-    image: decide_nginx:latest
+    image: decidepartrota/decide_part_rota:decide_nginx
     build:
         context: .
         dockerfile: Dockerfile-nginx
