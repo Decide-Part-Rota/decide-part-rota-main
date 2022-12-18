@@ -55,19 +55,6 @@ async def on_member_join(member):
         f'Hi {member.name}, welcome to my Discord server!'
     )
 
-@bot.command(name='hello', help='Hello user!')
-async def hello(ctx):
-    response = 'Hello!'
-    await ctx.channel.send(response)
-
-@bot.command(name='roll', help='Rolls a dice')
-async def roll(ctx, number_of_dice: int, number_of_sides: int):
-    dice = [
-        str(random.choice(range(1, number_of_sides + 1)))
-        for _ in range(number_of_dice)
-    ]
-    await ctx.send(', '.join(dice))
-
 @bot.command(name='commands', help='List all commands')
 async def list_commands(ctx):
     embed = discord.Embed(title='List of all commands', color=discord.Color.random())
@@ -168,6 +155,7 @@ async def post_voting_message(ctx, voting):
     # Creating question message
     embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
     option_numbers = []
+    
     def check(r: discord.Reaction, u: Union[discord.Member, discord.User]):  # r = discord.Reaction, u = discord.Member or discord.User.
         # Check the user who sent the reaction is the same as the user who sent the message.
         # Check the channel the reaction was sent in is the same as the channel the message was sent in.
@@ -197,7 +185,7 @@ async def post_voting_message(ctx, voting):
 
     # Waiting for reaction
     try:
-        reaction, user = await bot.wait_for('reaction_add', check = check, timeout = 60.0)
+        reaction = await bot.wait_for('reaction_add', check = check, timeout = 60.0)
     except asyncio.TimeoutError:
         # at this point, the check didn't become True.
         await ctx.send(f"**{ctx.author}**, you didnt react correctly with within 60 seconds.")
@@ -218,7 +206,7 @@ async def get_voting(ctx, voting_id: int):
 
     # Extract the voting, send the message and add reactions
     for voting in votings:
-        if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None and voting["public"] == True:
+        if voting["id"] == voting_id and voting["start_date"] != None and voting["end_date"] == None and voting["public"]:
             print(f"{ctx.author} requested voting {voting_id}")
             return await post_voting_message(ctx, voting)
             
