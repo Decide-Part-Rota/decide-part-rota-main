@@ -102,7 +102,7 @@ def gen_data(voting, user_id, option_id):
 
     # Random number generation
     q = 2^bits - 1
-    r = random.randint(1, q)
+    r = random.SystemRandom().randrange(1, q)
 
     # ElGamal encryption
     alpha = bigpk['g']^r % bigpk['p']
@@ -155,11 +155,7 @@ async def post_voting_message(ctx, voting):
     # Creating question message
     embed = discord.Embed(title=f'{voting["name"]}', color=discord.Color.random())
     option_numbers = []
-    def check(r: discord.Reaction, u: Union[discord.Member, discord.User]):  # r = discord.Reaction, u = discord.Member or discord.User.
-        # Check the user who sent the reaction is the same as the user who sent the message.
-        # Check the channel the reaction was sent in is the same as the channel the message was sent in.
-        # Check the reaction was sent to the correct message.
-        # Check the emoji used for the reaction is in the list of emojis.
+    def check(r: discord.Reaction, u: Union[discord.Member, discord.User]):
         return u.id == ctx.author.id and r.message.channel.id == ctx.channel.id and r.message.id == msg.id and \
                emotes.index(str(r.emoji)) - 1 in range(len(option_numbers))
 
@@ -205,10 +201,9 @@ async def get_voting(ctx, voting_id: int):
 
     # Extract the voting, send the message and add reactions
     for voting in votings:
-        if voting["id"] == voting_id and voting["start_date"] is not None and voting["end_date"] == None and voting["public"]:
+        if voting["id"] == voting_id and voting["start_date"] is not None and voting["end_date"] is None and voting["public"]:
             print(f"{ctx.author} requested voting {voting_id}")
             return await post_voting_message(ctx, voting)
-            
     return await ctx.send("Invalid voting ID or voting is not active")
 
 bot.run(TOKEN)

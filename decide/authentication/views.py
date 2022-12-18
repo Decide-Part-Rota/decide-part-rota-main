@@ -105,7 +105,8 @@ def register(request):
             params = person_params(form.cleaned_data)
 
             inactive_user = send_verification_email(request, form)
-            person1=Person(user=inactive_user,sex = params['sex'], age = params['age'],status=params['status'],country=params['country'], discord_account = params['discord_account'])
+            person1=Person(user=inactive_user,sex = params['sex'], age = params['age'],
+                status=params['status'],country=params['country'], discord_account = params['discord_account'])
 
             person1.save()
 
@@ -148,7 +149,8 @@ def complete(request):
             if form.is_valid():
                 params = person_params(form.cleaned_data)
 
-                person = Person(user = user, sex = params['sex'], age = params['age'],status=params['status'],country=params['country'], discord_account = params['discord_account'])
+                person = Person(user = user, sex = params['sex'], age = params['age'],
+                    status=params['status'],country=params['country'], discord_account = params['discord_account'])
                 person.save()
 
                 return redirect('/')
