@@ -364,7 +364,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
 
         print(self.live_server_url)
 
-        self.assertEqual(self.driver.title, 'Register')
+        self.assertEqual(self.driver.title, 'Login')
 
     def test_simpleIncorrectStatusRegister(self): 
         self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
@@ -381,7 +381,7 @@ class RegisterTestCase(StaticLiveServerTestCase):
 
         print(self.live_server_url)
 
-        self.assertEqual(self.driver.title, 'Register')
+        self.assertEqual(self.driver.title, 'Login')
 
     def test_simpleIncorrectCountryRegister(self): 
         self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
@@ -392,13 +392,13 @@ class RegisterTestCase(StaticLiveServerTestCase):
         self.driver.find_element(By.ID,'id_sex').send_keys("Mujer")
         self.driver.find_element(By.ID,'id_age').send_keys("1")
         self.driver.find_element(By.ID,'id_status').send_keys("Con novia")
-        # Probar un register con sexo invalido
-        self.driver.find_element(By.ID,'id_country').send_keys("Sevilla")
+        # Probar un register con pais invalido
+        self.driver.find_element(By.ID,'id_country').send_keys("Mi casa")
         self.driver.find_element(By.ID,'id_button').send_keys(Keys.ENTER)
 
         print(self.live_server_url)
 
-        self.assertEqual(self.driver.title, 'Register')
+        self.assertEqual(self.driver.title, 'Login')
 
     def test_simpleIncorrectMailRegister(self): 
         self.driver.get(f'{self.live_server_url}/authentication/registerForm/')
